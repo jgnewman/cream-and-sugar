@@ -1,0 +1,19 @@
+import React from 'react'
+import ReactDOM from 'react-dom'
+
+Title = React.createClass {
+
+  factorial: match
+    0 -> 1
+    n -> n * @factorial n - 1
+  end
+
+  render: fn ->
+    <h1>
+      'Hello, friends. The factorial of 5 is '
+      @factorial 5
+    </h1>
+  end
+}
+
+ReactDOM.render(<Title/>, dom('#app'))

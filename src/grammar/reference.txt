@@ -1,0 +1,293 @@
+# Basic pattern matching function
+--------
+
+def
+  factorial 0 -> 1
+  factorial n -> n * factorial n - 1
+end
+
+    function factorial() {
+      const __a = Array.prototype.push.apply([], arguments);
+      if (__a.length === 1) {
+        if (__a[0] === 0) {
+          return 1;
+        } else {
+          const n = __a[0];
+          return n * factorial(n - 1);
+        }
+      } else {
+        throw new Error(`Functional.js: No pattern match for "factorial" from ${__a}`);
+      }
+    }
+
+# Opt out of pattern matching by not using def
+--------
+
+fs.writeFileSync './myfile.js', fn err, result -> doStuff()
+
+    fs.writeFileSync('./myfile.js', function (err, result) {
+      return doStuff();
+    });
+
+# Pattern matching an anonymous function
+--------
+
+fs.writeFileSync './myfile.js', match
+  err, _ ->
+    process.exit(1)
+  end
+  _, result ->
+    doStuff result
+  end
+end
+
+# or ...
+
+fs.writeFileSync './myfile.js', match
+  (undefined, result) -> doStuff result
+  (err, _) -> process.exit 1
+end
+
+    fs.writeFileSync('./myfile.js', function () {
+      const __a = Array.prototype.push.apply([], arguments);
+      if (__a.length === 2) {
+        if (__a[0] === undefined) {
+          const result = __a[1];
+          return doStuff(result);
+        } else if (__a[0]) {
+          const err = __a[0];
+          return process.exit(1);
+        } else {
+          throw new Error(`Functional.js: No pattern match for anonymous function from ${__a}`);
+        }
+      } else {
+        throw new Error(`Functional.js: No pattern match for anonymous function from ${__a}`);
+      }
+      return doStuff();
+    });
+
+# Using qualifiers
+--------
+
+fs.writeFileSync './myfile.js', fn err, result ->
+  process.exit(1) if err
+  doStuff result if no err
+end
+
+process.exit(1) if err else doStuff result
+
+    fs.writeFileSync('./myfile.js', function (err, result) {
+      if (err) {
+        process.exit(1);
+      }
+      if (!err) {
+        return doStuff(result);
+      }
+    });
+
+# Conditions
+--------
+
+fs.writeFileSync './myfile.js', fn err, result ->
+  cond
+    err -> process.exit 1
+    true -> doSuff result
+  end
+end
+
+    fs.writeFileSync('./myfile.js', function (err, result) {
+      return function () {
+        if (err) {
+          return process.exit(1);
+        } else {
+          return doStuff(result);
+        }
+      }.bind(this)();
+    });
+
+fs.writeFileSync './myfile.js', fn err, result ->
+  caseof err:
+    'hello' -> process.exit 1
+    'goodbye' -> doStuff result
+    default -> doOtherStuff()
+  end
+end
+
+    fs.writeFileSync('./myfile.js', function (err, result) {
+      return function () {
+        switch (err) {
+          case 'hello': return process.exit(1);
+          case 'goodbye': return doStuff(result);
+          default: return doDotherStuff();
+        }
+      }.bind(this)();
+    });
+
+
+# Loops
+--------
+
+def
+  map list, fn -> map list, fn, []
+  map [], _, acc -> acc
+  map [h|t], fn, acc -> map t, fn, [fn(h) | acc]
+end
+
+    # Final form
+    # args, match, noMatch
+    function map() {
+      const args = SYSTEM.args(arguments);
+      if (args.length === 2 && SYSTEM.match(args, [['Identifier', 'list'], ['Identifier', 'fn']])) {
+        const list = args[0];
+        const fn = args[1];
+        return map(list, fn, []);
+      } else if (args.length === 3 && SYSTEM.match(args, [['Array', '[]'], ['Identifier', '_'], ['Identifier', 'acc']])) {
+        const acc = args[2];
+        return acc;
+      } else if (args.length === 3 && SYSTEM.match(args, [['Array', '[h|t]'], ['Identifier', 'fn'], ['Identifier', 'acc']])) {
+        const h = args[0][0];
+        const t = args[0].slice(1);
+        const fn = args[1];
+        const acc = args[2];
+        return map(t, fn, [fn(h)].concat(acc));
+      } else {
+        return SYSTEM.noMatch('def');
+      }
+    }
+
+
+    SYS.arg2arr = argObj => Array.prototype.push.apply([], argObj);
+    SYS.matchErr = argList => {
+      throw new Error(`Functional.js: No pattern match for anonymous function from ${argList}`);
+    };
+
+# Comprehensions
+--------
+
+num + 1 for num in list
+
+    list.map(function (num) {
+      return num + 1;
+    });
+
+num + index for num, index in list when index % 2 is 0
+
+    (function () {
+      const __acc = [];
+      list.forEach(function (num, index) {
+        if (index % 2 === 0) {
+          __acc.push(num + index);
+        }
+      });
+      return __acc;
+    }())
+
+# Assignment Matching
+--------
+
+introduceSelf props ->
+  {name, age} = props
+  console.log `Hello, my name is ${name} and I am ${age} years old.`
+end
+
+    function introduceSelf(props) {
+      const {name, age} = props;
+      return console.log(`Hello, my name is ${name} and I am ${age} years old.`);
+    }
+
+
+# All Function Forms
+--------
+
+doNothing arg -> nothing arg
+
+    function doNothing(arg) {
+      return nothing(arg);
+    }
+
+doNothing(arg) -> nothing(arg)
+
+    function doNothing(arg) {
+      return nothing(arg);
+    }
+
+doNothing arg ->
+  nothing arg
+end
+
+    function doNothing(arg) {
+      return nothing(arg);
+    }
+
+def
+  doNothing arg -> nothing arg
+end
+
+    function doNothing() {
+      const args = SYS.arg2arr(argObj);
+      if (args.length === 1) {
+        const arg = args[0];
+        return nothing(arg);
+      } else {
+        return SYS.matchErr(args);
+      }
+      return nothing(arg);
+    }
+
+# Note, anonymous functions must have an identifer in front of them.
+# This matches a common pattern. For example, with a named function
+# you would have foo(x) or "foo of x". With an anonymous function you
+# would have fn(x) or "function of x".
+doNothing = fn arg -> nothing arg
+
+    const doNothing = function (arg) {
+      return nothing(arg);
+    };
+
+doNothing = match
+  arg -> nothing arg
+end
+
+    const doNothing = function () {
+      const args = SYS.arg2arr(argObj);
+      if (args.length === 1) {
+        const arg = args[0];
+        return nothing(arg);
+      } else {
+        return SYS.matchErr(args);
+      }
+      return nothing(arg);
+    };
+
+# Try/catch
+--------
+
+foo x ->
+  try fn -> x()
+  catch fn err -> y()
+end
+
+
+# Import/export
+--------
+
+import fs from 'fs';
+
+    const fs = require('fs');
+
+# You can only export a tuple. No `as`.
+# You can not do a `default` export.
+
+export { someValue/2 }
+
+    SYSTEM.exp('someValue', SYSTEM.aritize(someValue, 2));
+
+    SYSTEM.aritize = function (fun, arity) {
+      return function () {
+        if (arguments.length === arity) {
+          return fun(...arguments);
+        } else {
+          throw new Error();
+        }
+      };
+    };

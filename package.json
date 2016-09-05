@@ -1,0 +1,44 @@
+{
+  "name": "cream-and-sugar",
+  "version": "0.0.1",
+  "description": "A deliciously functional syntax for JavaScript with native support for JSX",
+  "main": "index.js",
+  "bin": {
+    "cns": "index.js"
+  },
+  "scripts": {
+    "test": "gulp test"
+  },
+  "author": "John Newman",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "babel-cli": "^6.14.0",
+    "babel-core": "^6.14.0",
+    "babel-loader": "^6.2.5",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.14.0",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "babel-register": "^6.14.0",
+    "browserify": "^13.1.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-clean": "^0.3.2",
+    "gulp-copy": "0.0.2",
+    "gulp-mocha": "^3.0.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-server-livereload": "^1.8.4",
+    "gulp-uglify": "^2.0.0",
+    "gulp-util": "^3.0.7",
+    "gulp-watch": "^4.3.9",
+    "jison": "^0.4.17",
+    "mocha": "^3.0.2",
+    "react": "^15.3.1",
+    "react-dom": "^15.3.1",
+    "run-sequence": "^1.2.2",
+    "vinyl-source-stream": "^1.1.0",
+    "yargs": "^5.0.0"
+  }
+}

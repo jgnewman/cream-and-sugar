@@ -1,0 +1,135 @@
+[]
+[
+  1, 2, 3]
+import {a, b, c} from 'farts'
+import {a, b, c
+} from 'farts'
+import {
+  a, b, c} from 'farts'
+import {
+  a, b, c
+  } from 'farts'
+import {
+  a,
+  b, c
+} from 'farts'
+import {a,
+b, c} from 'farts'
+
+export { a/2 }
+export { a/1, b/2, c/3 }
+export {a/1, b/2, c/3
+}
+export {
+  a/1, b/2, c/3}
+export {
+  a/1, b/2, c/3
+}
+export {
+  a/1,
+  b/2, c/3
+}
+export {a/1,
+b/2, c/3}
+export {
+  a/1,
+  b/2,
+  c/3
+}
+
+{a, b, c} = props
+{a, b, c
+} = props
+{
+  a, b, c} = props
+{
+  a, b, c
+} = props
+{
+  a,
+  b, c
+} = props
+{a,
+b, c} = props
+
+(2 + 2)
+
+3 + 3
+
+myfun(hola)
+myfun hola
+myfun 2 + 2, hello, 'fart'
+myfun(2 + 2, hello, 'fart')
+
+def
+  factorial 0 -> 1
+  factorial n -> n * factorial n - 1
+end
+
+def
+  factorial(0) -> 1
+  factorial(n) -> n * factorial(n - 1)
+end
+
+<div className={ 2 + 2 } farts="sharts"></div>
+
+{}
+{a:foo(a)}
+{a: true}
+{
+  a: true
+}
+{a: true, b: 2 + 2, c: value}
+{a: true, 'b': true, 0: true, ~atom: true}
+{
+  a: true, 'b': true, 0: true, ~atom: true}
+{a: true, 'b': true, 0: true, ~atom: true
+}
+{a: true,
+'b': true, 0: true, ~atom: true}
+{
+  a: true, # comment is successfully ignored
+  'b': true,
+  0: true,
+  ~atom: true
+}
+
+~atom
+@whatever
+
+match
+  (0, 1) -> 1
+  x, y -> n * factorial n - 1
+end
+
+a is 4 and b is 4
+
+cond
+  a is 4 and b is 4 -> doStuff()
+end
+
+# Parens are necessary here becaue the idea is to show what
+# the pattern for calling the function looks like. If you don't
+# specify a parameter list at all, that's not a pattern for calling
+# a function.
+myfun() ->
+  doStuff()
+  a is 4 and b is 4
+end
+
+def
+  foo [hd|tl] ->
+    {a, b, c} = something
+    foo doStuff(hd), tl
+  end
+  foo item, [] -> item
+  foo item, list ->
+    doStuff()
+    doMoreStuff()
+  end
+end
+
+ReactDOM.render(
+  React.createElement('h1', {}, ['Hello, world!']),
+  document.getElementById('app')
+)
