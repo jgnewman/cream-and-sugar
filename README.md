@@ -225,7 +225,7 @@ For example...
 export { each/2 }
 ```
 
-In this example, we're exporting the `each` function with arity of 2, meaning
+In this example, we're exporting the `each` function with an arity of 2, meaning
 that users who import it will only be allowed to pass it 2 arguments. If they
 call the function with any other number of arguments, they'll get an error.
 
