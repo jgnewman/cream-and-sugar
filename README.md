@@ -269,10 +269,15 @@ This is pretty handy because if you aren't using React, you can still make use
 of the JSX syntax to dynamically build DOM nodes. For example:
 
 ```ruby
-container = document.querySelector('#my-container')
-update(container, 'innerHTML', <div>'Hello'</div>)
+container = dom '#my-container'
+update container, 'innerHTML', <div>'Hello'</div>
 #=> <div id="my-container"><div>Hello</div></div>
 ```
+
+> Another protip: `dom` is a built-in function that makes selecting DOM nodes
+easy. Cream and Sugar contains many such built-in functions. However the entire
+library doesn't get automatically inserted into your compiled code – only the
+ones you're using.
 
 One thing to keep in mind, of course, is that CnS is a functional language and,
 as such, it doesn't modify currently existing values. It can only create new
@@ -291,7 +296,7 @@ it cnsx), you don't need to do that.
 
 ### Quote all text
 
-As a tradeoff, you will need to surround any floating text with quotes. because
+As a tradeoff, you will need to surround any floating text with quotes. Because
 cnsx is integrated into the language and is not handled as a separate processing
 step, the compiler will see any floating text as a bunch of variable names
 and get very confused.
