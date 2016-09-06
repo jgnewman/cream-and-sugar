@@ -92,12 +92,12 @@ def
   each([], fun, counter) -> counter
   each(list, fun, counter) ->
     inc = counter + 1
-    fun(head(list), inc)
+    fun(head(list), counter)
     each(tail(list), fun, inc)
   end
 end
 
-# 9 lines, 197 chars
+# 9 lines, 201 chars
 ```
 
 Admittedly, this could be somewhat simplified and we'll take care of that
@@ -119,7 +119,7 @@ this happens, we'll hit the first pattern and immediately recurse with
 
 At this point, assuming the array is not empty, we'll hit the third pattern.
 We'll increment the counter, call `fun` on the first item in the list
-(called `head`) and the new counter, then recurse with 3 arguments again.
+(called `head`) and the original counter, then recurse with 3 arguments again.
 But this time, we'll pass in just the remaining list items (called `tail`)
 as well as our incremented counter.
 
@@ -148,52 +148,51 @@ def
   each [], fun, counter -> counter
   each list, fun, counter ->
     inc = counter + 1
-    fun (head list), inc
+    fun (head list), counter
     each (tail list), fun, inc
   end
 end
 
-# 9 lines, 193 chars
+# 9 lines, 197 chars
 ```
 
 This piece should be pretty self explanatory. Pick a style and stick with it.
+
+And, of course, it means we can also call the function like this:
+
+```ruby
+each [1, 2, 3], fn item, index -> item + index
+#=> 3
+```
 
 Step 2: Destructuring
 
 ```ruby
 def
-  each list, fun -> each list, fun, 1
-  each [], fun, counter -> counter - 1
+  each list, fun -> each list, fun, 0
+  each [], fun, counter -> counter
   each [hd|tl], fun, counter ->
     fun hd, counter
     each tl, fun, counter + 1
   end
 end
 
-# 8 lines, 172 chars
+# 8 lines, 168 chars
 ```
 
 Here, we've actually simplified in two ways: first, by destructuring in order
-to remove two unneeded function calls and, second, by changing the way we're
-handling the counter in order to remove the need for an assignment line.
+to remove two unneeded function calls and, second, by removing an unnecessary
+assignment line.
 
-Let's look at destructuring first. In pattern three, we're no longer using a
+> Protip: Use pattern matching to avoid assignment lines where possible.
+
+Let's look at destructuring. In pattern three, we're no longer using a
 parameter called `list`. Instead, we've used a destructuring technique to
 determine that the argument that comes in should be an array and will be
 separated out into two variables: `hd`, which indicates the first item in the
 array and `tl` which captures the remaining array items.
 
-As for the counter, rather than starting the counter at 0, we're now starting it
-at 1. This way we don't have to use assignment to capture an incremented value.
-Instead, when we finally hit pattern 2, we'll just subtract 1 from the final
-result.
-
-This, of course, means we can also call the function like this:
-
-```ruby
-each [1, 2, 3], fn item, index -> item + index
-#=> 3
-```
+#### When to use `end`
 
 Before moving on, let's talk about one other thing that you've hopefully picked
 up on already. CnS tries to let you remove clutter wherever possible. As such,
@@ -209,7 +208,9 @@ can put that expression on the same line as the arrow and avoid any closing
 delimiters. When it needs multiple expressions, list them all on their own lines
 and use `end` to close the block.
 
-You may notice of course that defining a function in this way requires that you
+#### Locking down arities
+
+You may have noticed that defining a function in this way requires that you
 allow future users of your code to call the function in each of its various
 forms and this may not be enticing to you. For example, you may want to lock
 users down to calling the `each` function with just a list and a function. You
@@ -229,13 +230,53 @@ In this example, we're exporting the `each` function with an arity of 2, meaning
 that users who import it will only be allowed to pass it 2 arguments. If they
 call the function with any other number of arguments, they'll get an error.
 
+#### A final comparison
+
+Lastly, let's just take a quick look at a final version of this function in
+Cream & Sugar, vs how the same function would be implemented recursively in
+JavaScript.
+
+*CnS*
+```ruby
+def
+  each list, fun -> each list, fun, 0
+  each [], fun, counter -> counter
+  each [hd|tl], fun, counter ->
+    fun hd, counter
+    each tl, fun, counter + 1
+  end
+end
+
+# 8 lines, 168 chars
+```
+
+*JavaScript*
+```javascript
+function each(list, fun, counter) {
+  if (arguments.length === 2) {
+    return each(list, fun, 0);
+  } else {
+    if (!list.length) {
+      return counter;
+    } else {
+      const hd = list[0];
+      const tl = list.slice(1);
+      fun(hd, counter);
+      return each(tl, fun, counter + 1);
+    }
+  }
+}
+
+// 14 lines, 303 chars
+```
+
 ## I get it, I get it. What about JSX?
 
 Right, JSX. As you know, JSX is basically HTML that you can write into JavaScript.
 It was invented for use with React.js and looks a bit like this:
 
 ```javascript
-function makeJSX(id) {
+function createJSX(id) {
   return (
     <div id={id} className="foo">
       <span>Hello, world!</span>
@@ -249,7 +290,7 @@ When compiled, each of the nodes in our JSX is converted into a call to
 Sugar:
 
 ```ruby
-makeJSX id ->
+createJSX id ->
   <div id={id} className="foo">
     <span>"Hello, world!"</span>
   </div>
@@ -269,8 +310,8 @@ This is pretty handy because if you aren't using React, you can still make use
 of the JSX syntax to dynamically build DOM nodes. For example:
 
 ```ruby
-container = dom '#my-container'
-update container, 'innerHTML', <div>'Hello'</div>
+container = dom('#my-container')
+update(container, 'innerHTML', <div>'Hello'</div>)
 #=> <div id="my-container"><div>Hello</div></div>
 ```
 
@@ -288,40 +329,34 @@ populated.
 There are a couple of other _minor_ differences between CnS' version of JSX
 and the JavaScript version as well.
 
-### No need for parentheses
-
-In standard JSX, if your HTML breaks onto another line, you have to surround
-the whole thing with a set of parentheses. In the CnS version (let's just call
-it cnsx), you don't need to do that.
-
 ### Quote all text
 
-As a tradeoff, you will need to surround any floating text with quotes. Because
-cnsx is integrated into the language and is not handled as a separate processing
-step, the compiler will see any floating text as a bunch of variable names
-and get very confused.
+In CnS, you will need to surround any floating text with quotes. Because
+html-like syntax is integrated into the language and is not handled as a
+separate processing step, the compiler will see any floating text as a bunch of
+variable names and get very confused.
 
-So, whereas in traditional JSX you would write this:
+Another way to explain this is that the language grammar doesn't change
+if you're inside an html node. So, whereas in traditional JSX you would write
+this:
 
 ```javascript
-(<div>
+<div>
   This is some floating text.
-</div>)
+</div>
 ```
 
 In CnS you would write this:
 
 ```javascript
 <div>
-  `This is some floating text.`
+  "This is some floating text."
 </div>
 ```
 
-Another way to explain this is that the language grammar doesn't change
-if you're inside an html node. And this happens to provide a few additional
-benefits as well.
+Because a string is still a string.
 
-You can still drop values into text:
+Of course, you can still easily drop dynamic values into text:
 
 **JavaScript**
 ```javascript
@@ -339,12 +374,10 @@ You can also avoid using curly braces at all in a lot of places:
 
 **JavaScript**
 ```javascript
-(<div>
+<div>
   Two plus two is
-  {
-    2 + 2
-  }
-</div>)
+  { 2 + 2 }
+</div>
 ```
 
 **Cream and Sugar**
@@ -360,13 +393,12 @@ of the html body:
 
 **JavaScript**
 ```javascript
-(<div>
+<div>
   Two plus two is
   (function () {
-    const out = 2 + 2;
-    return <strong>{out}</strong>;
+    return <strong>{2 + 2}</strong>;
   }())
-</div>)
+</div>
 ```
 
 **Cream and Sugar**
