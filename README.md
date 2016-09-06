@@ -209,6 +209,26 @@ can put that expression on the same line as the arrow and avoid any closing
 delimiters. When it needs multiple expressions, list them all on their own lines
 and use `end` to close the block.
 
+You may notice of course that defining a function in this way requires that you
+allow future users of your code to call the function in each of its various
+forms and this may not be enticing to you. For example, you may want to lock
+users down to calling the `each` function with just a list and a function. You
+may not want them to have access to the counter because it could easily ruin
+the function's logic.
+
+Never fear. You can take care of this when you export the function. In CnS,
+you will always export functions as a group. For each one being exported, you
+will choose the arity with which users will be allowed to call the function.
+For example...
+
+```erlang
+export { each/2 }
+```
+
+In this example, we're exporting the `each` function with arity of 2, meaning
+that users who import it will only be allowed to pass it 2 arguments. If they
+call the function with any other number of arguments, they'll get an error.
+
 ## I get it, I get it. What about JSX?
 
 Right, JSX. As you know, JSX is basically HTML that you can write into JavaScript.
