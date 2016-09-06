@@ -230,9 +230,9 @@ In this example, we're exporting the `each` function with an arity of 2, meaning
 that users who import it will only be allowed to pass it 2 arguments. If they
 call the function with any other number of arguments, they'll get an error.
 
-#### A final comparison
+#### Recursion in CnS vs recursion in JavaScript
 
-Lastly, let's just take a quick look at a final version of this function in
+Let's just take a quick look at a final version of this function in
 Cream & Sugar, vs how the same function would be implemented recursively in
 JavaScript.
 
@@ -269,6 +269,43 @@ function each(list, fun, counter) {
 
 // 14 lines, 303 chars
 ```
+
+Notice that the CnS version actually does a lot more in terms of throwing errors
+when patterns don't match and locking down arities and whatnot. But this is
+effectually how you'd accomplish the same thing.
+
+#### Using guards
+
+One other thing we ought to mention when talking about pattern matching is
+using guards. Earlier we implemented a `factorial` function like this:
+
+```ruby
+def
+  factorial(0) -> 1
+  factorial(n) -> n * factorial(n - 1)
+end
+```
+
+With pattern matching we actually have lots of options and another way we
+could implement the same thing is by using guards. Guards essentially qualify
+certain aspects of a pattern that are harder to express in the pattern itself.
+
+Consider this:
+
+```ruby
+def
+  factorial(n) when n lt 2 -> 1
+  factorial(n) -> n * factorial(n - 1)
+end
+```
+
+In this version of the function, we're matching against a single argument of
+indeterminate value in both patterns. However, in the first pattern, we
+qualify that match by saying `when n lt 2` (or, "when n is less than 2").
+
+The way this function is now read would be as follows: "If a user calls
+factorial of some value (n) when n is less than 2, return 1. If a user
+calls factorial n in any other case, return n times factorial of n minus 1."
 
 ## I get it, I get it. What about JSX?
 
