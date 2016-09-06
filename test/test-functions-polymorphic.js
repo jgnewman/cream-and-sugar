@@ -108,33 +108,52 @@ describe('Polymorphic Function Definitions', () => {
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
-  // Implementing guards will be non-trivial because if we want to do it with
-  // any kind of efficiency, we'll need to isolate which patterns are the same
-  // before guards and then add an extra condition to that pattern's body
-  // that tests the guards.
-  // 
-  // it('should compile a polymorphic function with guards', () => {
-  //   const toCompile = `def
-  //     factorial 0 -> 1
-  //     factorial n when n lt 2 -> 1
-  //     factorial n -> n * factorial n - 1
-  //   end`;
-  //   const expected = nlToSpace(`function factorial () {
-  //     const args = SYSTEM.args(arguments);
-  //     if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
-  //       return 1;
-  //     } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","n"]])) {
-  //       const n = args[0];
-  //       if (n < 1) {
-  //         return 1;
-  //       } else {
-  //         return n * factorial(n - 1);
-  //       }
-  //     } else {
-  //       return SYSTEM.noMatch('def');
-  //     }
-  //   }`);
-  //   assert.equal(expected, nlToSpace(compileCode(toCompile)));
-  // });
+  it('should compile a polymorphic function with guards', () => {
+    const toCompile = `def
+      factorial 0 -> 1
+      factorial n when n lt 2 -> 1
+      factorial n -> n * factorial n - 1
+    end`;
+    const expected = nlToSpace(`function factorial () {
+      const args = SYSTEM.args(arguments);
+      if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
+        return 1;
+      } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","n"]])) {
+        const n = args[0];
+        if (n < 2) {
+          return 1;
+        } else {
+          return n * factorial(n - 1);
+        }
+      } else {
+        return SYSTEM.noMatch('def');
+      }
+    }`);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+  });
+
+  it('should compile a polymorphic function with more complex guards', () => {
+    const toCompile = `def
+      factorial 0 -> 1
+      factorial n when n lt 2 and n gt -1 -> 1
+      factorial n -> n * factorial n - 1
+    end`;
+    const expected = nlToSpace(`function factorial () {
+      const args = SYSTEM.args(arguments);
+      if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
+        return 1;
+      } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","n"]])) {
+        const n = args[0];
+        if (n < 2 && n > -1) {
+          return 1;
+        } else {
+          return n * factorial(n - 1);
+        }
+      } else {
+        return SYSTEM.noMatch('def');
+      }
+    }`);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+  });
 
 });

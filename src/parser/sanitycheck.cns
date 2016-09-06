@@ -133,3 +133,14 @@ ReactDOM.render(
   React.createElement('h1', {}, ['Hello, world!']),
   document.getElementById('app')
 )
+
+def
+  factorial 0 -> 1
+  factorial n when n lte 2 -> 1
+  factorial n -> n * factorial n - 1
+end
+
+factorial = match
+  n when n lte 1 -> 1
+  n -> n * factorial n - 1
+end

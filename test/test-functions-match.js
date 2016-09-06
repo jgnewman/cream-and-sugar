@@ -98,4 +98,52 @@ describe('Polymorphic Match Expressions', () => {
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
+  it('should compile a polymorphic match with guards', () => {
+    const toCompile = `factorial = match
+      0 -> 1
+      n when n lt 2 -> 1
+      n -> n * factorial n - 1
+    end`;
+    const expected = nlToSpace(`const factorial = function () {
+      const args = SYSTEM.args(arguments);
+      if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
+        return 1;
+      } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","n"]])) {
+        const n = args[0];
+        if (n < 2) {
+          return 1;
+        } else {
+          return n * factorial(n - 1);
+        }
+      } else {
+        return SYSTEM.noMatch('match');
+      }
+    }`);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+  });
+
+  it('should compile a polymorphic match with more complex guards', () => {
+    const toCompile = `factorial = match
+      0 -> 1
+      n when n lt 2 and n gt -1 -> 1
+      n -> n * factorial n - 1
+    end`;
+    const expected = nlToSpace(`const factorial = function () {
+      const args = SYSTEM.args(arguments);
+      if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
+        return 1;
+      } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","n"]])) {
+        const n = args[0];
+        if (n < 2 && n > -1) {
+          return 1;
+        } else {
+          return n * factorial(n - 1);
+        }
+      } else {
+        return SYSTEM.noMatch('match');
+      }
+    }`);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+  });
+
 });

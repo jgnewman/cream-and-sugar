@@ -1,5 +1,4 @@
 - add more pattern match techniques
-  - guards on pattern matches
   - to consider: [a, b, c], {a, b}, [a, b, {c, d}]
 - what about threads and message passing?
 

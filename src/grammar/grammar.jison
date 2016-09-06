@@ -588,18 +588,22 @@ FnBody
 Fun
   : FunctionCall Arrow FnBody
     {
-      $$ = new FunNode($1, $3, $2 !==  '->', createSourceLocation(null, @1, @3));
+      $$ = new FunNode($1, $3, $2 !==  '->', null, createSourceLocation(null, @1, @3));
     }
   | FN List Arrow FnBody
     {
-      $$ = new FunNode($2, $4, $3 !==  '->', createSourceLocation(null, @1, @4));
+      $$ = new FunNode($2, $4, $3 !==  '->', null, createSourceLocation(null, @1, @4));
     }
   ;
 
 Match
-  :  List Arrow FnBody
+  : List Arrow FnBody
     {
-      $$ = new FunNode($1, $3, $2 !==  '->', createSourceLocation(null, @1, @3));
+      $$ = new FunNode($1, $3, $2 !==  '->', null, createSourceLocation(null, @1, @3));
+    }
+  | List WHEN CommonElement Arrow FnBody
+    {
+      $$ = new FunNode($1, $5, $4 !==  '->', $3, createSourceLocation(null, @1, @5));
     }
   ;
 
@@ -619,11 +623,15 @@ MatchSet
 PolyFn
   :  FunctionCall Arrow FnBody
     {
-      $$ = new FunNode($1, $3, $2 !==  '->', createSourceLocation(null, @1, @3));
+      $$ = new FunNode($1, $3, $2 !==  '->', null, createSourceLocation(null, @1, @3));
+    }
+  | FunctionCall WHEN CommonElement Arrow FnBody
+    {
+      $$ = new FunNode($1, $5, $4 !==  '->', $3, createSourceLocation(null, @1, @5));
     }
   | FN List Arrow FnBody
     {
-      $$ = new FunNode($2, $4, $3 !==  '->', createSourceLocation(null, @1, @4));
+      $$ = new FunNode($2, $4, $3 !==  '->', null, createSourceLocation(null, @1, @4));
     }
   ;
 
@@ -891,11 +899,12 @@ function CaseofNode(comparator, conditions, loc) {
   this.shared = shared;
 }
 
-function FunNode(preArrow, body, bind, loc) {
+function FunNode(preArrow, body, bind, guard, loc) {
   this.type = 'Fun';
   this.length = body.length;
   this.bind = bind;
   this.preArrow = preArrow;
+  this.guard = guard;
   this.body = body;
   this.loc = loc;
   this.shared = shared;
