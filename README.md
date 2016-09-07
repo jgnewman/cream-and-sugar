@@ -1,7 +1,7 @@
 # Cream and Sugar
 
-[![Build Status](https://travis-ci.org/jgnewman/cream-and-sugar.svg?branch=master)](https://travis-ci.org/jgnewman/cream-and-sugar)
-[![Dependency Status](https://david-dm.org/jgnewman/cream-and-sugar.svg)
+![Build Status](https://travis-ci.org/jgnewman/cream-and-sugar.svg?branch=master)](https://travis-ci.org/jgnewman/cream-and-sugar)
+![Dependency Status](https://david-dm.org/jgnewman/cream-and-sugar.svg)
 
 **Cream and Sugar (CnS) is a functional programming language that compiles to
 JavaScript.** It's meant to be simple, light, and pretty, as well as a
