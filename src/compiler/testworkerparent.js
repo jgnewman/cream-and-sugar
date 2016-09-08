@@ -15,4 +15,4 @@ const thread = SYSTEM.spawn(function () {
   });
 });
 
-SYSTEM.send(thread, 'you suck');
+SYSTEM.send(thread, [Symbol.for('farts'), 'and more']);

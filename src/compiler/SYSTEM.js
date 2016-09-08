@@ -242,9 +242,25 @@ const SYSTEM = {
        }
      },
 
+     symbolize: function (data, reSymbolize) {
+       if (!reSymbolize && typeof data === 'symbol') return '__' + data.toString() + '__';
+       if (reSymbolize && typeof data === 'string' && /^__Symbol\(.+\)__$/.test(data)) {
+         return Symbol.for(data.replace(/^__Symbol\(|\)__$/g, ''));
+       }
+       if (Array.isArray(data)) {
+         return data.map(function (item) { return SYSTEM.msgs.symbolize(item, reSymbolize) });
+       } else if (typeof data === 'object' && data !== null) {
+         var out = {};
+         Object.keys(data).forEach(function (key) { out[key] = SYSTEM.msgs.symbolize(data[key], reSymbolize) });
+         return out;
+       }
+       return data;
+     },
+
      onMsg: function (msg) {
        SYSTEM.msgs.isBrowser && (msg = msg.data);
-       SYSTEM.msgs.queue.push({ sender: this, data: msg });
+       const m = SYSTEM.msgs.symbolize(msg, true);
+       SYSTEM.msgs.queue.push({ sender: this, data: m });
        if (!SYSTEM.msgs.isWaiting) {
          SYSTEM.msgs.isWaiting = true;
          setTimeout(function () {
@@ -313,12 +329,14 @@ const SYSTEM = {
 
    // Should be like send(msg)
    reply: function (msg) {
-     return SYSTEM.msgs.isBrowser ? postMessage(msg) : process.send(msg) ;
+     const m = SYSTEM.msgs.symbolize(msg, false);
+     return SYSTEM.msgs.isBrowser ? postMessage(m) : process.send(m) ;
    },
 
    // Should be like send(thread, msg)
    send: function (thread, msg) {
-     SYSTEM.msgs.isBrowser ? thread.thread.postMessage(msg) : thread.thread.send(msg);
+     const m = SYSTEM.msgs.symbolize(msg, false);
+     SYSTEM.msgs.isBrowser ? thread.thread.postMessage(m) : thread.thread.send(m);
    }
 
    /********************************
