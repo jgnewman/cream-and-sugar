@@ -33,8 +33,19 @@ function compileArgs(patterns) {
         pattern[1] !== '_' && acc.push(`const ${pattern[1]} = args[${index}];`);
         break;
       case 'Cons':
-        acc.push(`const ${pattern[1].match(/^\[(.+)\|/)[1]} = args[${index}][0];`);
-        acc.push(`const ${pattern[1].match(/\|([^\]]+)\]/)[1]} = args[${index}].slice(1);`);
+        const headMatch = pattern[1].match(/^\[(.+)\|/)[1];
+        const tailMatch = pattern[1].match(/\|([^\]]+)\]/)[1];
+        headMatch !== '_' && acc.push(`const ${headMatch} = args[${index}][0];`);
+        tailMatch !== '_' && acc.push(`const ${tailMatch} = args[${index}].slice(1);`);
+        break;
+      case 'Arr':
+        // This will come back to haunt us if the user tries to match against a string with a comma or space in it.
+        const items = pattern[1].replace(/^\[|\s+|\]$/g, '').split(',');
+        items.forEach((item, i) => {
+          if (item && item !== '_' && /^[\$_A-z][\$_A-z0-9]*$/.test(item)) {
+            acc.push(`const ${item} = args[${index}][${i}];`);
+          }
+        });
         break;
     }
   });

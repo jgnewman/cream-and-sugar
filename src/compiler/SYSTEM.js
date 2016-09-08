@@ -12,6 +12,7 @@ const SYSTEM = {
 
   // SYSTEM.eql([1, 2, 3], [1, 2, 3]) -> true
   eql: function (a, b) {
+    if (a === SYSTEM || b === SYSTEM) return true; // <- Hack to force a match
     if (a === b || (typeof a === 'number' && typeof b === 'number' && isNaN(a) && isNaN(b))) return true;
     if (typeof a !== typeof b) return false;
     if (typeof a === 'object') {
@@ -26,18 +27,30 @@ const SYSTEM = {
   // SYSTEM.match(args, [['Identifier', 'x']])
   match: function (args, pattern) {
     return args.every(function (arg, index) {
+      if (!pattern[index]) return false;
       var matchType = pattern[index][0];
       var matchVal  = pattern[index][1];
       switch (matchType) {
         case 'Identifier': return true;
         case 'Number': return typeof arg === 'number' && arg === parseFloat(matchVal);
-        case 'Arr': return Array.isArray(arg) && this.eql(arg, JSON.parse(matchVal));
         case 'Cons': return Array.isArray(arg);
+        case 'Arr':
+          if (Array.isArray(arg)) {
+            const eqlTestStr = matchVal.replace(/^\[|\s+|\]$/g, '');
+            const eqlTest = !eqlTestStr.length ? [] : eqlTestStr.split(',').map(each => {
+              if (each === 'null') return null;
+              if (each === 'undefined') return undefined;
+              if (each === 'NaN') return NaN;
+              return /^[\$_A-z][\$_A-z0-9]*$/.test(each) ? SYSTEM : JSON.parse(each);
+            });
+            return this.eql(arg, eqlTest);
+          }
+          return false;
         case 'Tuple': throw new Error(`Can't currently match against tuple forms.`);
         case 'Object': throw new Error(`Can't currently match against object forms.`);
         default: return false;
       }
-    });
+    }.bind(this));
   },
 
   // SYSTEM.args(arguments) -> [...arguments]
@@ -63,7 +76,7 @@ const SYSTEM = {
   },
 
   // SYSTEM.typeof('hello') -> 'string'
-  typeof: function (val) {
+  type: function (val) {
     const type = typeof val;
     switch (type) {
       case 'number': return isNaN(val) ? 'nan' : type;
@@ -71,7 +84,7 @@ const SYSTEM = {
                               Array.isArray(val) ? 'array' :
                                 val instanceof Date ? 'date' :
                                   val instanceof RegExp ? 'regexp':
-                                    val instanceof HTMLElement ? 'htmlelement' :
+                                    (typeof HTMLElement !== 'undefined' && val instanceof HTMLElement) ? 'htmlelement' :
                                       type;
       default: return type;
     }
@@ -133,7 +146,9 @@ const SYSTEM = {
   // SYSTEM.update(['a', 'b', 'c'], 1, 'x') -> ['a', 'x', 'c']
   update: function (collection, keyOrIndex, val) {
     if (Array.isArray(collection)) {
-      return collection.slice()[keyOrIndex] = val;
+      const newSlice = collection.slice();
+      newSlice[keyOrIndex] = val;
+      return newSlice;
     } else if (typeof HTMLElement !== 'undefined' && collection instanceof HTMLElement) {
       const clone = collection.cloneNode();
       clone[keyOrIndex] = val;
@@ -199,22 +214,6 @@ const SYSTEM = {
     return document.querySelectorAll(selector);
   },
 
-  // Should only be used on objects that you know for sure only contain
-  // functions, objects, and arrays, deeply nested.
-  stringify: function (obj) {
-    if (typeof obj === 'function') {
-      return obj.toString();
-    } else if (typeof obj === 'string') {
-      return obj;
-    } else if (obj === true || obj === false) {
-      return obj;
-    } else if (Array.isArray(obj)) {
-      return '[' + obj.map(function (item) { return SYSTEM.stringify(item) }).join(', ') + ']';
-    } else {
-      return '{' + Object.keys(obj).map(function (key) { return key + ':' + SYSTEM.stringify(obj[key]) }).join(',\n') + '}';
-    }
-  },
-
   /********************************
    * Begin message passing stuff
    ********************************/
@@ -226,6 +225,22 @@ const SYSTEM = {
      queue: [],
      handlers: [],
      isWaiting: false,
+
+     // Should only be used on objects that you know for sure only contain
+     // functions, objects, and arrays, deeply nested.
+     stringify: function (obj) {
+       if (typeof obj === 'function') {
+         return obj.toString();
+       } else if (typeof obj === 'string') {
+         return obj;
+       } else if (obj === true || obj === false) {
+         return obj;
+       } else if (Array.isArray(obj)) {
+         return '[' + obj.map(function (item) { return SYSTEM.msgs.stringify(item) }).join(', ') + ']';
+       } else {
+         return '{' + Object.keys(obj).map(function (key) { return key + ':' + SYSTEM.msgs.stringify(obj[key]) }).join(',\n') + '}';
+       }
+     },
 
      onMsg: function (msg) {
        SYSTEM.msgs.isBrowser && (msg = msg.data);
@@ -250,7 +265,7 @@ const SYSTEM = {
 
      Thread: function(fnBody) {
        const isBrowser = typeof window !== 'undefined';
-       const body = 'const SYSTEM = ' + SYSTEM.stringify(SYSTEM) + ';\n' +
+       const body = 'const SYSTEM = ' + SYSTEM.msgs.stringify(SYSTEM) + ';\n' +
                     'SYSTEM.msgs.isChild = true;\n' +
                     'SYSTEM.msgs.handlers = [];\n' +
                     (isBrowser ? 'this.onmessage = SYSTEM.msgs.onMsg;\n'

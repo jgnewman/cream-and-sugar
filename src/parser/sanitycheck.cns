@@ -144,3 +144,8 @@ factorial = match
   n when n lte 1 -> 1
   n -> n * factorial n - 1
 end
+
+def
+  foo x -> x
+  foo [1, x, 2] -> x
+end

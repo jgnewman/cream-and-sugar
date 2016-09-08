@@ -78,7 +78,7 @@ function compileBody(body, delim) {
 // Official list of exposed system functions
 function getExposedFns() {
   return [
-    'elem', 'throw', 'create', 'typeof', 'instanceof',
+    'elem', 'throw', 'create', 'type', 'instanceof',
     'head', 'tail', 'random', 'lead', 'last', 'update',
     'remove', 'eql', 'do', 'dom', 'domArray', 'spawn',
     'receive', 'kill', 'reply', 'send'
@@ -98,7 +98,7 @@ function getReservedWords() {
     'cond', 'for', 'in', 'when', 'var', 'const', 'let', 'while',
     'switch', 'function', 'with', 'else', 'instanceof', 'super',
     'enum', 'break', 'extends', 'catch', 'new', 'class',
-    'try', 'continue', 'typeof', 'delete', 'return',
+    'try', 'continue', 'type', 'delete', 'return',
     'static', 'SYSTEM'
   ];
 }
