@@ -1,4 +1,4 @@
-export default {
+const SYSTEM = {
 
   // SYSTEM.qualify(x === 4, function () { return doSomething() })
   qualify: function (condition, callback, elseCase) {
@@ -166,7 +166,7 @@ export default {
 
   // SYSTEM.createElement('div', {className: 'foo'}, [SYSTEM.createElement(...)])
   createElement: function (type, attrs, body) {
-    let react;
+    var react;
     const a = attrs || {}, b = body || [];
     if (typeof React !== 'undefined') react = React;
     if (!react && typeof require !== 'undefined') react = require('React');
@@ -184,7 +184,7 @@ export default {
   aritize: function (fun, arity) {
     return function () {
       if (arguments.length === arity) {
-        return fun(...arguments);
+        return fun.apply(undefined, arguments);
       } else {
         throw new Error('Function ' + (fun.name || '') + ' called with wrong arity. Expected ' + arity + ' got ' + arguments.length + '.');
       }
@@ -197,5 +197,123 @@ export default {
 
   domArray: function (selector) {
     return document.querySelectorAll(selector);
-  }
+  },
+
+  // Should only be used on objects that you know for sure only contain
+  // functions, objects, and arrays, deeply nested.
+  stringify: function (obj) {
+    if (typeof obj === 'function') {
+      return obj.toString();
+    } else if (typeof obj === 'string') {
+      return obj;
+    } else if (obj === true || obj === false) {
+      return obj;
+    } else if (Array.isArray(obj)) {
+      return '[' + obj.map(function (item) { return SYSTEM.stringify(item) }).join(', ') + ']';
+    } else {
+      return '{' + Object.keys(obj).map(function (key) { return key + ':' + SYSTEM.stringify(obj[key]) }).join(',\n') + '}';
+    }
+  },
+
+  /********************************
+   * Begin message passing stuff
+   ********************************/
+
+   // A pack of utils for handling message passing.
+   msgs: {
+     isBrowser: typeof navigator !== 'undefined',
+     isChild: false,
+     queue: [],
+     handlers: [],
+     isWaiting: false,
+
+     onMsg: function (msg) {
+       SYSTEM.msgs.isBrowser && (msg = msg.data);
+       SYSTEM.msgs.queue.push({ sender: this, data: msg });
+       if (!SYSTEM.msgs.isWaiting) {
+         SYSTEM.msgs.isWaiting = true;
+         setTimeout(function () {
+           SYSTEM.msgs.runQueue();
+         }, 0);
+       }
+     },
+
+     runQueue: function () {
+       this.queue.forEach(function (msgObj) {
+         this.handlers.forEach(function (handler) {
+           handler(msgObj);
+         });
+       }.bind(this));
+       this.queue = [];
+       this.isWaiting = false;
+     },
+
+     Thread: function(fnBody) {
+       const isBrowser = typeof window !== 'undefined';
+       const body = 'const SYSTEM = ' + SYSTEM.stringify(SYSTEM) + ';\n' +
+                    'SYSTEM.msgs.isChild = true;\n' +
+                    'SYSTEM.msgs.handlers = [];\n' +
+                    (isBrowser ? 'this.onmessage = SYSTEM.msgs.onMsg;\n'
+                               : 'process.on("message", SYSTEM.msgs.onMsg);\n') +
+                    fnBody;
+       this.isBrowser  = isBrowser;
+       this.thread     = isBrowser
+                       ? new Worker(window.URL.createObjectURL(
+                           new Blob([body], {type: 'application/javascript'})
+                         ))
+                       : require('child_process').fork(null, [], {
+                           execPath: 'node',
+                           execArgv: ['-e', body]
+                         })
+                       ;
+       isBrowser ? (this.thread.onmessage = SYSTEM.msgs.onMsg)
+                 : this.thread.on('message', SYSTEM.msgs.onMsg);
+       !isBrowser && this.thread.on('exit', function () { console.log('process exited') })
+       return this;
+     }
+   },
+
+   // Create a new process exclusively from a function body.
+   // Example:
+   // createProcess ->
+   //   spawn fn ->
+   //     ...process body...
+   //   end
+   // end
+   // export { createProcess/0 }
+   spawn: function (fn) {
+     const wrap = /^[^\{]+\{|\}(\.bind\(.*\))?$/g;
+     return new SYSTEM.msgs.Thread(fn.toString().replace(wrap, '').trim());
+   },
+
+   // Specifies what to do when a message comes in
+   receive: function (fn) {
+     SYSTEM.msgs.handlers.push(fn);
+   },
+
+   // Kills a process
+   kill: function (thread) {
+     thread.isBrowser ? thread.thread.terminate() : thread.thread.kill('SIGINT') ;
+   },
+
+   // Should be like send(msg)
+   reply: function (msg) {
+     return SYSTEM.msgs.isBrowser ? postMessage(msg) : process.send(msg) ;
+   },
+
+   // Should be like send(thread, msg)
+   send: function (thread, msg) {
+     SYSTEM.msgs.isBrowser ? thread.thread.postMessage(msg) : thread.thread.send(msg);
+   }
+
+   /********************************
+    * End message passing stuff
+    ********************************/
 };
+
+
+
+
+
+// export default SYSTEM;
+module.exports = SYSTEM;

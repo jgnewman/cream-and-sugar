@@ -80,7 +80,14 @@ function getExposedFns() {
   return [
     'elem', 'throw', 'create', 'typeof', 'instanceof',
     'head', 'tail', 'random', 'lead', 'last', 'update',
-    'remove', 'eql', 'do', 'dom', 'domArray'
+    'remove', 'eql', 'do', 'dom', 'domArray', 'spawn',
+    'receive', 'kill', 'reply', 'send'
+  ];
+}
+
+function getMsgPassingFns() {
+  return [
+    'spawn', 'receive', 'kill', 'reply', 'send'
   ];
 }
 
@@ -96,4 +103,13 @@ function getReservedWords() {
   ];
 }
 
-export { parser, nodes, die, compile, compileBody, getExposedFns, getReservedWords };
+export {
+  parser,
+  nodes,
+  die,
+  compile,
+  compileBody,
+  getExposedFns,
+  getMsgPassingFns,
+  getReservedWords
+};
