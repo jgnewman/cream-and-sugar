@@ -29,7 +29,7 @@ gulp.task('genparser', next => {
 });
 
 gulp.task('sanitycheck', next => {
-  compile('./src/parser/sanitycheck.cns', null, {log: true});
+  compile('./src/parser/sanitycheck.cns', null, {log: true, finalize: true});
   gutil.log('Sanity check passed. Consider running `gulp test` as well.');
   next();
 });
