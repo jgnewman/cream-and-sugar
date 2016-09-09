@@ -62,6 +62,7 @@ true|false|null|undefined            return "SPECIALVAL";
 "="                                  return "=";
 "."                                  return ".";
 "/"                                  return "/";
+"||"                                 return "||";
 
 \+|\-|\*                             return "OPERATOR";
 
@@ -123,6 +124,7 @@ SourceElement
   | Logic
   | Assignment
   | Cons
+  | BackCons
   | Opposite
   | Arr
   | Obj
@@ -387,12 +389,23 @@ Assignment
     {
       $$ = new AssignmentNode($1, $3, createSourceLocation(null, @1, @3));
     }
+  | BackCons "=" CommonElement
+    {
+      $$ = new AssignmentNode($1, $3, createSourceLocation(null, @1, @3));
+    }
   ;
 
 Cons
   : "[" CommonElement "|" CommonElement "]"
     {
       $$ = new ConsNode($2, $4, createSourceLocation(null, @1, @5));
+    }
+  ;
+
+BackCons
+  : "[" CommonElement "||" CommonElement "]"
+    {
+      $$ = new BackConsNode($4, $2, createSourceLocation(null, @1, @5));
     }
   ;
 
@@ -820,6 +833,15 @@ function ConsNode(toAdd, base, loc) {
   this.shared = shared;
 }
 
+function BackConsNode(toAdd, base, loc) {
+  this.src = '[' + base.src + '||' + toAdd.src + ']';
+  this.type = 'BackCons';
+  this.toAdd = toAdd;
+  this.base = base;
+  this.loc = loc;
+  this.shared = shared;
+}
+
 function OppositeNode(value, loc) {
   this.type = 'Opposite';
   this.value = value;
@@ -980,6 +1002,7 @@ n.OperationNode = OperationNode;
 n.LogicNode = LogicNode;
 n.AssignmentNode = AssignmentNode;
 n.ConsNode = ConsNode;
+n.BackConsNode = BackConsNode;
 n.OppositeNode = OppositeNode;
 n.ListNode = ListNode;
 n.ArrNode = ArrNode;

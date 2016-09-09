@@ -31,6 +31,7 @@ import './nodes/Html';
 import './nodes/List';
 import './nodes/Regexp';
 import './nodes/Wrap';
+import './nodes/BackCons';
 
 
 function attempt(fn, callback) {

@@ -8,4 +8,9 @@ describe('Cons', () => {
     assert.equal("[hd].concat(tl)", compileCode(toCompile));
   });
 
+  it('should compile a back cons form into a function call', () => {
+    const toCompile = '[ld || lst]';
+    assert.equal("ld.concat([lst])", compileCode(toCompile));
+  });
+
 });

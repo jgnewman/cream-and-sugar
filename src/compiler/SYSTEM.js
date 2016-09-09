@@ -33,7 +33,7 @@ const SYSTEM = {
       switch (matchType) {
         case 'Identifier': return true;
         case 'Number': return typeof arg === 'number' && arg === parseFloat(matchVal);
-        case 'Cons': return Array.isArray(arg);
+        case 'Cons': case 'BackCons': return Array.isArray(arg);
         case 'Arr':
           if (Array.isArray(arg)) {
             const eqlTestStr = matchVal.replace(/^\[|\s+|\]$/g, '');
@@ -260,7 +260,7 @@ const SYSTEM = {
      onMsg: function (msg) {
        SYSTEM.msgs.isBrowser && (msg = msg.data);
        const m = SYSTEM.msgs.symbolize(msg, true);
-       SYSTEM.msgs.queue.push({ sender: this, data: m });
+       SYSTEM.msgs.queue.push(m);
        if (!SYSTEM.msgs.isWaiting) {
          SYSTEM.msgs.isWaiting = true;
          setTimeout(function () {

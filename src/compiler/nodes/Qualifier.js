@@ -6,7 +6,7 @@ import { compile, nodes } from '../utils';
  */
 compile(nodes.QualifierNode, function () {
   const conditionBase = this.condition.compile(true);
-  // Make the contition negative if the keyword was unless
+  // Make the contition negative if the keyword was "unless"
   const condition = this.keyword === 'if' ? conditionBase : `!(${conditionBase})` ;
   const elseCase = !this.elseCase ? '' : `, function () {
     return ${this.elseCase.compile(true)};

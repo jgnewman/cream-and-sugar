@@ -149,3 +149,25 @@ def
   foo x -> x
   foo [1, x, 2] -> x
 end
+
+'
+single quote
+'
+'
+single\nquote
+'
+"
+double quote
+"
+`
+back tick
+`
+
+[1|[2, 3, 4]]
+[[1, 2, 3]||4]
+
+def
+  foo [ld || lst] ->
+    doStuff ld, lst
+  end
+end
