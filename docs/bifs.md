@@ -123,7 +123,7 @@ instanceof(4, Object) #=> false
 Terminates the process. Returns `undefined`.
 
 ```ruby
-process = spawn(fn -> console.log("I'm alive!") end)
+process = spawn(fn -> console.log("I'm alive!"))
 
 kill(process)
 ```
@@ -230,7 +230,7 @@ send(process, 'hello')
 Creates a new operating system process out of `fun`.
 
 ```ruby
-process = spawn fn -> console.log("I'm alive!") end
+process = spawn fn -> console.log("I'm alive!")
 ```
 
 ### `tail(array)`
@@ -284,9 +284,9 @@ type(undefined) #=> 'undefined'
 
 type(~ok) #=> 'atom'
 
-type(spawn(fn -> 'hello' end)) #=> 'process'
+type(spawn(fn -> 'hello')) #=> 'process'
 
-type(fn -> 'hello' end) #=> 'function'
+type(fn -> 'hello') #=> 'function'
 
 type({foo: 'bar'}) #=> 'object'
 ```
