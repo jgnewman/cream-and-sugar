@@ -96,13 +96,13 @@ describe('SYSTEM Library', () => {
   });
 
   it('should update a collection to a new collection', () => {
-    assert.deepEqual(SYSTEM.update([1, 2, 3], 1, 4), [1, 4, 3]);
-    assert.deepEqual(SYSTEM.update({foo: 'bar'}, 'foo', 'baz'), {foo: 'baz'});
+    assert.deepEqual(SYSTEM.update(1, 4, [1, 2, 3]), [1, 4, 3]);
+    assert.deepEqual(SYSTEM.update('foo', 'baz', {foo: 'bar'}), {foo: 'baz'});
   });
 
   it('should remove an item from a collection', () => {
-    assert.deepEqual(SYSTEM.remove([1, 2, 3], 1), [1, 3]);
-    assert.deepEqual(SYSTEM.remove({foo: 'bar', baz: 'quux'}, 'foo'), {baz: 'quux'});
+    assert.deepEqual(SYSTEM.remove(1, [1, 2, 3]), [1, 3]);
+    assert.deepEqual(SYSTEM.remove('foo', {foo: 'bar', baz: 'quux'}), {baz: 'quux'});
   });
 
   it('should guard against bad arities', () => {

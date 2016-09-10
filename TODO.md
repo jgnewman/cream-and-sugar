@@ -1,10 +1,11 @@
+- stuff(err) incase stuff() throws err?
 - add more pattern match techniques?
   - to consider: {a, b}, [a, b, {c, d}]
 - docs
-  - bifs
   - functions
   - iteration
   - jsx
   - Modules
   - Operations
+  - try/catch (should this be revised?)
 - is there a way to speed up thread generation and maybe reduce thread footprints?

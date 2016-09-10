@@ -14,6 +14,11 @@ describe('Assignments', () => {
     assert.equal('const {h, t} = SYSTEM.assnCons([1, 2, 3], "h", "t")', compileCode(toCompile));
   });
 
+  it('should compile a back cons destructure', () => {
+    const toCompile = '[ld||lst] = [1, 2, 3]';
+    assert.equal('const {ld, lst} = SYSTEM.assnBackCons([1, 2, 3], "ld", "lst")', compileCode(toCompile));
+  });
+
   it('should compile a single item tuple destructure', () => {
     const toCompile = '{a} = foo';
     assert.equal(`const ${toCompile}`, compileCode(toCompile));

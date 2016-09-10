@@ -262,10 +262,15 @@ end
 # Try/catch
 --------
 
-foo x ->
-  try fn -> x()
-  catch fn err -> y()
+try stuff() catch err: stuff(err) end
+
+try
+  stuff()
+catch err:
+  stuff(err)
 end
+
+stuff(err) incase stuff() throws err
 
 
 # Import/export

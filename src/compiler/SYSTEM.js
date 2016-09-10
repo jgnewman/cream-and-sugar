@@ -79,13 +79,18 @@ const SYSTEM = {
   type: function (val) {
     const type = typeof val;
     switch (type) {
+      case 'symbol': return 'atom';
       case 'number': return isNaN(val) ? 'nan' : type;
       case 'object': return val === null ? 'null' :
                               Array.isArray(val) ? 'array' :
                                 val instanceof Date ? 'date' :
                                   val instanceof RegExp ? 'regexp':
                                     (typeof HTMLElement !== 'undefined' && val instanceof HTMLElement) ? 'htmlelement' :
-                                      type;
+                                      (
+                                        (typeof Worker !== 'undefined' && val instanceof Worker) ||
+                                        (val.constructor.name === 'ChildProcess' && typeof val.pid === 'number')
+                                      )
+                                      ? 'process' : type;
       default: return type;
     }
   },
@@ -121,6 +126,14 @@ const SYSTEM = {
     return out;
   },
 
+  // SYSTEM.assnCons([1, 2, 3], 'hd', 'tl')
+  assnBackCons: function (list, ldName, lstName) {
+    const out = {};
+    out[ldName] = list.slice(0, list.length - 1);
+    out[lstName] = list[list.length - 1];
+    return out;
+  },
+
   // SYSTEM.random([1, 2, 3, 4]) -> 3
   random: function (list) {
     return list[Math.floor(Math.random()*list.length)];
@@ -142,9 +155,9 @@ const SYSTEM = {
     return args.length ? fn.apply(null, args) : fn();
   },
 
-  // SYSTEM.update({name: 'bill'}, 'name', 'john') -> {name: 'john'}
-  // SYSTEM.update(['a', 'b', 'c'], 1, 'x') -> ['a', 'x', 'c']
-  update: function (collection, keyOrIndex, val) {
+  // SYSTEM.update('name', 'john', {name: 'bill'}) -> {name: 'john'}
+  // SYSTEM.update(1, 'x', ['a', 'b', 'c']) -> ['a', 'x', 'c']
+  update: function (keyOrIndex, val, collection) {
     if (Array.isArray(collection)) {
       const newSlice = collection.slice();
       newSlice[keyOrIndex] = val;
@@ -160,9 +173,9 @@ const SYSTEM = {
     }
   },
 
-  // SYSTEM.remove(['a', 'b', 'c'], 1) -> ['a', 'b']
-  // SYSTEM.remove({name: 'john', age: 33}, 'name') -> {age: 33}
-  remove: function (collection, keyOrIndex) {
+  // SYSTEM.remove(1, ['a', 'b', 'c']) -> ['a', 'b']
+  // SYSTEM.remove('name', {name: 'john', age: 33}) -> {age: 33}
+  remove: function (keyOrIndex, collection) {
     if (Array.isArray(collection)) {
       const splicer = collection.slice();
       splicer.splice(keyOrIndex, 1);
@@ -211,7 +224,7 @@ const SYSTEM = {
   },
 
   domArray: function (selector) {
-    return document.querySelectorAll(selector);
+    return Array.prototype.slice.call(document.querySelectorAll(selector));
   },
 
   /********************************
@@ -324,13 +337,13 @@ const SYSTEM = {
 
    // Kills a process
    kill: function (thread) {
-     thread.isBrowser ? thread.thread.terminate() : thread.thread.kill('SIGINT') ;
+     thread.isBrowser ? thread.thread.terminate() : thread.thread.kill('SIGINT');
    },
 
    // Should be like send(msg)
    reply: function (msg) {
      const m = SYSTEM.msgs.symbolize(msg, false);
-     return SYSTEM.msgs.isBrowser ? postMessage(m) : process.send(m) ;
+     SYSTEM.msgs.isBrowser ? postMessage(m) : process.send(m) ;
    },
 
    // Should be like send(thread, msg)

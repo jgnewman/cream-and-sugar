@@ -5,48 +5,32 @@ import { compileCode } from  '../src/compiler/compiler';
 describe('Try/Catch', () => {
 
   it('should compile a try/catch statement', () => {
-    const toCompile = `try fn -> dostuff()
-    catch fn err -> doOtherStuff()`;
+    const toCompile = `try dostuff() catch err: doOtherStuff() end`;
     const expected = nlToSpace(`(function () {
       try {
-        return (function () {
-          const args = SYSTEM.args(arguments);
-          return dostuff();
-        }());
-      } catch (__err__) {
-        return (function () {
-          const args = SYSTEM.args(arguments);
-          const err = args[0];
-          return doOtherStuff();
-        }(__err__));
+        return dostuff();
+      } catch (err) {
+        return doOtherStuff();
       }
     }.bind(this)())`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
   it('should compile a try/catch statement with complex function bodies', () => {
-    const toCompile = `try fn ->
+    const toCompile = `try
       dostuff()
       doMoreStuff()
-    end
-    catch fn err ->
+    catch err:
       doOtherStuff()
       doMoreOtherStuff()
     end`;
     const expected = nlToSpace(`(function () {
       try {
-        return (function () {
-          const args = SYSTEM.args(arguments);
-          dostuff();
-          return doMoreStuff();
-        }());
-      } catch (__err__) {
-        return (function () {
-          const args = SYSTEM.args(arguments);
-          const err = args[0];
-          doOtherStuff();
-          return doMoreOtherStuff();
-        }(__err__));
+        dostuff();
+        return doMoreStuff();
+      } catch (err) {
+        doOtherStuff();
+        return doMoreOtherStuff();
       }
     }.bind(this)())`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));

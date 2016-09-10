@@ -34,7 +34,7 @@ In CnS, all processes are spawned from functions. Let's take a look at a basic p
 up ->
 
   # Create and return a new process from a function.
-  spawn fn() ->
+  spawn fn ->
 
     # When we receive a message, pattern match it to figure out what to do.
     receive match
@@ -89,3 +89,5 @@ send process, [~factorial, 50]
 Between these two modules we can see all 4 tools in action. Within `factorial-process.cns` we spawn a new process from a function. Within that process, we pattern match against received messages and also define a factorial function. By convention, we expect that each message coming in will be a 2-item array where the first item is an atom denoting what task should be performed. If we get the `~factorial` atom, we'll run the factorial function on the second part of the message and use `reply` to send it back to the parent thread. If we get something we didn't expect we'll send back an error message.
 
 Within our main process module, we'll import our process creation function and execute it. Next we'll define what to do when our main process receives messages from other processes and then kick things off by sending a message to our child process. If we get back a message marked as `~ok`, we'll do something else with the second part of the message. If we get a message marked as `~err`, it means something went wrong. We'll kill the process and throw an error.
+
+[<- Back to the overview](overview.md)

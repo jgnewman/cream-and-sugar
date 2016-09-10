@@ -8,6 +8,7 @@
 %%
 
 /* Comments */
+"###"(.|\r|\n)*?"###"                return "NEWLINE";
 // \#.*($|\r\n|\r|\n)                   return "COMMENT"
 \#.*($|\r\n|\r|\n)                   return "NEWLINE";
 
@@ -672,10 +673,15 @@ Polymorph
     }
   ;
 
+BlockBody
+  : CommonElement { $$ = [$1]; }
+  | ProgramBody   { $$ = $1; }
+  ;
+
 TryCatch
-  : TRY FunctionSet CATCH FunctionSet
+  : TRY BlockBody CATCH Identifier ":" BlockBody END
     {
-      $$ = new TryCatchNode($2, $4, createSourceLocation(null, @1, @4));
+      $$ = new TryCatchNode($2, $4, $6, createSourceLocation(null, @1, @7));
     }
   ;
 
@@ -941,9 +947,10 @@ function PolymorphNode(fns, isNamed, loc) {
   this.shared = shared;
 }
 
-function TryCatchNode(attempt, fallback, loc) {
+function TryCatchNode(attempt, errName, fallback, loc) {
   this.type = 'TryCatch';
   this.attempt = attempt;
+  this.errName = errName;
   this.fallback = fallback;
   this.loc = loc;
   this.shared = shared;

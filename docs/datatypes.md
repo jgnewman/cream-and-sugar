@@ -91,4 +91,10 @@ CnS also gives you a few extra native functions for working with arrays, includi
 - `lead` which creates a new list containing all items of an original list except the last one,
 - `last` which retrieves the last item in a list.
 
-Check out [Built-In Functions]('./bifs.md') for more info on these.
+Check out [Built-In Functions](bifs.md) for more info on these.
+
+## Assessing Types
+
+CnS abandons JavaScript's confusing `typeof` expression in favor of a built-in function called `type`. This function will provide more reasonable results such as "regexp" if handed a regular expression or "date" if handed a Date object. For more information on what to expect from the `type` function, check out [Built-In Functions](bifs.md).
+
+[<- Back to the overview](overview.md)

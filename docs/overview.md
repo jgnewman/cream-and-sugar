@@ -12,7 +12,7 @@ If this sounds interesting to you, read on. Here are all the docs we've got at t
 ## Table of Contents
 
 - [Data Types](datatypes.md)
-- [Infix Operations](operations.md)
+- [Logic & Infix Operations](operations.md)
 - [Functions](functions.md)
 - [Modules](modules.md)
 - [Conditions](conditions.md)

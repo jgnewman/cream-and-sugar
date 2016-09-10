@@ -163,6 +163,14 @@ double quote
 back tick
 `
 
+# single line comment
+
+###
+multi-line Comments
+are
+really cool
+###
+
 [1|[2, 3, 4]]
 [[1, 2, 3]||4]
 
@@ -170,4 +178,12 @@ def
   foo [ld || lst] ->
     doStuff ld, lst
   end
+end
+
+do fn -> 2 + 2
+
+try
+  doStuff()
+catch err:
+  moreStuff()
 end
