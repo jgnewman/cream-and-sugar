@@ -28,7 +28,7 @@ Invokes `fun` and returns the result. If `argsArray` is provided, passes those a
 ```ruby
 do fn -> 2 + 2 #=> 4
 
-do(fn(x) -> x + 2 end, 2) #=> 4
+do(fn(x) -> x + 2 end, [2]) #=> 4
 ```
 
 ### `dom(selector)`
