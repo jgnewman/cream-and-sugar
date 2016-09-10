@@ -36,4 +36,40 @@ describe('Try/Catch', () => {
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
+  it('should compile a try/catch shortcut', () => {
+    const toCompile = `handle(err) incase something() throws err`;
+    const expected = nlToSpace(`(function () {
+      try {
+        return something();
+      } catch (err) {
+        return handle(err);
+      }
+    }.bind(this)())`);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+  });
+
+  it('should compile a try/catch shortcut with an operation', () => {
+    const toCompile = `handle(err) incase 2 + 2 throws err`;
+    const expected = nlToSpace(`(function () {
+      try {
+        return 2 + 2;
+      } catch (err) {
+        return handle(err);
+      }
+    }.bind(this)())`);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+  });
+
+  it('should compile a try/catch shortcut without parens', () => {
+    const toCompile = `handle err incase something x throws err`;
+    const expected = nlToSpace(`(function () {
+      try {
+        return something(x);
+      } catch (err) {
+        return handle(err);
+      }
+    }.bind(this)())`);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+  });
+
 });

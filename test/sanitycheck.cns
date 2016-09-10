@@ -187,3 +187,5 @@ try
 catch err:
   moreStuff()
 end
+
+myVar = doStuff(err) incase otherStuff() throws err

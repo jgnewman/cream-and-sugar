@@ -24,6 +24,8 @@
 "args"                               return "ARGS";
 "if"                                 return "QUALOPERATOR";
 "unless"                             return "QUALOPERATOR";
+"incase"                             return "INCASE";
+"throws"                             return "THROWS";
 "else"                               return "ELSE";
 "no"                                 return "NO";
 "cond"                               return "COND";
@@ -682,6 +684,14 @@ TryCatch
   : TRY BlockBody CATCH Identifier ":" BlockBody END
     {
       $$ = new TryCatchNode($2, $4, $6, createSourceLocation(null, @1, @7));
+    }
+  | FunctionCall INCASE CommonElement THROWS Identifier
+    {
+      $$ = new TryCatchNode([$3], $5, [$1], createSourceLocation(null, @1, @5));
+    }
+  | Operation INCASE CommonElement THROWS Identifier
+    {
+      $$ = new TryCatchNode([$3], $5, [$1], createSourceLocation(null, @1, @5));
     }
   ;
 
