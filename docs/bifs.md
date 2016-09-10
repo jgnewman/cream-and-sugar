@@ -5,7 +5,7 @@ CnS comes packaged with a few useful functions right off the bat. You don't need
 Following is a list of all built-in functions as well as descriptions of how to use them and what you can expect them to return.
 
 
-#### `create(klass [, ...constructorArgs])`
+### `create(klass [, ...constructorArgs])`
 
 - `klass {Function}`: A class constructor.
 - `constructorArgs {Any}`: Any arguments to be passed to the class constructor.
@@ -18,7 +18,7 @@ create(Date) #=> Fri Sep 09 2016 17:00:43 GMT-0400 (EDT)
 create(Error, "This is error text.") #=> Error: This is error text(…)
 ```
 
-#### `do(fun [, argsArray])`
+### `do(fun [, argsArray])`
 
 - `fun {Function}`: Any type of function.
 - `argsArray {Aray}`: Optional. An array of arguments to be passed to the function.
@@ -31,7 +31,7 @@ do fn -> 2 + 2 #=> 4
 do(fn(x) -> x + 2 end, 2) #=> 4
 ```
 
-#### `dom(selector)`
+### `dom(selector)`
 
 - `selector {String}`: Identifies the criteria for selecting a DOM element.
 
@@ -43,7 +43,7 @@ dom('#my-div') #=> <HTMLElement>
 dom('div') #=> <HTMLElement>
 ```
 
-#### `domArray(selector)`
+### `domArray(selector)`
 
 - `selector {String}`: Identifies the criteria for selecting DOM elements.
 
@@ -55,7 +55,7 @@ domArray('#my-div') #=> [<HTMLElement>]
 dom('div') #=> [<HTMLElement>, <HTMLElement>, <HTMLElement>]
 ```
 
-#### `elem(key, collection)`
+### `elem(key, collection)`
 
 - `key {String|Number|Atom}`: An object key or array index.
 - `collection {Any Object-like type}`: Any kind of JavaScript collection.
@@ -70,7 +70,7 @@ elem('foo', {foo: 'bar', baz: 'quux'}) #=> 'bar'
 elem(~foo, {~foo: 'bar'}) #=> 'bar'
 ```
 
-#### `eql(a, b)`
+### `eql(a, b)`
 
 - `a {Any}`: Any type of data.
 - `b {Any}`: Any type of data.
@@ -89,7 +89,7 @@ eql([1, 2, 3], [2, 3, 1]) #=> false
 eql([1, 2, {foo: 'bar'}], [1, 2, {foo: 'bar'}]) #=> true
 ```
 
-#### `head(array)`
+### `head(array)`
 
 - `array {Array}`: An array.
 
@@ -103,7 +103,7 @@ head([1]) #=> 1
 head([]) #=> undefined
 ```
 
-#### `instanceof(data, constructor)`
+### `instanceof(data, constructor)`
 
 - `data {Any}`: Any type of data.
 - `constructor {Function}`: A class constructor function.
@@ -116,7 +116,7 @@ instanceof({}, Object) #=> true
 instanceof(4, Object) #=> false
 ```
 
-#### `kill(process)`
+### `kill(process)`
 
 - `process {Process}`: A process created using the `spawn` function.
 
@@ -128,7 +128,7 @@ process = spawn(fn -> console.log("I'm alive!") end)
 kill(process)
 ```
 
-#### `last(array)`
+### `last(array)`
 
 - `array {Array}`: An array.
 
@@ -142,7 +142,7 @@ last([1]) #=> 1
 last([]) #=> undefined
 ```
 
-#### `lead(array)`
+### `lead(array)`
 
 - `array {Array}`: An array.
 
@@ -156,7 +156,7 @@ lead([1]) #=> []
 lead([]) #=> []
 ```
 
-#### `random(array)`
+### `random(array)`
 
 - `array {Array}`: An array.
 
@@ -168,7 +168,7 @@ random([1, 2, 3]) #=> 2
 random([1, 2, 3]) #=> 1
 ```
 
-#### `receive(fun)`
+### `receive(fun)`
 
 - `fun {Function}`: Any type of function including a `fn`, a `def` block, or a `match` block.
 
@@ -181,7 +181,7 @@ receive match
 end
 ```
 
-#### `remove(key, collection)`
+### `remove(key, collection)`
 
 - `key {String|Number|Atom}`: An object key or array index.
 - `collection {Any Object-like type}`: Any kind of JavaScript collection.
@@ -194,7 +194,7 @@ remove('foo', {foo: 'bar', baz: 'quux'}) #=> {baz: 'quux'}
 remove(1, ['a', 'b', 'c']) #=> ['a', 'c']
 ```
 
-#### `reply(message)`
+### `reply(message)`
 
 - `message {Any Serializable Data|Atom}`: A message to send to an owner process.
 
@@ -204,7 +204,7 @@ Sends `message` from a child process to an owner process. Returns `undefined`.
 reply([~ok, 'This is my message.'])
 ```
 
-#### `send(process, message)`
+### `send(process, message)`
 
 - `process {Process}`: A process created using the `spawn` function.
 - `message {Any Serializable Data|Atom}`: A message to send to a owner process.
@@ -223,7 +223,7 @@ send(process, 'hello')
 #=> Logs: "I got hello"
 ```
 
-#### `spawn(fun)`
+### `spawn(fun)`
 
 - `fun {Function}`: Any type of function, but normally an anonymous `fn`.
 
@@ -233,7 +233,7 @@ Creates a new operating system process out of `fun`.
 process = spawn fn -> console.log("I'm alive!") end
 ```
 
-#### `tail(array)`
+### `tail(array)`
 
 `array {Array}`: An array.
 
@@ -247,7 +247,7 @@ tail([1]) #=> []
 tail([]) #=> []
 ```
 
-#### `throw(err)`
+### `throw(err)`
 
 - `err {Error}`: Any instance of any kind of error object.
 
@@ -257,7 +257,7 @@ Throws an error.
 throw(create(Error, 'This is an error message'))
 ```
 
-#### `type(data)`
+### `type(data)`
 
 - `data {Any}`: Any data type.
 
@@ -291,7 +291,7 @@ type(fn -> 'hello' end) #=> 'function'
 type({foo: 'bar'}) #=> 'object'
 ```
 
-#### `update(key, value, collection)`
+### `update(key, value, collection)`
 
 - `key {String|Number|Atom}`: An object key or array index.
 - `value {Any}`: Any type of data.
