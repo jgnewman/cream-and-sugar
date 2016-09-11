@@ -47,14 +47,12 @@ Now let's talk about the different ways you can create functions.
 
 ## def ... end
 
-Using `def ... end` creates a named function that translates to with a single, named JavaScript function, no matter how many patterns you include. For example this:
+Using `def ... end` creates a named function that translates to a single, named JavaScript function, no matter how many patterns you include. For example this:
 
 ```ruby
 def
   add(x, y) -> x + y
 end
-
-# 3 lines, 28 chars
 ```
 
 ...turns into the following (simplified) JavaScript function:
@@ -67,8 +65,6 @@ function add(x, y) {
     throw new Error('No pattern matched.');
   }
 }
-
-// 3 lines, 38 chars
 ```
 
 And if we add in a pattern like...
@@ -110,7 +106,7 @@ Also, keep in mind that parentheses are optional when defining functions as well
 
 ```ruby
 def
-  add 2 x -> x + 2
+  add2 x -> x + 2
 end
 
 [1, 2, 3].map add2 #=> [3, 4, 5]
@@ -122,7 +118,7 @@ Before moving on, it should be noted that often times you'll need a function blo
 
 ```ruby
 def
-  add(2, x) ->
+  add2(x) ->
     x + 2
   end
 end
@@ -148,7 +144,7 @@ add(x, y) ->
 end
 ```
 
-This style will literally compile one-to-one to a simple JavaScript function with no extra sugar added:
+This style will literally compile one-to-one to a simple JavaScript function with no extra complexity added:
 
 ```javascript
 function add(x, y) {
@@ -174,7 +170,7 @@ add = fn(x, y) -> x + y
 add(2, 2) #=> 4
 ```
 
-The `fn` keyword keeps our syntax consistent. Whereas in one case, we might say `add(x, y) -> x + y` could be read as "the function add of x and y returns the result of x plus y," we might also say that `add = fn(x, y) -> x + y` could be read as "add is a function of x and y that returns the result of x plus y".
+The `fn` keyword keeps our syntax consistent. Whereas in one case, we might say that `add(x, y) -> x + y` could be read as "the function add of x and y returns the result of x plus y," we might also say that `add = fn(x, y) -> x + y` could be read as "add is a function of x and y that returns the result of x plus y".
 
 If there are no parameters to be passed to an anonymous function, then the parameter list is unnecessary:
 
@@ -191,7 +187,7 @@ One nice feature of Cream & Sugar is that you can actually define pattern matche
 ```ruby
 factorializeList = match
   (0) -> 1
-  (n) -> n * factorial(n - 1)
+  (n) -> n * factorializeList(n - 1)
 end
 
 [3, 4, 5].map(factorializeList) #=> [6, 24, 120]
