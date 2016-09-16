@@ -68,6 +68,7 @@ export function compileCode(str, callback, options) {
   options = options || {};
   //console.log(tree);
   attempt(() => tree.compile(), callback);
+  tree.shared.output = tree.shared.output.replace(/(\;)(\s+\;)+/g, '$1');
   options.finalize && attempt(() => finalize(tree), callback);
   options.log && console.log(tree.shared.output);
   return callback ? callback(undefined, tree.shared.output) : tree.shared.output;

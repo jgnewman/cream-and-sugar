@@ -242,6 +242,26 @@ At some point, we'll end up hitting pattern 2 where our `list` argument is an em
 
 In every other case, we'll be hitting pattern 3 and accumulating values. We use the form `[h|t]` to destructure our `list` argument into two pieces – `h` for the first item in the array and `t` for a new array comprised of all the remaining items. The names `h` and `t` are short for "head" and "tail". We'll recurse with the "tail" array so that eventually we'll run out of items and hit pattern 2. As we do, we'll also pass in the function and a new array created by concatenating our current accumulator with the result of calling `fun` with our "head" item and the length of the accumulator.
 
+When destructuring arguments, you may sometimes want to make use of part of a destructured collection, but not the rest of it. However, in CnS, it is bad practice to name a variable and then never use it. Consider the following:
+
+```ruby
+def
+  recur([]) -> undefined
+  recur([h|t]) -> recur(t)
+end
+```
+
+In this example, we created a function called `recur` that takes an array and calls itself once for every item in that array. In the second pattern, we slice the head off of the array so that the function can be called again with only the tail. The gross part is that we went so far as to name the head of our array `h` but then never actually reference `h` anywhere in the function body. If we're not careful, it can look like a mistake. The way to compensate is to use the `_` identifier. Like so:
+
+```ruby
+def
+  recur([]) -> undefined
+  recur([_|t]) -> recur(t)
+end
+```
+
+In this case, we've assigned the head of our array to `_` which is a special identifier in CnS that doesn't actually reference anything. It essentially tells the program (and anyone who may read your code), "something will be here but I don't care what it is because I'm not going to use it". If you were to try to get the value of `_` from within the function body, it would be undefined.
+
 ## Allowed Arities
 
 "Arity" refers to the amount of arguments a function takes. In the previous example, you will no doubt realize that our `map` function can be called with an arity of either 2 or 3 (meaning 2 arguments or 3 arguments). However, you may not want to let your users call this function with 3 arguments. The 3 arguments version, you will probably say, should be reserved for recursion.

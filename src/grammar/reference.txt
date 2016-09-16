@@ -173,13 +173,13 @@ num + 1 for num in list
 num + index for num, index in list when index % 2 is 0
 
     (function () {
-      const __acc = [];
+      const __acc__ = [];
       list.forEach(function (num, index) {
         if (index % 2 === 0) {
-          __acc.push(num + index);
+          __acc__.push(num + index);
         }
       });
-      return __acc;
+      return __acc__;
     }())
 
 # Assignment Matching

@@ -1,7 +1,6 @@
 - add more pattern match techniques?
   - to consider: {a, b}, [a, b, {c, d}]
 - docs
-  - iteration
   - jsx
   - Modules
   - try/catch

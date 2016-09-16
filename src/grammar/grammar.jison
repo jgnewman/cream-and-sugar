@@ -257,6 +257,10 @@ Lookup
     {
       $$ = new LookupNode($1, $3, createSourceLocation(null, @1, @3));
     }
+  | SourceElement "." Identifier
+    {
+      $$ = new LookupNode($1, $3, createSourceLocation(null, @1, @3));
+    }
   | Identifier
     {
       $$ = $1;
