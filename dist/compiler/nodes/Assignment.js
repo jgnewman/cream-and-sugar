@@ -8,6 +8,7 @@ var _utils = require('../utils');
  * are constants and should not be overwritable.
  */
 (0, _utils.compile)(_utils.nodes.AssignmentNode, function () {
+  var tuple = void 0;
   switch (this.left.type) {
     case 'Identifier':
     case 'Tuple':
@@ -15,9 +16,15 @@ var _utils = require('../utils');
     case 'Cons':
       var head = this.left.src.match(/^\[(.+)\|/)[1];
       var tail = this.left.src.match(/\|([^\]]+)\]/)[1];
-      var tuple = '{' + head + ', ' + tail + '}';
+      tuple = '{' + head + ', ' + tail + '}';
       this.shared.lib.add('assnCons');
       return 'const ' + tuple + ' = SYSTEM.assnCons(' + this.right.compile(true) + ', "' + head + '", "' + tail + '")';
+    case 'BackCons':
+      var lead = this.left.src.match(/^\[(.+)\|\|/)[1];
+      var last = this.left.src.match(/\|\|([^\]]+)\]/)[1];
+      tuple = '{' + lead + ', ' + last + '}';
+      this.shared.lib.add('assnBackCons');
+      return 'const ' + tuple + ' = SYSTEM.assnBackCons(' + this.right.compile(true) + ', "' + lead + '", "' + last + '")';
     default:
       (0, _utils.die)(this, 'Invalid expression in left hand assignment: ' + this.left.type);
   }

@@ -1,12 +1,8 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-exports.default = {
+var SYSTEM = {
 
   // SYSTEM.qualify(x === 4, function () { return doSomething() })
   qualify: function qualify(condition, callback, elseCase) {
@@ -22,6 +18,7 @@ exports.default = {
   eql: function eql(a, b) {
     var _this = this;
 
+    if (a === SYSTEM || b === SYSTEM) return true; // <- Hack to force a match
     if (a === b || typeof a === 'number' && typeof b === 'number' && isNaN(a) && isNaN(b)) return true;
     if ((typeof a === 'undefined' ? 'undefined' : _typeof(a)) !== (typeof b === 'undefined' ? 'undefined' : _typeof(b))) return false;
     if ((typeof a === 'undefined' ? 'undefined' : _typeof(a)) === 'object') {
@@ -42,6 +39,7 @@ exports.default = {
   // SYSTEM.match(args, [['Identifier', 'x']])
   match: function match(args, pattern) {
     return args.every(function (arg, index) {
+      if (!pattern[index]) return false;
       var matchType = pattern[index][0];
       var matchVal = pattern[index][1];
       switch (matchType) {
@@ -49,10 +47,21 @@ exports.default = {
           return true;
         case 'Number':
           return typeof arg === 'number' && arg === parseFloat(matchVal);
-        case 'Arr':
-          return Array.isArray(arg) && this.eql(arg, JSON.parse(matchVal));
-        case 'Cons':
+        case 'Cons':case 'BackCons':
           return Array.isArray(arg);
+        case 'Arr':
+          if (Array.isArray(arg)) {
+            var eqlTestStr = matchVal.replace(/^\[|\s+|\]$/g, '');
+            var eqlTest = !eqlTestStr.length ? [] : eqlTestStr.split(',').map(function (each) {
+              if (each === 'null') return null;
+              if (each === 'undefined') return undefined;
+              if (each === 'NaN') return NaN;
+              return (/^[\$_A-z][\$_A-z0-9]*$/.test(each) ? SYSTEM : JSON.parse(each)
+              );
+            });
+            return this.eql(arg, eqlTest);
+          }
+          return false;
         case 'Tuple':
           throw new Error('Can\'t currently match against tuple forms.');
         case 'Object':
@@ -60,7 +69,7 @@ exports.default = {
         default:
           return false;
       }
-    });
+    }.bind(this));
   },
 
   // SYSTEM.args(arguments) -> [...arguments]
@@ -86,13 +95,15 @@ exports.default = {
   },
 
   // SYSTEM.typeof('hello') -> 'string'
-  typeof: function _typeof(val) {
+  type: function type(val) {
     var type = typeof val === 'undefined' ? 'undefined' : _typeof(val);
     switch (type) {
+      case 'symbol':
+        return 'atom';
       case 'number':
         return isNaN(val) ? 'nan' : type;
       case 'object':
-        return val === null ? 'null' : Array.isArray(val) ? 'array' : val instanceof Date ? 'date' : val instanceof RegExp ? 'regexp' : val instanceof HTMLElement ? 'htmlelement' : type;
+        return val === null ? 'null' : Array.isArray(val) ? 'array' : val instanceof Date ? 'date' : val instanceof RegExp ? 'regexp' : typeof HTMLElement !== 'undefined' && val instanceof HTMLElement ? 'htmlelement' : typeof Worker !== 'undefined' && val instanceof Worker || val.constructor.name === 'ChildProcess' && typeof val.pid === 'number' ? 'process' : type;
       default:
         return type;
     }
@@ -124,6 +135,14 @@ exports.default = {
     return out;
   },
 
+  // SYSTEM.assnCons([1, 2, 3], 'hd', 'tl')
+  assnBackCons: function assnBackCons(list, ldName, lstName) {
+    var out = {};
+    out[ldName] = list.slice(0, list.length - 1);
+    out[lstName] = list[list.length - 1];
+    return out;
+  },
+
   // SYSTEM.random([1, 2, 3, 4]) -> 3
   random: function random(list) {
     return list[Math.floor(Math.random() * list.length)];
@@ -145,11 +164,13 @@ exports.default = {
     return args.length ? fn.apply(null, args) : fn();
   },
 
-  // SYSTEM.update({name: 'bill'}, 'name', 'john') -> {name: 'john'}
-  // SYSTEM.update(['a', 'b', 'c'], 1, 'x') -> ['a', 'x', 'c']
-  update: function update(collection, keyOrIndex, val) {
+  // SYSTEM.update('name', 'john', {name: 'bill'}) -> {name: 'john'}
+  // SYSTEM.update(1, 'x', ['a', 'b', 'c']) -> ['a', 'x', 'c']
+  update: function update(keyOrIndex, val, collection) {
     if (Array.isArray(collection)) {
-      return collection.slice()[keyOrIndex] = val;
+      var newSlice = collection.slice();
+      newSlice[keyOrIndex] = val;
+      return newSlice;
     } else if (typeof HTMLElement !== 'undefined' && collection instanceof HTMLElement) {
       var clone = collection.cloneNode();
       clone[keyOrIndex] = val;
@@ -161,9 +182,9 @@ exports.default = {
     }
   },
 
-  // SYSTEM.remove(['a', 'b', 'c'], 1) -> ['a', 'b']
-  // SYSTEM.remove({name: 'john', age: 33}, 'name') -> {age: 33}
-  remove: function remove(collection, keyOrIndex) {
+  // SYSTEM.remove(1, ['a', 'b', 'c']) -> ['a', 'b']
+  // SYSTEM.remove('name', {name: 'john', age: 33}) -> {age: 33}
+  remove: function remove(keyOrIndex, collection) {
     if (Array.isArray(collection)) {
       var splicer = collection.slice();
       splicer.splice(keyOrIndex, 1);
@@ -186,7 +207,7 @@ exports.default = {
 
   // SYSTEM.createElement('div', {className: 'foo'}, [SYSTEM.createElement(...)])
   createElement: function createElement(type, attrs, body) {
-    var react = void 0;
+    var react;
     var a = attrs || {},
         b = body || [];
     if (typeof React !== 'undefined') react = React;
@@ -212,5 +233,144 @@ exports.default = {
         throw new Error('Function ' + (fun.name || '') + ' called with wrong arity. Expected ' + arity + ' got ' + arguments.length + '.');
       }
     };
+  },
+
+  dom: function dom(selector) {
+    return document.querySelector(selector);
+  },
+
+  domArray: function domArray(selector) {
+    return Array.prototype.slice.call(document.querySelectorAll(selector));
+  },
+
+  /********************************
+   * Begin message passing stuff
+   ********************************/
+
+  // A pack of utils for handling message passing.
+  msgs: {
+    isBrowser: typeof navigator !== 'undefined',
+    isChild: false,
+    queue: [],
+    handlers: [],
+    isWaiting: false,
+
+    // Should only be used on objects that you know for sure only contain
+    // functions, objects, and arrays, deeply nested.
+    stringify: function stringify(obj) {
+      if (typeof obj === 'function') {
+        return obj.toString();
+      } else if (typeof obj === 'string') {
+        return obj;
+      } else if (obj === true || obj === false) {
+        return obj;
+      } else if (Array.isArray(obj)) {
+        return '[' + obj.map(function (item) {
+          return SYSTEM.msgs.stringify(item);
+        }).join(', ') + ']';
+      } else {
+        return '{' + Object.keys(obj).map(function (key) {
+          return key + ':' + SYSTEM.msgs.stringify(obj[key]);
+        }).join(',\n') + '}';
+      }
+    },
+
+    symbolize: function symbolize(data, reSymbolize) {
+      if (!reSymbolize && (typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'symbol') return '__' + data.toString() + '__';
+      if (reSymbolize && typeof data === 'string' && /^__Symbol\(.+\)__$/.test(data)) {
+        return Symbol.for(data.replace(/^__Symbol\(|\)__$/g, ''));
+      }
+      if (Array.isArray(data)) {
+        return data.map(function (item) {
+          return SYSTEM.msgs.symbolize(item, reSymbolize);
+        });
+      } else if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object' && data !== null) {
+        var out = {};
+        Object.keys(data).forEach(function (key) {
+          out[key] = SYSTEM.msgs.symbolize(data[key], reSymbolize);
+        });
+        return out;
+      }
+      return data;
+    },
+
+    onMsg: function onMsg(msg) {
+      SYSTEM.msgs.isBrowser && (msg = msg.data);
+      var m = SYSTEM.msgs.symbolize(msg, true);
+      SYSTEM.msgs.queue.push(m);
+      if (!SYSTEM.msgs.isWaiting) {
+        SYSTEM.msgs.isWaiting = true;
+        setTimeout(function () {
+          SYSTEM.msgs.runQueue();
+        }, 0);
+      }
+    },
+
+    runQueue: function runQueue() {
+      this.queue.forEach(function (msgObj) {
+        this.handlers.forEach(function (handler) {
+          handler(msgObj);
+        });
+      }.bind(this));
+      this.queue = [];
+      this.isWaiting = false;
+    },
+
+    Thread: function Thread(fnBody) {
+      var isBrowser = typeof window !== 'undefined';
+      var body = 'const SYSTEM = ' + SYSTEM.msgs.stringify(SYSTEM) + ';\n' + 'SYSTEM.msgs.isChild = true;\n' + 'SYSTEM.msgs.handlers = [];\n' + (isBrowser ? 'this.onmessage = SYSTEM.msgs.onMsg;\n' : 'process.on("message", SYSTEM.msgs.onMsg);\n') + fnBody;
+      this.isBrowser = isBrowser;
+      this.thread = isBrowser ? new Worker(window.URL.createObjectURL(new Blob([body], { type: 'application/javascript' }))) : require('child_process').fork(null, [], {
+        execPath: 'node',
+        execArgv: ['-e', body]
+      });
+      isBrowser ? this.thread.onmessage = SYSTEM.msgs.onMsg : this.thread.on('message', SYSTEM.msgs.onMsg);
+      !isBrowser && this.thread.on('exit', function () {
+        console.log('process exited');
+      });
+      return this;
+    }
+  },
+
+  // Create a new process exclusively from a function body.
+  // Example:
+  // createProcess ->
+  //   spawn fn ->
+  //     ...process body...
+  //   end
+  // end
+  // export { createProcess/0 }
+  spawn: function spawn(fn) {
+    var wrap = /^[^\{]+\{|\}(\.bind\(.*\))?$/g;
+    return new SYSTEM.msgs.Thread(fn.toString().replace(wrap, '').trim());
+  },
+
+  // Specifies what to do when a message comes in
+  receive: function receive(fn) {
+    SYSTEM.msgs.handlers.push(fn);
+  },
+
+  // Kills a process
+  kill: function kill(thread) {
+    thread.isBrowser ? thread.thread.terminate() : thread.thread.kill('SIGINT');
+  },
+
+  // Should be like send(msg)
+  reply: function reply(msg) {
+    var m = SYSTEM.msgs.symbolize(msg, false);
+    SYSTEM.msgs.isBrowser ? postMessage(m) : process.send(m);
+  },
+
+  // Should be like send(thread, msg)
+  send: function send(thread, msg) {
+    var m = SYSTEM.msgs.symbolize(msg, false);
+    SYSTEM.msgs.isBrowser ? thread.thread.postMessage(m) : thread.thread.send(m);
   }
+
+  /********************************
+   * End message passing stuff
+   ********************************/
 };
+
+// export default SYSTEM;
+module.exports = SYSTEM;

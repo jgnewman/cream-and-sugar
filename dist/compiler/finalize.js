@@ -20,8 +20,9 @@ function prepend(str, withStr) {
 function finalize(tree) {
   var lib = [].concat(_toConsumableArray(tree.shared.lib));
   tree.shared.output = prepend(tree.shared.output, lib.map(function (name) {
-    return 'SYSTEM.' + name + ' = ' + _SYSTEM2.default[name].toString();
-  }).join(';\n'));
-  tree.shared.output = prepend(tree.shared.output, 'const SYSTEM = {};');
+    return 'SYSTEM.' + name + ' = SYSTEM.' + name + ' || ' + _SYSTEM2.default[name].toString();
+  }).join(';\n') + ';\n');
+  tree.shared.output = prepend(tree.shared.output, 'var SYSTEM = SYSTEM || {};');
+  tree.shared.output = tree.shared.output.replace(/\}\s*\;\s*$/, '}');
   return tree;
 }

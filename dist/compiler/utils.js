@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getReservedWords = exports.getExposedFns = exports.compileBody = exports.compile = exports.die = exports.nodes = exports.parser = undefined;
+exports.getReservedWords = exports.getMsgPassingFns = exports.getExposedFns = exports.compileBody = exports.compile = exports.die = exports.nodes = exports.parser = undefined;
 
 var _parser = require('../parser/parser');
 
@@ -90,12 +90,16 @@ function compileBody(body, delim) {
 
 // Official list of exposed system functions
 function getExposedFns() {
-  return ['elem', 'throw', 'create', 'typeof', 'instanceof', 'head', 'tail', 'random', 'lead', 'last', 'update', 'remove', 'eql', 'do'];
+  return ['elem', 'throw', 'create', 'type', 'instanceof', 'head', 'tail', 'random', 'lead', 'last', 'update', 'remove', 'eql', 'do', 'dom', 'domArray', 'spawn', 'receive', 'kill', 'reply', 'send'];
+}
+
+function getMsgPassingFns() {
+  return ['spawn', 'receive', 'kill', 'reply', 'send'];
 }
 
 // Official list of reserved words
 function getReservedWords() {
-  return ['fn', 'caseof', 'def', 'match', 'end', 'if', 'no', 'cond', 'for', 'in', 'when', 'var', 'const', 'let', 'while', 'switch', 'function', 'with', 'else', 'instanceof', 'super', 'enum', 'break', 'extends', 'catch', 'new', 'class', 'try', 'continue', 'typeof', 'delete', 'return', 'return', 'static', 'SYSTEM'];
+  return ['fn', 'caseof', 'def', 'match', 'end', 'if', 'no', 'cond', 'for', 'in', 'when', 'var', 'const', 'let', 'while', 'switch', 'function', 'with', 'else', 'instanceof', 'super', 'enum', 'break', 'extends', 'catch', 'new', 'class', 'try', 'continue', 'type', 'delete', 'return', 'static', 'SYSTEM'];
 }
 
 exports.parser = _parser2.default;
@@ -104,4 +108,5 @@ exports.die = die;
 exports.compile = compile;
 exports.compileBody = compileBody;
 exports.getExposedFns = getExposedFns;
+exports.getMsgPassingFns = getMsgPassingFns;
 exports.getReservedWords = getReservedWords;

@@ -76,6 +76,8 @@ function compileInterpBlocks(blocks, origNode) {
   if (this.text[0] === '`') {
     return compileInterpBlocks(fixInterp(this.text), this);
   } else {
-    return this.text;
+    // Allow quoted strings to be captured on multiple lines but don't
+    // compile them that way.
+    return this.text.replace(/\n/g, '');
   }
 });

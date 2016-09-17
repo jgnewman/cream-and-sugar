@@ -76,6 +76,8 @@ require('./nodes/Regexp');
 
 require('./nodes/Wrap');
 
+require('./nodes/BackCons');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function attempt(fn, callback) {
@@ -116,6 +118,7 @@ function compileCode(str, callback, options) {
   attempt(function () {
     return tree.compile();
   }, callback);
+  tree.shared.output = tree.shared.output.replace(/(\;)(\s+\;)+/g, '$1');
   options.finalize && attempt(function () {
     return (0, _finalize2.default)(tree);
   }, callback);
