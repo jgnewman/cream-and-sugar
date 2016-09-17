@@ -193,3 +193,5 @@ myVar = doStuff(err) incase otherStuff() throws err
 [1, 2, 3].forEach(fn -> end)
 
 num + num for num, index in [1, 2, 3] when index rm 2 is 0
+
+elem 'foo', {foo: 'bar'}

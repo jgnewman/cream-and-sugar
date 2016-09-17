@@ -18,5 +18,6 @@ If this sounds interesting to you, read on. Here are all the docs we've got at t
 - [Conditions](conditions.md)
 - [Iteration](iteration.md)
 - [JSX Syntax](jsx.md)
+- [Error Handling](errors.md)
 - [Processes](processes.md)
 - [Built-In Functions](bifs.md)

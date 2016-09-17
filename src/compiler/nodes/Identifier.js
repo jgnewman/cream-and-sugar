@@ -12,7 +12,7 @@ compile(nodes.IdentifierNode, function () {
 
   // Disallow reserved words
   } else if (getReservedWords().indexOf(base) > -1) {
-    die(this, `${this.text}" is a reserved word.`);
+    die(this, `${this.text} is a reserved word.`);
 
   // Translate system library functions
   } else if (getExposedFns().indexOf(base) > -1) {

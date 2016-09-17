@@ -3,7 +3,6 @@
 - docs
   - jsx
   - Modules
-  - try/catch
 - make a gulp package
 - make a webpack package
 - is there a way to speed up thread generation and maybe reduce thread footprints?

@@ -12,6 +12,7 @@ import browserify from 'browserify';
 import source from 'vinyl-source-stream';
 import { argv } from 'yargs';
 import { compile } from './src/compiler/compiler';
+import repl from './repl/index';
 
 function handle(err) {
   gutil.log(err);
@@ -77,4 +78,8 @@ gulp.task('distribute', next => {
           plugins: ['transform-es2015-modules-commonjs', 'add-module-exports']
         }))
         .pipe(gulp.dest('./dist'));
+});
+
+gulp.task('repl', () => {
+  repl();
 });
