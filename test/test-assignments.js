@@ -1,5 +1,6 @@
 import assert from 'assert';
 import { compileCode } from  '../src/compiler/compiler';
+import { nlToSpace } from './utils';
 
 
 describe('Assignments', () => {
@@ -11,36 +12,68 @@ describe('Assignments', () => {
 
   it('should compile a cons destructure', () => {
     const toCompile = '[h|t] = [1, 2, 3]';
-    assert.equal('const {h, t} = SYSTEM.assnCons([1, 2, 3], "h", "t")', compileCode(toCompile));
+    const expected = nlToSpace(`
+      var __ref0__ = [1, 2, 3];
+      const h = __ref0__[0];
+      const t = __ref0__.slice(1)
+    `);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
   it('should compile a back cons destructure', () => {
     const toCompile = '[ld||lst] = [1, 2, 3]';
-    assert.equal('const {ld, lst} = SYSTEM.assnBackCons([1, 2, 3], "ld", "lst")', compileCode(toCompile));
+    const expected = nlToSpace(`
+      var __ref0__ = [1, 2, 3];
+      const ld = __ref0__.slice(0, __ref0__.length - 1);
+      const lst = __ref0__[__ref0__.length - 1]
+    `);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
   it('should compile a single item tuple destructure', () => {
     const toCompile = '{a} = foo';
-    assert.equal(`const ${toCompile}`, compileCode(toCompile));
+    const expected = nlToSpace(`
+      var __ref0__ = foo;
+      const a = __ref0__.a
+    `);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
   it('should compile a multi item tuple destructure', () => {
     const toCompile = '{a, b, c} = foo';
-    assert.equal(`const ${toCompile}`, compileCode(toCompile));
+    const expected = nlToSpace(`
+      var __ref0__ = foo;
+      const a = __ref0__.a;
+      const b = __ref0__.b;
+      const c = __ref0__.c
+    `);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
   it('should compile an tuple destructure beginning with new lines', () => {
     const toCompile = `{
 
       a, b, c} = foo`;
-    assert.equal(`const {a, b, c} = foo`, compileCode(toCompile));
+    const expected = nlToSpace(`
+      var __ref0__ = foo;
+      const a = __ref0__.a;
+      const b = __ref0__.b;
+      const c = __ref0__.c
+    `);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
   it('should compile an tuple destructure ending with new lines', () => {
     const toCompile = `{a, b, c
 
     } = foo`;
-    assert.equal(`const {a, b, c} = foo`, compileCode(toCompile));
+    const expected = nlToSpace(`
+      var __ref0__ = foo;
+      const a = __ref0__.a;
+      const b = __ref0__.b;
+      const c = __ref0__.c
+    `);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
   it('should compile an tuple destructure beginning and ending with new lines', () => {
@@ -49,14 +82,26 @@ describe('Assignments', () => {
       a, b, c
 
     } = foo`;
-    assert.equal(`const {a, b, c} = foo`, compileCode(toCompile));
+    const expected = nlToSpace(`
+      var __ref0__ = foo;
+      const a = __ref0__.a;
+      const b = __ref0__.b;
+      const c = __ref0__.c
+    `);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
   it('should compile a tuple destructure with new lines between items', () => {
     const toCompile = `{a,
       b,
       c} = foo`;
-    assert.equal(`const {a, b, c} = foo`, compileCode(toCompile));
+    const expected = nlToSpace(`
+      var __ref0__ = foo;
+      const a = __ref0__.a;
+      const b = __ref0__.b;
+      const c = __ref0__.c
+    `);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
   it('should compile a tuple destructure with new lines everywhere', () => {
@@ -65,7 +110,13 @@ describe('Assignments', () => {
       b,
       c
     } = foo`;
-    assert.equal(`const {a, b, c} = foo`, compileCode(toCompile));
+    const expected = nlToSpace(`
+      var __ref0__ = foo;
+      const a = __ref0__.a;
+      const b = __ref0__.b;
+      const c = __ref0__.c
+    `);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
 });

@@ -80,10 +80,6 @@ describe('SYSTEM Library', () => {
     assert.equal(SYSTEM.last([1, 2, 3]), 3);
   });
 
-  it('should prepare an object from a cons list', () => {
-    assert.deepEqual(SYSTEM.assnCons([1, 2, 3], 'hd', 'tl'), {hd: 1, tl: [2, 3]});
-  });
-
   it('should choose a random number from a list', () => {
     const choice = SYSTEM.random([1, 2, 3, 4]);
     assert.equal(typeof choice, 'number');

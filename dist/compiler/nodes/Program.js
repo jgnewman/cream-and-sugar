@@ -11,6 +11,7 @@ var _utils = require('../utils');
   this.shared.output = '';
   this.shared.lib = new Set();
   this.shared.insertSemis = true; // Turn this off when we're going to manually handle it
+  this.shared.refs = -1;
   this.body.forEach(function (node) {
     try {
       node.compile();

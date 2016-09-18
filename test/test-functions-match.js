@@ -81,7 +81,10 @@ describe('Polymorphic Match Expressions', () => {
       if (args.length === 1 && SYSTEM.match(args, [["Cons","[hd|tl]"]])) {
         const hd = args[0][0];
         const tl = args[0].slice(1);
-        const {a, b, c} = something;
+        var __ref0__ = something;
+        const a = __ref0__.a;
+        const b = __ref0__.b;
+        const c = __ref0__.c;
         return foo(doStuff(hd), tl);
       } else if (args.length === 2 && SYSTEM.match(args, [["Identifier","item"],["Arr","[]"]])) {
         const item = args[0];

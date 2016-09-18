@@ -119,22 +119,6 @@ const SYSTEM = {
     };
   }())`,
 
-  // SYSTEM.assnCons([1, 2, 3], 'hd', 'tl')
-  assnCons: function (list, hName, tName) {
-    const out = {};
-    out[hName] = list[0];
-    out[tName] = list.slice(1);
-    return out;
-  },
-
-  // SYSTEM.assnCons([1, 2, 3], 'hd', 'tl')
-  assnBackCons: function (list, ldName, lstName) {
-    const out = {};
-    out[ldName] = list.slice(0, list.length - 1);
-    out[lstName] = list[list.length - 1];
-    return out;
-  },
-
   // SYSTEM.random([1, 2, 3, 4]) -> 3
   random: function (list) {
     return list[Math.floor(Math.random()*list.length)];
@@ -198,8 +182,11 @@ const SYSTEM = {
     var react;
     const a = attrs || {}, b = body || [];
     if (typeof React !== 'undefined') react = React;
-    if (!react && typeof require !== 'undefined') react = require('React');
+    if (!react && typeof require !== 'undefined') {
+      try { react = require('react') } catch (_) { react = null }
+    }
     if (react) return react.createElement(type, a, b);
+    if (typeof document === 'undefined') throw new Error('No HTML document is available.');
     const elem = document.createElement(type);
     Object.keys(a).forEach(key => {
       const cleanKey = key === 'className' ? 'class' : key.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
