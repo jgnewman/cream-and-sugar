@@ -156,4 +156,60 @@ describe('Polymorphic Function Definitions', () => {
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
+  it('should compile a large, complex function body', () => {
+    const toCompile = `up() ->
+
+      # Create and return a new process from a function.
+      spawn fn ->
+
+        # When we receive a message, pattern match it to figure out what to do.
+        receive match
+
+          # If the message is an array beginning with the atom ~factorial, we'll
+          # calculate the factorial of num and send it back marked as ~ok.
+          [~factorial, num] -> reply [~ok, factorial num]
+
+          # If the message is anything else, send a reply marked as "~err" and
+          # pass along a reason.
+          _ -> reply [~err, 'Unknown command received']
+        end
+
+        # Define the factorial function so that we can actually calculate them.
+        def
+          factorial 0 -> 1
+          factorial n -> n * factorial n - 1
+        end
+      end
+    end`;
+    const expected = nlToSpace(`function up () {
+      const args = SYSTEM.args(arguments);
+      return SYSTEM.spawn(function () {
+        const args = SYSTEM.args(arguments);
+        SYSTEM.receive(function () {
+          const args = SYSTEM.args(arguments);
+          if (args.length === 1 && SYSTEM.match(args, [["Arr","[~factorial, num]"]])) {
+            const num = args[0][1];
+            return SYSTEM.reply([Symbol.for('ok'), factorial(num)]);
+          } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","_"]])) {
+            return SYSTEM.reply([Symbol.for('err'), 'Unknown command received']);
+          } else {
+            return SYSTEM.noMatch('match');
+          }
+        });
+        return function factorial () {
+          const args = SYSTEM.args(arguments);
+          if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
+            return 1;
+          } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","n"]])) {
+            const n = args[0];
+            return n * factorial(n - 1);
+          } else {
+            return SYSTEM.noMatch('def');
+          }
+        };
+      });
+    }`);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+  });
+
 });

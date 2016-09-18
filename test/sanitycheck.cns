@@ -195,3 +195,8 @@ myVar = doStuff(err) incase otherStuff() throws err
 num + num for num, index in [1, 2, 3] when index rm 2 is 0
 
 elem 'foo', {foo: 'bar'}
+
+myfun = match
+  [~factorial, num] -> reply [~ok, factorial num]
+  _ -> reply [~err, 'Unknown command received']
+end

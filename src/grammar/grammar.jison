@@ -778,7 +778,7 @@ function StringNode(text, loc) {
 }
 
 function AtomNode(text, loc) {
-  this.src = text;
+  this.src = '~' + text;
   this.type = 'Atom';
   this.text = text;
   this.loc = loc;

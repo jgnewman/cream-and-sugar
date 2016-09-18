@@ -9,7 +9,7 @@ function translate(evalled, ctx) {
     case 'undefined': return colors.gray(evalled);
     case 'function':
       if (!ctx.SYSTEM[evalled.name]) {
-        return colors.cyan(`[Function: ${evalled.name || 'Anonymous'}]`);
+        return colors.cyan(`[Function: ${evalled.name || 'anonymous'}]`);
       } else {
         return colors.gray('undefined');
       }
@@ -24,6 +24,8 @@ export default function go() {
     console.log(colors.rainbow(  '-------------------------------\n'));
 
     const ctx = global;
+    ctx.require = module.require;
+
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout

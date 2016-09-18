@@ -41,6 +41,7 @@ const SYSTEM = {
               if (each === 'null') return null;
               if (each === 'undefined') return undefined;
               if (each === 'NaN') return NaN;
+              if (each[0] === '~') return SYSTEM;
               return /^[\$_A-z][\$_A-z0-9]*$/.test(each) ? SYSTEM : JSON.parse(each);
             });
             return this.eql(arg, eqlTest);
@@ -233,7 +234,7 @@ const SYSTEM = {
 
    // A pack of utils for handling message passing.
    msgs: {
-     isBrowser: typeof navigator !== 'undefined',
+     isBrowser: function () { return typeof navigator !== 'undefined' },
      isChild: false,
      queue: [],
      handlers: [],
@@ -271,7 +272,7 @@ const SYSTEM = {
      },
 
      onMsg: function (msg) {
-       SYSTEM.msgs.isBrowser && (msg = msg.data);
+       SYSTEM.msgs.isBrowser() && (msg = msg.data);
        const m = SYSTEM.msgs.symbolize(msg, true);
        SYSTEM.msgs.queue.push(m);
        if (!SYSTEM.msgs.isWaiting) {
@@ -293,12 +294,13 @@ const SYSTEM = {
      },
 
      Thread: function(fnBody) {
-       const isBrowser = typeof window !== 'undefined';
+       const isBrowser = typeof navigator !== 'undefined';
        const body = 'const SYSTEM = ' + SYSTEM.msgs.stringify(SYSTEM) + ';\n' +
                     'SYSTEM.msgs.isChild = true;\n' +
                     'SYSTEM.msgs.handlers = [];\n' +
                     (isBrowser ? 'this.onmessage = SYSTEM.msgs.onMsg;\n'
                                : 'process.on("message", SYSTEM.msgs.onMsg);\n') +
+                    'var arguments = [];\n' +
                     fnBody;
        this.isBrowser  = isBrowser;
        this.thread     = isBrowser
@@ -326,8 +328,7 @@ const SYSTEM = {
    // end
    // export { createProcess/0 }
    spawn: function (fn) {
-     const wrap = /^[^\{]+\{|\}(\.bind\(.*\))?$/g;
-     return new SYSTEM.msgs.Thread(fn.toString().replace(wrap, '').trim());
+    return new SYSTEM.msgs.Thread('(' + fn.toString() + '())');
    },
 
    // Specifies what to do when a message comes in
@@ -343,13 +344,13 @@ const SYSTEM = {
    // Should be like send(msg)
    reply: function (msg) {
      const m = SYSTEM.msgs.symbolize(msg, false);
-     SYSTEM.msgs.isBrowser ? postMessage(m) : process.send(m) ;
+     SYSTEM.msgs.isBrowser() ? postMessage(m) : process.send(m) ;
    },
 
    // Should be like send(thread, msg)
    send: function (thread, msg) {
      const m = SYSTEM.msgs.symbolize(msg, false);
-     SYSTEM.msgs.isBrowser ? thread.thread.postMessage(m) : thread.thread.send(m);
+     SYSTEM.msgs.isBrowser() ? thread.thread.postMessage(m) : thread.thread.send(m);
    }
 
    /********************************

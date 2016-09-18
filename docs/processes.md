@@ -31,10 +31,16 @@ In CnS, all processes are spawned from functions. Let's take a look at a basic p
 # factorial-process.cns
 
 # Create a function we can use to spin up a new process.
-up ->
+up() ->
 
   # Create and return a new process from a function.
   spawn fn ->
+
+    # Define the factorial function so that we can actually calculate them.
+    def
+      factorial 0 -> 1
+      factorial n -> n * factorial n - 1
+    end
 
     # When we receive a message, pattern match it to figure out what to do.
     receive match
@@ -46,12 +52,6 @@ up ->
       # If the message is anything else, send a reply marked as `~err` and
       # pass along a reason.
       _ -> reply [~err, 'Unknown command received']
-    end
-
-    # Define the factorial function so that we can actually calculate them.
-    def
-      factorial 0 -> 1
-      factorial n -> n * factorial n - 1
     end
   end
 end
@@ -67,23 +67,23 @@ Now that we have a process module, let's take a look at how we might use it with
 import { up } from './factorial-process'
 
 # Create the process and grab a reference to it.
-process = up()
+myprocess = up()
 
 # When we receive a message, pattern match it to figure out what to do.
 receive match
 
   # If the message is marked as ~ok, do whatever we need to with it.
-  [~ok, msg] -> doSomethingWith msg
+  [~ok, msg] -> console.log('The message was', msg)
 
   # If the message came with an error, kill the process and throw an error.
   [~err, errText] ->
-    kill process
+    kill myprocess
     throw create(Error, errText)
   end
 end
 
 # Kick things off by telling the process to calculate a factorial.
-send process, [~factorial, 50]
+send myprocess, [~factorial, 10]
 ```
 
 Between these two modules we can see all 4 tools in action. Within `factorial-process.cns` we spawn a new process from a function. Within that process, we pattern match against received messages and also define a factorial function. By convention, we expect that each message coming in will be a 2-item array where the first item is an atom denoting what task should be performed. If we get the `~factorial` atom, we'll run the factorial function on the second part of the message and use `reply` to send it back to the parent thread. If we get something we didn't expect we'll send back an error message.
