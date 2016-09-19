@@ -59,7 +59,9 @@ export default function go() {
             const compiled = compileCode(buffer, null, {finalize: true});
             const evalled = eval.call(ctx, compiled);
 
-            console.log(translate(evalled, ctx));
+            if (!/\/\/\*\*END LIBRARY\*\*\/\/\s*$/.test(compiled)) {
+              console.log(translate(evalled, ctx));
+            }
             buffer = '';
 
             rl.prompt();

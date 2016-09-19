@@ -37,8 +37,9 @@ function finalize(tree) {
   tree.shared.output = prepend(tree.shared.output, lib.map(function (name) {
     return 'CNS_SYSTEM.' + name + ' = CNS_SYSTEM.' + name + ' || ' + stringify(_SYSTEM2.default[name]);
   }).join(';\n') + ';\n');
+  tree.shared.output = prepend(tree.shared.output, '//**END LIBRARY**//');
   tree.shared.output = prepend(tree.shared.output, '\n    if      (typeof global !== "undefined") { global.CNS_SYSTEM = CNS_SYSTEM }\n    else if (typeof window !== "undefined") { window.CNS_SYSTEM = CNS_SYSTEM }\n    else if (typeof self   !== "undefined") { self.CNS_SYSTEM = CNS_SYSTEM   }\n    else { this.CNS_SYSTEM = CNS_SYSTEM }\n\n  ');
   tree.shared.output = prepend(tree.shared.output, 'var CNS_SYSTEM = typeof CNS_SYSTEM !== "undefined" ? CNS_SYSTEM : {};');
-  tree.shared.output = tree.shared.output.replace(/\}\s*\;\s*$/, '}');
+  tree.shared.output = tree.shared.output.replace(/(\}|\n)\s*\;\s*$/, '$1');
   return tree;
 }
