@@ -38,27 +38,43 @@ export default function go() {
     rl.prompt();
 
     rl.on('line', line => {
-      buffer += (line + '\n');
+      switch (line.trim()) {
 
-      try {
-        const compiled = compileCode(buffer, null, {finalize: true});
-        const evalled = eval.call(ctx, compiled);
-
-        console.log(translate(evalled, ctx));
-        buffer = '';
-
-        rl.prompt();
-
-      } catch (err) {
-
-        if (!err.hash || err.hash.token !== 'EOF') {
-          console.log(colors.red(`${err}\n`));
+        case 'clear()':
           buffer = '';
+          console.log(colors.gray('Input cleared.'));
           rl.prompt();
+          break;
 
-        } else {
-          process.stdout.write('... ');
-        }
+        case 'exit()':
+        case 'e()':
+          console.log(colors.gray('Exiting...'));
+          rl.close();
+          break;
+
+        default:
+          buffer += (line + '\n');
+
+          try {
+            const compiled = compileCode(buffer, null, {finalize: true});
+            const evalled = eval.call(ctx, compiled);
+
+            console.log(translate(evalled, ctx));
+            buffer = '';
+
+            rl.prompt();
+
+          } catch (err) {
+
+            if (!err.hash || err.hash.token !== 'EOF') {
+              console.log(colors.red(`${err}\n`));
+              buffer = '';
+              rl.prompt();
+
+            } else {
+              process.stdout.write('... ');
+            }
+          }
       }
     });
   });

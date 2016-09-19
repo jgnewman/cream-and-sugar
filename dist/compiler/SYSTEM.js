@@ -32,6 +32,7 @@ const SYSTEM = {
       var matchVal  = pattern[index][1];
       switch (matchType) {
         case 'Identifier': return true;
+        case 'Atom': return Symbol.for(matchVal.slice(1)) === arg;
         case 'Number': return typeof arg === 'number' && arg === parseFloat(matchVal);
         case 'Cons': case 'BackCons': return Array.isArray(arg);
         case 'Arr':
@@ -41,11 +42,20 @@ const SYSTEM = {
               if (each === 'null') return null;
               if (each === 'undefined') return undefined;
               if (each === 'NaN') return NaN;
-              if (each[0] === '~') return SYSTEM;
+              if (each === 'true') return true;
+              if (each === 'false') return false;
+              if (each[0] === '~') return Symbol.for(each.slice(1));
               return /^[\$_A-z][\$_A-z0-9]*$/.test(each) ? SYSTEM : JSON.parse(each);
             });
             return this.eql(arg, eqlTest);
           }
+          return false;
+        case 'Special':
+          if ((matchVal === 'null' && arg === null) ||
+              (matchVal === 'undefined' && arg === undefined) ||
+              (matchVal === 'true' && arg === true) ||
+              (matchVal === 'false' && arg === false) ||
+              (matchVal === 'NaN') && isNaN(arg)) return true;
           return false;
         case 'Tuple': throw new Error(`Can't currently match against tuple forms.`);
         case 'Object': throw new Error(`Can't currently match against object forms.`);
