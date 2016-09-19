@@ -8,7 +8,7 @@ function translate(evalled, ctx) {
     case 'number':    return colors.yellow(evalled);
     case 'undefined': return colors.gray(evalled);
     case 'function':
-      if (!ctx.SYSTEM[evalled.name]) {
+      if (!ctx.CNS_SYSTEM[evalled.name]) {
         return colors.cyan(`[Function: ${evalled.name || 'anonymous'}]`);
       } else {
         return colors.gray('undefined');

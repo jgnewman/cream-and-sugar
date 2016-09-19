@@ -8,17 +8,12 @@ var compileCode = compiler.compileCode;
 
 var args = parseArgs();
 
-// compileCode('2 + 2', function (err, result) {
-//   if (err) {
-//     throw err;
-//   } else {
-//     console.log(result);
-//   }
-// }, {log: false});
-
 function parseArgs() {
   var out = {};
   var flagOn = false;
+  
+  typeof process !== 'undefined' &&
+  Array.isArray(process.argv)    &&
   process.argv.forEach(function (arg) {
     if (arg[0] === '-') {
       flagOn = arg.slice(1);

@@ -48,7 +48,7 @@ describe('Function Calls', () => {
   it('should compile with various types of arguments', () => {
     const toCompile = 'foo bar, 0, [a, b, c], fn -> eat(food)';
     assert.equal(nlToSpace(`foo(bar, 0, [a, b, c], function () {
-      const args = SYSTEM.args(arguments);
+      const args = CNS_SYSTEM.args(arguments);
       return eat(food);
     })`), nlToSpace(compileCode(toCompile)));
   });

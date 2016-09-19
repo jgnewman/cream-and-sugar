@@ -18,7 +18,7 @@ compile(nodes.CaseofNode, function () {
   }).join('');
   if (needsDefault) {
     this.shared.lib.add('noMatch');
-    compiled += `default: SYSTEM.noMatch('caseof');`;
+    compiled += `default: CNS_SYSTEM.noMatch('caseof');`;
   }
   return `(function () {
     switch (${this.comparator.compile(true)}) {

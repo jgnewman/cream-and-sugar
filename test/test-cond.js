@@ -15,7 +15,7 @@ describe('Cond', () => {
       } else if (true) {
         return doOtherStuff()
       } else {
-        return SYSTEM.noMatch('cond');
+        return CNS_SYSTEM.noMatch('cond');
       }
     }.bind(this)())`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
@@ -40,7 +40,7 @@ describe('Cond', () => {
         doC();
         return doD()
       } else {
-        return SYSTEM.noMatch('cond');
+        return CNS_SYSTEM.noMatch('cond');
       }
     }.bind(this)())`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));

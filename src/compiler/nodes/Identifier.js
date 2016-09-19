@@ -20,7 +20,7 @@ compile(nodes.IdentifierNode, function () {
       this.shared.lib.add('msgs');
     }
     this.shared.lib.add(this.text);
-    return `SYSTEM.${this.text}`;
+    return `CNS_SYSTEM.${this.text}`;
   }
 
   // Otherwise, just make sure to replace @ with "this"

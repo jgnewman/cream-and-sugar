@@ -14,5 +14,5 @@ var _utils = require('../utils');
     return keyword + ' (' + test.compile(true) + ') {\n      ' + (0, _utils.compileBody)(body) + '\n    }';
   }).join(' ');
   this.shared.lib.add('noMatch');
-  return '(function () {\n    ' + compiled + ' else {\n      return SYSTEM.noMatch(\'cond\');\n    }\n  }.bind(this)())';
+  return '(function () {\n    ' + compiled + ' else {\n      return CNS_SYSTEM.noMatch(\'cond\');\n    }\n  }.bind(this)())';
 });

@@ -52,7 +52,7 @@ describe('Caseof', () => {
         case 'goodbye':
           return doOtherStuff();
         default:
-          SYSTEM.noMatch('caseof');
+          CNS_SYSTEM.noMatch('caseof');
       }
     }.bind(this)())`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));

@@ -10,15 +10,15 @@ describe('Polymorphic Match Expressions', () => {
       x, y -> n * factorial(n - 1)
     end`;
     const expected = nlToSpace(`function () {
-      const args = SYSTEM.args(arguments);
-      if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
+      const args = CNS_SYSTEM.args(arguments);
+      if (args.length === 1 && CNS_SYSTEM.match(args, [["Number","0"]])) {
         return 1;
-      } else if (args.length === 2 && SYSTEM.match(args, [["Identifier","x"],["Identifier","y"]])) {
+      } else if (args.length === 2 && CNS_SYSTEM.match(args, [["Identifier","x"],["Identifier","y"]])) {
         const x = args[0];
         const y = args[1];
         return n * factorial(n - 1);
       } else {
-        return SYSTEM.noMatch('match');
+        return CNS_SYSTEM.noMatch('match');
       }
     }`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
@@ -30,15 +30,15 @@ describe('Polymorphic Match Expressions', () => {
       (x, y) -> n * factorial(n - 1)
     end`;
     const expected = nlToSpace(`function () {
-      const args = SYSTEM.args(arguments);
-      if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
+      const args = CNS_SYSTEM.args(arguments);
+      if (args.length === 1 && CNS_SYSTEM.match(args, [["Number","0"]])) {
         return 1;
-      } else if (args.length === 2 && SYSTEM.match(args, [["Identifier","x"],["Identifier","y"]])) {
+      } else if (args.length === 2 && CNS_SYSTEM.match(args, [["Identifier","x"],["Identifier","y"]])) {
         const x = args[0];
         const y = args[1];
         return n * factorial(n - 1);
       } else {
-        return SYSTEM.noMatch('match');
+        return CNS_SYSTEM.noMatch('match');
       }
     }`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
@@ -50,15 +50,15 @@ describe('Polymorphic Match Expressions', () => {
       (x, y) => n * factorial(n - 1)
     end`;
     const expected = nlToSpace(`function () {
-      const args = SYSTEM.args(arguments);
-      if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
+      const args = CNS_SYSTEM.args(arguments);
+      if (args.length === 1 && CNS_SYSTEM.match(args, [["Number","0"]])) {
         return 1;
-      } else if (args.length === 2 && SYSTEM.match(args, [["Identifier","x"],["Identifier","y"]])) {
+      } else if (args.length === 2 && CNS_SYSTEM.match(args, [["Identifier","x"],["Identifier","y"]])) {
         const x = args[0];
         const y = args[1];
         return n * factorial(n - 1);
       } else {
-        return SYSTEM.noMatch('match');
+        return CNS_SYSTEM.noMatch('match');
       }
     }.bind(this)`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
@@ -77,8 +77,8 @@ describe('Polymorphic Match Expressions', () => {
       end
     end`;
     const expected = nlToSpace(`function () {
-      const args = SYSTEM.args(arguments);
-      if (args.length === 1 && SYSTEM.match(args, [["Cons","[hd|tl]"]])) {
+      const args = CNS_SYSTEM.args(arguments);
+      if (args.length === 1 && CNS_SYSTEM.match(args, [["Cons","[hd|tl]"]])) {
         const hd = args[0][0];
         const tl = args[0].slice(1);
         var __ref0__ = something;
@@ -86,16 +86,16 @@ describe('Polymorphic Match Expressions', () => {
         const b = __ref0__.b;
         const c = __ref0__.c;
         return foo(doStuff(hd), tl);
-      } else if (args.length === 2 && SYSTEM.match(args, [["Identifier","item"],["Arr","[]"]])) {
+      } else if (args.length === 2 && CNS_SYSTEM.match(args, [["Identifier","item"],["Arr","[]"]])) {
         const item = args[0];
         return item;
-      } else if (args.length === 2 && SYSTEM.match(args, [["Identifier","item"],["Identifier","list"]])) {
+      } else if (args.length === 2 && CNS_SYSTEM.match(args, [["Identifier","item"],["Identifier","list"]])) {
         const item = args[0];
         const list = args[1];
         doStuff();
         return doMoreStuff();
       } else {
-        return SYSTEM.noMatch('match');
+        return CNS_SYSTEM.noMatch('match');
       }
     }`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
@@ -108,10 +108,10 @@ describe('Polymorphic Match Expressions', () => {
       n -> n * factorial n - 1
     end`;
     const expected = nlToSpace(`const factorial = function () {
-      const args = SYSTEM.args(arguments);
-      if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
+      const args = CNS_SYSTEM.args(arguments);
+      if (args.length === 1 && CNS_SYSTEM.match(args, [["Number","0"]])) {
         return 1;
-      } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","n"]])) {
+      } else if (args.length === 1 && CNS_SYSTEM.match(args, [["Identifier","n"]])) {
         const n = args[0];
         if (n < 2) {
           return 1;
@@ -119,7 +119,7 @@ describe('Polymorphic Match Expressions', () => {
           return n * factorial(n - 1);
         }
       } else {
-        return SYSTEM.noMatch('match');
+        return CNS_SYSTEM.noMatch('match');
       }
     }`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
@@ -132,10 +132,10 @@ describe('Polymorphic Match Expressions', () => {
       n -> n * factorial n - 1
     end`;
     const expected = nlToSpace(`const factorial = function () {
-      const args = SYSTEM.args(arguments);
-      if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
+      const args = CNS_SYSTEM.args(arguments);
+      if (args.length === 1 && CNS_SYSTEM.match(args, [["Number","0"]])) {
         return 1;
-      } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","n"]])) {
+      } else if (args.length === 1 && CNS_SYSTEM.match(args, [["Identifier","n"]])) {
         const n = args[0];
         if (n < 2 && n > -1) {
           return 1;
@@ -143,7 +143,7 @@ describe('Polymorphic Match Expressions', () => {
           return n * factorial(n - 1);
         }
       } else {
-        return SYSTEM.noMatch('match');
+        return CNS_SYSTEM.noMatch('match');
       }
     }`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));

@@ -97,7 +97,7 @@ compile(nodes.FunNode, function () {
   const prefix = preFn ? `${this.preArrow.fn.compile(true)} ()` : `()`;
   this.shared.lib.add('args');
   return `function ${prefix} {
-    const args = SYSTEM.args(arguments);
+    const args = CNS_SYSTEM.args(arguments);
     ${args}
     ${compileBody(this.body)};
   }${this.bind ? '.bind(this)' : ''}`;
@@ -157,7 +157,7 @@ compile(nodes.PolymorphNode, function () {
 
     // Generate an else case to use when we're finished with sub conditions.
     const elseCase = ` else {
-      return SYSTEM.noMatch('${this.isNamed ? 'def' : 'match'}');
+      return CNS_SYSTEM.noMatch('${this.isNamed ? 'def' : 'match'}');
     }`;
 
     let subBodies;
@@ -199,7 +199,7 @@ compile(nodes.PolymorphNode, function () {
     }
 
     // Spit out the top-level condition based on precompiled information
-    return `${keyword} (args.length === ${matchObjs[0].args.length} && SYSTEM.match(args, ${pattern})) {
+    return `${keyword} (args.length === ${matchObjs[0].args.length} && CNS_SYSTEM.match(args, ${pattern})) {
       ${compileArgs(pattern)}
       ${subBodies}
     }`;
@@ -215,9 +215,9 @@ compile(nodes.PolymorphNode, function () {
   // conditions for different function bodies and add an else case for
   // no match at the end.
   return `function ${prefix} {
-    const args = SYSTEM.args(arguments);
+    const args = CNS_SYSTEM.args(arguments);
     ${compiledFns} else {
-      return SYSTEM.noMatch('${this.isNamed ? 'def' : 'match'}');
+      return CNS_SYSTEM.noMatch('${this.isNamed ? 'def' : 'match'}');
     }
   }${meta.anon && meta.bind ? '.bind(this)' : ''}`;
 });

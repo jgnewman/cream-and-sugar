@@ -24,5 +24,5 @@ compile(nodes.HtmlNode, function () {
   if (!this.selfClosing && close !== name.replace(/[\'\"\`]/g, '')) {
     die(this, `Closing tag "${close}" does not match opening tag ${name}.`);
   }
-  return `SYSTEM.createElement(${name}, {${attrs}}, [${body ? '\n' + body + '\n' : ''}])`;
+  return `CNS_SYSTEM.createElement(${name}, {${attrs}}, [${body ? '\n' + body + '\n' : ''}])`;
 });

@@ -98,7 +98,7 @@ function sanitizeFnMeta(fnList) {
   var args = compileArgs(getPatterns(preFn ? this.preArrow.args.items : this.preArrow.items));
   var prefix = preFn ? this.preArrow.fn.compile(true) + ' ()' : '()';
   this.shared.lib.add('args');
-  return 'function ' + prefix + ' {\n    const args = SYSTEM.args(arguments);\n    ' + args + '\n    ' + (0, _utils.compileBody)(this.body) + ';\n  }' + (this.bind ? '.bind(this)' : '');
+  return 'function ' + prefix + ' {\n    const args = CNS_SYSTEM.args(arguments);\n    ' + args + '\n    ' + (0, _utils.compileBody)(this.body) + ';\n  }' + (this.bind ? '.bind(this)' : '');
 });
 
 /*
@@ -155,7 +155,7 @@ function sanitizeFnMeta(fnList) {
     var matchObjs = patterns[pattern];
 
     // Generate an else case to use when we're finished with sub conditions.
-    var elseCase = ' else {\n      return SYSTEM.noMatch(\'' + (_this.isNamed ? 'def' : 'match') + '\');\n    }';
+    var elseCase = ' else {\n      return CNS_SYSTEM.noMatch(\'' + (_this.isNamed ? 'def' : 'match') + '\');\n    }';
 
     var subBodies = void 0;
 
@@ -196,7 +196,7 @@ function sanitizeFnMeta(fnList) {
     }
 
     // Spit out the top-level condition based on precompiled information
-    return keyword + ' (args.length === ' + matchObjs[0].args.length + ' && SYSTEM.match(args, ' + pattern + ')) {\n      ' + compileArgs(pattern) + '\n      ' + subBodies + '\n    }';
+    return keyword + ' (args.length === ' + matchObjs[0].args.length + ' && CNS_SYSTEM.match(args, ' + pattern + ')) {\n      ' + compileArgs(pattern) + '\n      ' + subBodies + '\n    }';
   }).join(' ');
 
   // Add appropriate library functions
@@ -208,5 +208,5 @@ function sanitizeFnMeta(fnList) {
   // Spit out the top-level function string. Within it, drop in the
   // conditions for different function bodies and add an else case for
   // no match at the end.
-  return 'function ' + prefix + ' {\n    const args = SYSTEM.args(arguments);\n    ' + compiledFns + ' else {\n      return SYSTEM.noMatch(\'' + (this.isNamed ? 'def' : 'match') + '\');\n    }\n  }' + (meta.anon && meta.bind ? '.bind(this)' : '');
+  return 'function ' + prefix + ' {\n    const args = CNS_SYSTEM.args(arguments);\n    ' + compiledFns + ' else {\n      return CNS_SYSTEM.noMatch(\'' + (this.isNamed ? 'def' : 'match') + '\');\n    }\n  }' + (meta.anon && meta.bind ? '.bind(this)' : '');
 });

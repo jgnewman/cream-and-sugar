@@ -1,12 +1,5 @@
-var CNS_SYSTEM = typeof CNS_SYSTEM !== "undefined" ? CNS_SYSTEM : {};
-
-    if      (typeof global !== "undefined") { global.CNS_SYSTEM = CNS_SYSTEM }
-    else if (typeof window !== "undefined") { window.CNS_SYSTEM = CNS_SYSTEM }
-    else if (typeof self   !== "undefined") { self.CNS_SYSTEM = CNS_SYSTEM   }
-    else { this.CNS_SYSTEM = CNS_SYSTEM }
-
-  
-CNS_SYSTEM.match = CNS_SYSTEM.match || function (args, pattern) {
+var SYSTEM = typeof SYSTEM !== "undefined" ? SYSTEM : {};
+SYSTEM.match = SYSTEM.match || function (args, pattern) {
     return args.every(function (arg, index) {
       if (!pattern[index]) return false;
       var matchType = pattern[index][0];
@@ -26,7 +19,7 @@ CNS_SYSTEM.match = CNS_SYSTEM.match || function (args, pattern) {
               if (each === 'true') return true;
               if (each === 'false') return false;
               if (each[0] === '~') return Symbol.for(each.slice(1));
-              return /^[\$_A-z][\$_A-z0-9]*$/.test(each) ? CNS_SYSTEM : JSON.parse(each);
+              return /^[\$_A-z][\$_A-z0-9]*$/.test(each) ? SYSTEM : JSON.parse(each);
             });
             return this.eql(arg, eqlTest);
           }
@@ -44,8 +37,8 @@ CNS_SYSTEM.match = CNS_SYSTEM.match || function (args, pattern) {
       }
     }.bind(this));
   };
-CNS_SYSTEM.eql = CNS_SYSTEM.eql || function (a, b) {
-    if (a === CNS_SYSTEM || b === CNS_SYSTEM) return true; // <- Hack to force a match
+SYSTEM.eql = SYSTEM.eql || function (a, b) {
+    if (a === SYSTEM || b === SYSTEM) return true; // <- Hack to force a match
     if (a === b || (typeof a === 'number' && typeof b === 'number' && isNaN(a) && isNaN(b))) return true;
     if (typeof a !== typeof b) return false;
     if (typeof a === 'object') {
@@ -56,54 +49,41 @@ CNS_SYSTEM.eql = CNS_SYSTEM.eql || function (a, b) {
     }
     return false;
   };
-CNS_SYSTEM.args = CNS_SYSTEM.args || function (args) {
+SYSTEM.args = SYSTEM.args || function (args) {
     const out = [];
     Array.prototype.push.apply(out, args);
     return out;
   };
-CNS_SYSTEM.noMatch = CNS_SYSTEM.noMatch || function (type) {
+SYSTEM.noMatch = SYSTEM.noMatch || function (type) {
     throw new Error('No match found for ' + type + ' statement.');
   };
-CNS_SYSTEM.createElement = CNS_SYSTEM.createElement || function (type, attrs, body) {
-    var react;
-    const a = attrs || {}, b = body || [];
-    if (typeof React !== 'undefined') react = React;
-    if (!react && typeof require !== 'undefined') {
-      try { react = require('react') } catch (_) { react = null }
-    }
-    if (react) return react.createElement(type, a, b);
-    if (typeof document === 'undefined') throw new Error('No HTML document is available.');
-    const elem = document.createElement(type);
-    Object.keys(a).forEach(key => {
-      const cleanKey = key === 'className' ? 'class' : key.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
-      elem.setAttribute(cleanKey, a[key]);
-    });
-    b.forEach(node => elem.appendChild(node));
-    return elem;
-  };
-CNS_SYSTEM.dom = CNS_SYSTEM.dom || function (selector) {
-    return document.querySelector(selector);
+SYSTEM.exp = SYSTEM.exp || (function () {
+    var exp = (typeof module === 'undefined' || !module.exports) ? this : module.exports;
+    return function (name, val) {
+      exp[name] = val;
+    };
+  }());
+SYSTEM.aritize = SYSTEM.aritize || function (fun, arity) {
+    return function () {
+      if (arguments.length === arity) {
+        return fun.apply(undefined, arguments);
+      } else {
+        throw new Error('Function ' + (fun.name || '') + ' called with wrong arity. Expected ' + arity + ' got ' + arguments.length + '.');
+      }
+    };
   };
 
-const React = require('react');
-const ReactDOM = require('react-dom');
-const Title = React.createClass({ factorial: function () {
-    const args = CNS_SYSTEM.args(arguments);
-    if (args.length === 1 && CNS_SYSTEM.match(args, [["Number","0"]])) {
+
+function factorial () {
+    const args = SYSTEM.args(arguments);
+    if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
       
       return 1;
-    } else if (args.length === 1 && CNS_SYSTEM.match(args, [["Identifier","n"]])) {
+    } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","n"]])) {
       const n = args[0];
-      return n * this.factorial(n - 1);
+      return n * factorial(n - 1);
     } else {
-      return CNS_SYSTEM.noMatch('match');
+      return SYSTEM.noMatch('def');
     }
-  }, render: function () {
-    const args = CNS_SYSTEM.args(arguments);
-    
-    return CNS_SYSTEM.createElement("h1", {}, [
-'Hello, friends. The factorial of 5 is ',
-this.factorial(5)
-]);
-  } });
-ReactDOM.render(CNS_SYSTEM.createElement(Title, {}, []), CNS_SYSTEM.dom('#app'));
+  };
+SYSTEM.exp("factorial", SYSTEM.aritize(factorial, 1));

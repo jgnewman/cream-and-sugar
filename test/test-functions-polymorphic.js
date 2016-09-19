@@ -10,7 +10,7 @@ describe('Polymorphic Function Definitions', () => {
       a is 4 and b is 4
     end`;
     const expected = nlToSpace(`function myfun () {
-      const args = SYSTEM.args(arguments);
+      const args = CNS_SYSTEM.args(arguments);
       doStuff();
       return a === 4 && b === 4;
     }`);
@@ -23,14 +23,14 @@ describe('Polymorphic Function Definitions', () => {
       factorial(n) -> n * factorial(n - 1)
     end`;
     const expected = nlToSpace(`function factorial () {
-      const args = SYSTEM.args(arguments);
-      if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
+      const args = CNS_SYSTEM.args(arguments);
+      if (args.length === 1 && CNS_SYSTEM.match(args, [["Number","0"]])) {
         return 1;
-      } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","n"]])) {
+      } else if (args.length === 1 && CNS_SYSTEM.match(args, [["Identifier","n"]])) {
         const n = args[0];
         return n * factorial(n - 1);
       } else {
-        return SYSTEM.noMatch('def');
+        return CNS_SYSTEM.noMatch('def');
       }
     }`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
@@ -42,14 +42,14 @@ describe('Polymorphic Function Definitions', () => {
       factorial n -> n * factorial n - 1
     end`;
     const expected = nlToSpace(`function factorial () {
-      const args = SYSTEM.args(arguments);
-      if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
+      const args = CNS_SYSTEM.args(arguments);
+      if (args.length === 1 && CNS_SYSTEM.match(args, [["Number","0"]])) {
         return 1;
-      } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","n"]])) {
+      } else if (args.length === 1 && CNS_SYSTEM.match(args, [["Identifier","n"]])) {
         const n = args[0];
         return n * factorial(n - 1);
       } else {
-        return SYSTEM.noMatch('def');
+        return CNS_SYSTEM.noMatch('def');
       }
     }`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
@@ -61,14 +61,14 @@ describe('Polymorphic Function Definitions', () => {
       factorial n => n * factorial n - 1
     end`;
     const expected = nlToSpace(`function factorial () {
-      const args = SYSTEM.args(arguments);
-      if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
+      const args = CNS_SYSTEM.args(arguments);
+      if (args.length === 1 && CNS_SYSTEM.match(args, [["Number","0"]])) {
         return 1;
-      } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","n"]])) {
+      } else if (args.length === 1 && CNS_SYSTEM.match(args, [["Identifier","n"]])) {
         const n = args[0];
         return n * factorial(n - 1);
       } else {
-        return SYSTEM.noMatch('def');
+        return CNS_SYSTEM.noMatch('def');
       }
     }`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
@@ -87,8 +87,8 @@ describe('Polymorphic Function Definitions', () => {
       end
     end`;
     const expected = nlToSpace(`function foo () {
-      const args = SYSTEM.args(arguments);
-      if (args.length === 1 && SYSTEM.match(args, [["Cons","[hd|tl]"]])) {
+      const args = CNS_SYSTEM.args(arguments);
+      if (args.length === 1 && CNS_SYSTEM.match(args, [["Cons","[hd|tl]"]])) {
         const hd = args[0][0];
         const tl = args[0].slice(1);
         var __ref0__ = something;
@@ -96,16 +96,16 @@ describe('Polymorphic Function Definitions', () => {
         const b = __ref0__.b;
         const c = __ref0__.c;
         return foo(doStuff(hd), tl);
-      } else if (args.length === 2 && SYSTEM.match(args, [["Identifier","item"],["Arr","[]"]])) {
+      } else if (args.length === 2 && CNS_SYSTEM.match(args, [["Identifier","item"],["Arr","[]"]])) {
         const item = args[0];
         return item;
-      } else if (args.length === 2 && SYSTEM.match(args, [["Identifier","item"],["Identifier","list"]])) {
+      } else if (args.length === 2 && CNS_SYSTEM.match(args, [["Identifier","item"],["Identifier","list"]])) {
         const item = args[0];
         const list = args[1];
         doStuff();
         return doMoreStuff();
       } else {
-        return SYSTEM.noMatch('def');
+        return CNS_SYSTEM.noMatch('def');
       }
     }`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
@@ -118,10 +118,10 @@ describe('Polymorphic Function Definitions', () => {
       factorial n -> n * factorial n - 1
     end`;
     const expected = nlToSpace(`function factorial () {
-      const args = SYSTEM.args(arguments);
-      if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
+      const args = CNS_SYSTEM.args(arguments);
+      if (args.length === 1 && CNS_SYSTEM.match(args, [["Number","0"]])) {
         return 1;
-      } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","n"]])) {
+      } else if (args.length === 1 && CNS_SYSTEM.match(args, [["Identifier","n"]])) {
         const n = args[0];
         if (n < 2) {
           return 1;
@@ -129,7 +129,7 @@ describe('Polymorphic Function Definitions', () => {
           return n * factorial(n - 1);
         }
       } else {
-        return SYSTEM.noMatch('def');
+        return CNS_SYSTEM.noMatch('def');
       }
     }`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
@@ -142,10 +142,10 @@ describe('Polymorphic Function Definitions', () => {
       factorial n -> n * factorial n - 1
     end`;
     const expected = nlToSpace(`function factorial () {
-      const args = SYSTEM.args(arguments);
-      if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
+      const args = CNS_SYSTEM.args(arguments);
+      if (args.length === 1 && CNS_SYSTEM.match(args, [["Number","0"]])) {
         return 1;
-      } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","n"]])) {
+      } else if (args.length === 1 && CNS_SYSTEM.match(args, [["Identifier","n"]])) {
         const n = args[0];
         if (n < 2 && n > -1) {
           return 1;
@@ -153,7 +153,7 @@ describe('Polymorphic Function Definitions', () => {
           return n * factorial(n - 1);
         }
       } else {
-        return SYSTEM.noMatch('def');
+        return CNS_SYSTEM.noMatch('def');
       }
     }`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
@@ -185,29 +185,29 @@ describe('Polymorphic Function Definitions', () => {
       end
     end`;
     const expected = nlToSpace(`function up () {
-      const args = SYSTEM.args(arguments);
-      return SYSTEM.spawn(function () {
-        const args = SYSTEM.args(arguments);
-        SYSTEM.receive(function () {
-          const args = SYSTEM.args(arguments);
-          if (args.length === 1 && SYSTEM.match(args, [["Arr","[~factorial, num]"]])) {
+      const args = CNS_SYSTEM.args(arguments);
+      return CNS_SYSTEM.spawn(function () {
+        const args = CNS_SYSTEM.args(arguments);
+        CNS_SYSTEM.receive(function () {
+          const args = CNS_SYSTEM.args(arguments);
+          if (args.length === 1 && CNS_SYSTEM.match(args, [["Arr","[~factorial, num]"]])) {
             const num = args[0][1];
-            return SYSTEM.reply([Symbol.for('ok'), factorial(num)]);
-          } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","_"]])) {
-            return SYSTEM.reply([Symbol.for('err'), 'Unknown command received']);
+            return CNS_SYSTEM.reply([Symbol.for('ok'), factorial(num)]);
+          } else if (args.length === 1 && CNS_SYSTEM.match(args, [["Identifier","_"]])) {
+            return CNS_SYSTEM.reply([Symbol.for('err'), 'Unknown command received']);
           } else {
-            return SYSTEM.noMatch('match');
+            return CNS_SYSTEM.noMatch('match');
           }
         });
         return function factorial () {
-          const args = SYSTEM.args(arguments);
-          if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
+          const args = CNS_SYSTEM.args(arguments);
+          if (args.length === 1 && CNS_SYSTEM.match(args, [["Number","0"]])) {
             return 1;
-          } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","n"]])) {
+          } else if (args.length === 1 && CNS_SYSTEM.match(args, [["Identifier","n"]])) {
             const n = args[0];
             return n * factorial(n - 1);
           } else {
-            return SYSTEM.noMatch('def');
+            return CNS_SYSTEM.noMatch('def');
           }
         };
       });

@@ -27,5 +27,5 @@ function compileAttrs(attrs) {
   if (!this.selfClosing && close !== name.replace(/[\'\"\`]/g, '')) {
     (0, _utils.die)(this, 'Closing tag "' + close + '" does not match opening tag ' + name + '.');
   }
-  return 'SYSTEM.createElement(' + name + ', {' + attrs + '}, [' + (body ? '\n' + body + '\n' : '') + '])';
+  return 'CNS_SYSTEM.createElement(' + name + ', {' + attrs + '}, [' + (body ? '\n' + body + '\n' : '') + '])';
 });

@@ -15,7 +15,7 @@ compile(nodes.ExportNode, function () {
   this.shared.lib.add('aritize');
   return `${this.toExport.map(item => {
       const compiled = item.name.compile(true);
-      const aritize = 'SYSTEM.aritize(' + compiled + ', ' + item.arity.compile(true) + ')';
-      return 'SYSTEM.exp("' + compiled + '", ' + aritize + ')';
+      const aritize = 'CNS_SYSTEM.aritize(' + compiled + ', ' + item.arity.compile(true) + ')';
+      return 'CNS_SYSTEM.exp("' + compiled + '", ' + aritize + ')';
   }).join(';\n')}`;
 });

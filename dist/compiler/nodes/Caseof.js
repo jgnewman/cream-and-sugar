@@ -22,7 +22,7 @@ var _utils = require('../utils');
   }).join('');
   if (needsDefault) {
     this.shared.lib.add('noMatch');
-    compiled += 'default: SYSTEM.noMatch(\'caseof\');';
+    compiled += 'default: CNS_SYSTEM.noMatch(\'caseof\');';
   }
   return '(function () {\n    switch (' + this.comparator.compile(true) + ') {\n      ' + compiled + '\n    }\n  }.bind(this)())';
 });

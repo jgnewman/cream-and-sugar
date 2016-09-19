@@ -136,22 +136,22 @@ end
     # Final form
     # args, match, noMatch
     function map() {
-      const args = SYSTEM.args(arguments);
-      if (args.length === 2 && SYSTEM.match(args, [['Identifier', 'list'], ['Identifier', 'fn']])) {
+      const args = CNS_SYSTEM.args(arguments);
+      if (args.length === 2 && CNS_SYSTEM.match(args, [['Identifier', 'list'], ['Identifier', 'fn']])) {
         const list = args[0];
         const fn = args[1];
         return map(list, fn, []);
-      } else if (args.length === 3 && SYSTEM.match(args, [['Array', '[]'], ['Identifier', '_'], ['Identifier', 'acc']])) {
+      } else if (args.length === 3 && CNS_SYSTEM.match(args, [['Array', '[]'], ['Identifier', '_'], ['Identifier', 'acc']])) {
         const acc = args[2];
         return acc;
-      } else if (args.length === 3 && SYSTEM.match(args, [['Array', '[h|t]'], ['Identifier', 'fn'], ['Identifier', 'acc']])) {
+      } else if (args.length === 3 && CNS_SYSTEM.match(args, [['Array', '[h|t]'], ['Identifier', 'fn'], ['Identifier', 'acc']])) {
         const h = args[0][0];
         const t = args[0].slice(1);
         const fn = args[1];
         const acc = args[2];
         return map(t, fn, [fn(h)].concat(acc));
       } else {
-        return SYSTEM.noMatch('def');
+        return CNS_SYSTEM.noMatch('def');
       }
     }
 
@@ -285,9 +285,9 @@ import fs from 'fs';
 
 export { someValue/2 }
 
-    SYSTEM.exp('someValue', SYSTEM.aritize(someValue, 2));
+    CNS_SYSTEM.exp('someValue', CNS_SYSTEM.aritize(someValue, 2));
 
-    SYSTEM.aritize = function (fun, arity) {
+    CNS_SYSTEM.aritize = function (fun, arity) {
       return function () {
         if (arguments.length === arity) {
           return fun(...arguments);
