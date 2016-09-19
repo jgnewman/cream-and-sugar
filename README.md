@@ -1,4 +1,4 @@
-# Cream and Sugar
+# Cream and Sugar (Alpha)
 
 [![Build Status](https://travis-ci.org/jgnewman/cream-and-sugar.svg?branch=master)](https://travis-ci.org/jgnewman/cream-and-sugar)
 ![Dependency Status](https://david-dm.org/jgnewman/cream-and-sugar.svg)
