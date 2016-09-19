@@ -11,7 +11,7 @@ var args = parseArgs();
 function parseArgs() {
   var out = {};
   var flagOn = false;
-  
+
   typeof process !== 'undefined' &&
   Array.isArray(process.argv)    &&
   process.argv.forEach(function (arg) {
