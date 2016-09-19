@@ -1,5 +1,12 @@
-var SYSTEM = typeof SYSTEM !== "undefined" ? SYSTEM : {};
-SYSTEM.match = SYSTEM.match || function (args, pattern) {
+var CNS_SYSTEM = typeof CNS_SYSTEM !== "undefined" ? CNS_SYSTEM : {};
+
+    if      (typeof global !== "undefined") { global.CNS_SYSTEM = CNS_SYSTEM }
+    else if (typeof window !== "undefined") { window.CNS_SYSTEM = CNS_SYSTEM }
+    else if (typeof self   !== "undefined") { self.CNS_SYSTEM = CNS_SYSTEM   }
+    else { this.CNS_SYSTEM = CNS_SYSTEM }
+
+  
+CNS_SYSTEM.match = CNS_SYSTEM.match || function (args, pattern) {
     return args.every(function (arg, index) {
       if (!pattern[index]) return false;
       var matchType = pattern[index][0];
@@ -19,7 +26,7 @@ SYSTEM.match = SYSTEM.match || function (args, pattern) {
               if (each === 'true') return true;
               if (each === 'false') return false;
               if (each[0] === '~') return Symbol.for(each.slice(1));
-              return /^[\$_A-z][\$_A-z0-9]*$/.test(each) ? SYSTEM : JSON.parse(each);
+              return /^[\$_A-z][\$_A-z0-9]*$/.test(each) ? CNS_SYSTEM : JSON.parse(each);
             });
             return this.eql(arg, eqlTest);
           }
@@ -37,8 +44,8 @@ SYSTEM.match = SYSTEM.match || function (args, pattern) {
       }
     }.bind(this));
   };
-SYSTEM.eql = SYSTEM.eql || function (a, b) {
-    if (a === SYSTEM || b === SYSTEM) return true; // <- Hack to force a match
+CNS_SYSTEM.eql = CNS_SYSTEM.eql || function (a, b) {
+    if (a === CNS_SYSTEM || b === CNS_SYSTEM) return true; // <- Hack to force a match
     if (a === b || (typeof a === 'number' && typeof b === 'number' && isNaN(a) && isNaN(b))) return true;
     if (typeof a !== typeof b) return false;
     if (typeof a === 'object') {
@@ -49,21 +56,21 @@ SYSTEM.eql = SYSTEM.eql || function (a, b) {
     }
     return false;
   };
-SYSTEM.args = SYSTEM.args || function (args) {
+CNS_SYSTEM.args = CNS_SYSTEM.args || function (args) {
     const out = [];
     Array.prototype.push.apply(out, args);
     return out;
   };
-SYSTEM.noMatch = SYSTEM.noMatch || function (type) {
+CNS_SYSTEM.noMatch = CNS_SYSTEM.noMatch || function (type) {
     throw new Error('No match found for ' + type + ' statement.');
   };
-SYSTEM.exp = SYSTEM.exp || (function () {
+CNS_SYSTEM.exp = CNS_SYSTEM.exp || (function () {
     var exp = (typeof module === 'undefined' || !module.exports) ? this : module.exports;
     return function (name, val) {
       exp[name] = val;
     };
   }());
-SYSTEM.aritize = SYSTEM.aritize || function (fun, arity) {
+CNS_SYSTEM.aritize = CNS_SYSTEM.aritize || function (fun, arity) {
     return function () {
       if (arguments.length === arity) {
         return fun.apply(undefined, arguments);
@@ -75,15 +82,15 @@ SYSTEM.aritize = SYSTEM.aritize || function (fun, arity) {
 
 
 function factorial () {
-    const args = SYSTEM.args(arguments);
-    if (args.length === 1 && SYSTEM.match(args, [["Number","0"]])) {
+    const args = CNS_SYSTEM.args(arguments);
+    if (args.length === 1 && CNS_SYSTEM.match(args, [["Number","0"]])) {
       
       return 1;
-    } else if (args.length === 1 && SYSTEM.match(args, [["Identifier","n"]])) {
+    } else if (args.length === 1 && CNS_SYSTEM.match(args, [["Identifier","n"]])) {
       const n = args[0];
       return n * factorial(n - 1);
     } else {
-      return SYSTEM.noMatch('def');
+      return CNS_SYSTEM.noMatch('def');
     }
   };
-SYSTEM.exp("factorial", SYSTEM.aritize(factorial, 1));
+CNS_SYSTEM.exp("factorial", CNS_SYSTEM.aritize(factorial, 1));
