@@ -1,10 +1,32 @@
 {
   "name": "cream-and-sugar",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha1",
   "description": "A deliciously functional syntax for JavaScript with native support for JSX",
+  "keywords": [
+    "javascript",
+    "language",
+    "cream and sugar",
+    "cream & sugar",
+    "cns",
+    "cream",
+    "sugar",
+    "compiler",
+    "transpiler",
+    "functional"
+  ],
+  "engines": {
+    "node": ">=4.0.0"
+  },
   "main": "index.js",
   "bin": {
     "cns": "index.js"
+  },
+  "preferGlobal": true,
+  "homepage": "https://github.com/jgnewman/cream-and-sugar",
+  "bugs": "https://github.com/jgnewman/cream-and-sugar/issues",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jgnewman/cream-and-sugar.git"
   },
   "scripts": {
     "test": "gulp test"
