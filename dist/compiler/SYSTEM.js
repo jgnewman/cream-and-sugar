@@ -57,8 +57,8 @@ const CNS_SYSTEM = {
               (matchVal === 'false' && arg === false) ||
               (matchVal === 'NaN') && isNaN(arg)) return true;
           return false;
-        case 'Tuple': throw new Error(`Can't currently match against tuple forms.`);
-        case 'Object': throw new Error(`Can't currently match against object forms.`);
+        case 'Tuple': throw new Error("Can't currently match against tuple forms.");
+        case 'Object': throw new Error("Can't currently match against object forms.");
         default: return false;
       }
     }.bind(this));
@@ -122,12 +122,12 @@ const CNS_SYSTEM = {
   },
 
   // CNS_SYSTEM.exp('myFn', function () { ... })
-  exp: `(function () {
-    var exp = (typeof module === 'undefined' || !module.exports) ? this : module.exports;
-    return function (name, val) {
-      exp[name] = val;
-    };
-  }())`,
+  exp: "(function () {" +
+    "var exp = (typeof module === 'undefined' || !module.exports) ? this : module.exports;" +
+    "return function (name, val) {" +
+      "exp[name] = val;" +
+    "};" +
+  "}())",
 
   // CNS_SYSTEM.random([1, 2, 3, 4]) -> 3
   random: function (list) {
