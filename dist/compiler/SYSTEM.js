@@ -16,10 +16,10 @@ const CNS_SYSTEM = {
     if (a === b || (typeof a === 'number' && typeof b === 'number' && isNaN(a) && isNaN(b))) return true;
     if (typeof a !== typeof b) return false;
     if (typeof a === 'object') {
-      if (Array.isArray(a)) return a.every((item, index) => this.eql(item, b[index]));
+      if (Array.isArray(a)) return a.every(function(item, index) { return this.eql(item, b[index]) }.bind(this));
       const ks = Object.keys, ak = ks(a), bk = ks(b);
       if (!this.eql(ak, bk)) return false;
-      return ak.every(key => this.eql(a[key], b[key]));
+      return ak.every(function (key) { return this.eql(a[key], b[key]) }.bind(this));
     }
     return false;
   },
@@ -38,7 +38,7 @@ const CNS_SYSTEM = {
         case 'Arr':
           if (Array.isArray(arg)) {
             const eqlTestStr = matchVal.replace(/^\[|\s+|\]$/g, '');
-            const eqlTest = !eqlTestStr.length ? [] : eqlTestStr.split(',').map(each => {
+            const eqlTest = !eqlTestStr.length ? [] : eqlTestStr.split(',').map(function (each) {
               if (each === 'null') return null;
               if (each === 'undefined') return undefined;
               if (each === 'NaN') return NaN;
@@ -198,11 +198,11 @@ const CNS_SYSTEM = {
     if (react) return react.createElement(type, a, b);
     if (typeof document === 'undefined') throw new Error('No HTML document is available.');
     const elem = document.createElement(type);
-    Object.keys(a).forEach(key => {
+    Object.keys(a).forEach(function (key) {
       const cleanKey = key === 'className' ? 'class' : key.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
       elem.setAttribute(cleanKey, a[key]);
     });
-    b.forEach(node => elem.appendChild(node));
+    b.forEach(function (node) { elem.appendChild(node) });
     return elem;
   },
 
