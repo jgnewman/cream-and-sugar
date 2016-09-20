@@ -12,7 +12,20 @@ compile(nodes.ImportNode, function () {
   // Traditional Import
   // Experimenting with this to see if it helps us import
   // modules in separate threads.
-  return this.file ? `const ${this.toImport.compile(true)} = require(${this.file.compile(true)})`
-                   : `require(${this.toImport.compile(true)})`;
+  if (!this.file) {
+    return `require(${this.toImport.compile(true)})`;
+  } else if (this.toImport.type !== 'Tuple') {
+    return `const ${this.toImport.compile(true)} = require(${this.file.compile(true)})`;
+  } else {
+    const ref = `__ref${this.shared.refs += 1}__`;
+    // Use var here so it can be redeclared in the REPL.
+    let base = `var ${ref} = require(${this.file.compile(true)});\n`;
+    this.toImport.items.forEach((item, index) => {
+      const varName = item.compile(true);
+      base += `const ${varName} = ${ref}.${varName}`;
+      index !== this.toImport.items.length - 1 && (base += ';\n');
+    });
+    return base;
+  }
 
 });
