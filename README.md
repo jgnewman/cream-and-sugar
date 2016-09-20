@@ -329,8 +329,11 @@ I'd recommend working your way sequentially through the overview.
 
 ## How do I use it?
 
-Cream & Sugar is available through npm with both a gulp and webpack plugin soon
-to come.
+Cream & Sugar is available through npm with both a gulp plugin and webpack loader! Those
+are located here:
+
+- [Gulp plugin](https://www.npmjs.com/package/gulp-cns)
+- [Webpack loader](https://www.npmjs.com/package/cns-loader)
 
 The npm package contains the contents of the Cream & Sugar repository. To get it,
 run `$ npm install cns`. If you use `-g` to install it globally, you'll also get
