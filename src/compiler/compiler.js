@@ -33,19 +33,6 @@ import './nodes/Regexp';
 import './nodes/Wrap';
 import './nodes/BackCons';
 
-
-function attempt(fn, callback) {
-  try {
-    return fn();
-  } catch (err) {
-    if (callback) {
-      callback(err);
-    } else {
-      throw err;
-    }
-  }
-}
-
 /*
  * Export a function for initializing compilation.
  */
@@ -64,12 +51,50 @@ export function compile(path, callback, options) {
 }
 
 export function compileCode(str, callback, options) {
-  const tree = attempt(() => parser.parse(str), callback);
+  let tree;
   options = options || {};
-  //console.log(tree);
-  attempt(() => tree.compile(), callback);
+
+  // Parse the tree.
+  try {
+    tree = parser.parse(str);
+  } catch (err1) {
+    if (callback) {
+      return callback(err1);
+    } else {
+      throw err1;
+    }
+  }
+
+  // Compile the tree
+  try {
+    tree.compile();
+  } catch (err2) {
+    if (callback) {
+      return callback(err2);
+    } else {
+      throw err2;
+    }
+  }
+
+  // Get rid of some extraneous semis
   tree.shared.output = tree.shared.output.replace(/(\;)(\s+\;)+/g, '$1');
-  options.finalize && attempt(() => finalize(tree), callback);
+
+  // Finalize the code
+  if (options.finalize) {
+    try {
+      finalize(tree);
+    } catch (err3) {
+      if (callback) {
+        return callback(err3);
+      } else {
+        throw err3;
+      }
+    }
+  }
+
+  // Log output if necessary
   options.log && console.log(tree.shared.output);
+
+  // Return a call to the callback if it exists or the code if not
   return callback ? callback(undefined, tree.shared.output) : tree.shared.output;
 }

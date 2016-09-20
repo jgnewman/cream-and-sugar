@@ -80,18 +80,6 @@ require('./nodes/BackCons');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function attempt(fn, callback) {
-  try {
-    return fn();
-  } catch (err) {
-    if (callback) {
-      callback(err);
-    } else {
-      throw err;
-    }
-  }
-}
-
 /*
  * Export a function for initializing compilation.
  */
@@ -110,18 +98,50 @@ function compile(path, callback, options) {
 }
 
 function compileCode(str, callback, options) {
-  var tree = attempt(function () {
-    return _utils.parser.parse(str);
-  }, callback);
+  var tree = void 0;
   options = options || {};
-  //console.log(tree);
-  attempt(function () {
-    return tree.compile();
-  }, callback);
+
+  // Parse the tree.
+  try {
+    tree = _utils.parser.parse(str);
+  } catch (err1) {
+    if (callback) {
+      return callback(err1);
+    } else {
+      throw err1;
+    }
+  }
+
+  // Compile the tree
+  try {
+    tree.compile();
+  } catch (err2) {
+    if (callback) {
+      return callback(err2);
+    } else {
+      throw err2;
+    }
+  }
+
+  // Get rid of some extraneous semis
   tree.shared.output = tree.shared.output.replace(/(\;)(\s+\;)+/g, '$1');
-  options.finalize && attempt(function () {
-    return (0, _finalize2.default)(tree);
-  }, callback);
+
+  // Finalize the code
+  if (options.finalize) {
+    try {
+      (0, _finalize2.default)(tree);
+    } catch (err3) {
+      if (callback) {
+        return callback(err3);
+      } else {
+        throw err3;
+      }
+    }
+  }
+
+  // Log output if necessary
   options.log && console.log(tree.shared.output);
+
+  // Return a call to the callback if it exists or the code if not
   return callback ? callback(undefined, tree.shared.output) : tree.shared.output;
 }

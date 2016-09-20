@@ -6,6 +6,7 @@ var CNS_SYSTEM = typeof CNS_SYSTEM !== "undefined" ? CNS_SYSTEM : {};
     else { this.CNS_SYSTEM = CNS_SYSTEM }
 
   
+//**END LIBRARY**//
 CNS_SYSTEM.match = CNS_SYSTEM.match || function (args, pattern) {
     return args.every(function (arg, index) {
       if (!pattern[index]) return false;
