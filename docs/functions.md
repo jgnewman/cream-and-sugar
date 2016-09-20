@@ -185,12 +185,12 @@ createDate() #=> Sat Sep 10 2016 16:06:07 GMT-0400 (EDT)
 One nice feature of Cream & Sugar is that you can actually define pattern matches without naming a function. Doing so follows the same syntax form as `def ... end` except that you'll use `match` instead of `def`, and you won't need to write the name of the function in each pattern. Consider the following:
 
 ```ruby
-factorializeList = match
-  (0) -> 1
-  (n) -> n * factorializeList(n - 1)
+eatFood = match
+  ('pizza') -> 'ate pizza'
+  (food) -> 'ate some other kind of food'
 end
 
-[3, 4, 5].map(factorializeList) #=> [6, 24, 120]
+eatFood('hamburger') #=> 'ate some other kind of food'
 ```
 
 This technique is especially useful when accepting messages from [external processes](processes.md). For example, CnS actually allows you to quickly and easily spin up extra operating system processes and pass messages between them. In order to handle incoming messages, you call the `receive` function and pass a function to it. This is a great place to use `match ... end`.

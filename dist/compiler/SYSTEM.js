@@ -34,6 +34,7 @@ const CNS_SYSTEM = {
         case 'Identifier': return true;
         case 'Atom': return Symbol.for(matchVal.slice(1)) === arg;
         case 'Number': return typeof arg === 'number' && arg === parseFloat(matchVal);
+        case 'String': return arg === matchVal;
         case 'Cons': case 'BackCons': return Array.isArray(arg);
         case 'Arr':
           if (Array.isArray(arg)) {

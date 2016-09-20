@@ -1,6 +1,19 @@
 import { compile, nodes, compileBody } from '../utils';
 
 /**
+ * Removes quotes from the beginning of a string if the value we get
+ * is indeed a string.
+ *
+ * @param  {String} type  A type of value.
+ * @param  {String} src   The actual source of the value.
+ *
+ * @return {String}
+ */
+function handleStrings(type, src) {
+  return type === 'String' ? src.replace(/^('|")|('|")$/g, '') : src;
+}
+
+/**
  * Takes an array of function parameter nodes and creates
  * patterns we can match against.
  *
@@ -11,7 +24,7 @@ import { compile, nodes, compileBody } from '../utils';
 function getPatterns(args) {
   return args.map(arg => {
     const realArg = arg.type === 'Wrap' ? arg.item : arg ;
-    return [realArg.type, realArg.src];
+    return [realArg.type, handleStrings(realArg.type, realArg.src)];
   });
 }
 
