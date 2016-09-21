@@ -204,3 +204,12 @@ myfun = match
   [~factorial, num] -> reply [~ok, factorial num]
   _ -> reply [~err, 'Unknown command received']
 end
+
+import x from y
+import x from 'y'
+import { x } from y
+import { x } from 'y'
+import y
+import 'y'
+
+foo x, y

@@ -160,7 +160,23 @@ Import
     {
       $$ = new ImportNode($2, $4, createSourceLocation(null, @1, @4));
     }
+  | IMPORT Importable FROM Identifier
+    {
+      $$ = new ImportNode($2, $4, createSourceLocation(null, @1, @4));
+    }
+  | IMPORT Identifier FROM Identifier
+    {
+      $$ = new ImportNode($2, $4, createSourceLocation(null, @1, @4));
+    }
+  | IMPORT Identifier FROM Str
+    {
+      $$ = new ImportNode($2, $4, createSourceLocation(null, @1, @4));
+    }
   | IMPORT Str
+    {
+      $$ = new ImportNode($2, null, createSourceLocation(null, @1, @2));
+    }
+  | IMPORT Identifier
     {
       $$ = new ImportNode($2, null, createSourceLocation(null, @1, @2));
     }
