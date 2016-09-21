@@ -49,6 +49,22 @@ In this example, we created a function called `map` that essentially mimics Java
 
 In this case, we don't want users of our module to be able to pass in 3 arguments to this function as they could pretty easily mess things up. So when we export it, we export it as `map/2`. This way, if a user tries to call it with a third argument, they'll get an error. However, this does not inhibit the function's own ability to recurse with 3 arguments.
 
-All functions in CnS must be exported with a choice of allowed arity.
+It is often useful to export functions with a locked down arity. However, in some cases you may want to leave your function open to being called with dynamic arity. In that case, simply don't included the slash and the number when you name the function in the export. For example:
+
+```javascript
+export { map }
+```
+
+Leaving arity open can be important when working with certain libraries, for example React.js. If you export a react class, you'll need to leave the arity open so that you don't end up with a console error:
+
+```ruby
+App = React.createClass {
+  render: fn ->
+    <div>"Hello"</div>
+  end
+}
+
+export { App }
+```
 
 [<- Back to the overview](overview.md)

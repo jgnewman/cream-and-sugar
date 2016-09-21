@@ -229,8 +229,8 @@ the function's logic.
 
 Never fear. You can take care of this when you export the function. In CnS,
 you will always export functions as a group. For each one being exported, you
-will choose the arity with which users will be allowed to call the function.
-For example...
+have the option of choosing the arity with which users will be allowed to call
+the function. For example...
 
 ```erlang
 export { each/2 }
@@ -239,6 +239,13 @@ export { each/2 }
 In this example, we're exporting the `each` function with an arity of 2, meaning
 that users who import it will only be allowed to pass it 2 arguments. If they
 call the function with any other number of arguments, they'll get an error.
+
+If you would like to leave the arity open, simply omit the slash and number when
+you name the exported function. For example...
+
+```erlang
+export { each }
+```
 
 #### Recursion in CnS vs recursion in JavaScript
 

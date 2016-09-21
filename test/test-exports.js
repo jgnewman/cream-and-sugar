@@ -19,6 +19,14 @@ describe('Exports', () => {
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
+  it('should export multiple items with mixed arity requirements', () => {
+    const toCompile = 'export {a/1, b, c/3}';
+    const expected = nlToSpace(`CNS_SYSTEM.exp("a", CNS_SYSTEM.aritize(a, 1));
+    CNS_SYSTEM.exp("b", b);
+    CNS_SYSTEM.exp("c", CNS_SYSTEM.aritize(c, 3))`);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+  });
+
   it('should export multiple items when the tuple has new lines everywhere', () => {
     const toCompile = `export {
       a/1,

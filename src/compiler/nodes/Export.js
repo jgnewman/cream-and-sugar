@@ -15,7 +15,11 @@ compile(nodes.ExportNode, function () {
   this.shared.lib.add('aritize');
   return `${this.toExport.map(item => {
       const compiled = item.name.compile(true);
-      const aritize = 'CNS_SYSTEM.aritize(' + compiled + ', ' + item.arity.compile(true) + ')';
-      return 'CNS_SYSTEM.exp("' + compiled + '", ' + aritize + ')';
+      if (item.arity === '*') {
+        return 'CNS_SYSTEM.exp("' + compiled + '", ' + compiled + ')';
+      } else {
+        const aritize = 'CNS_SYSTEM.aritize(' + compiled + ', ' + item.arity.compile(true) + ')';
+        return 'CNS_SYSTEM.exp("' + compiled + '", ' + aritize + ')';
+      }
   }).join(';\n')}`;
 });

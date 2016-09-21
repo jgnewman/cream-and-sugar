@@ -18,6 +18,10 @@ b, c} from 'farts'
 
 export { a/2 }
 export { a/1, b/2, c/3 }
+export { a/1, b, c/2 }
+export { a, b, c }
+export { a, b/1, c/2 }
+export { a, b, c/2 }
 export {a/1, b/2, c/3
 }
 export {

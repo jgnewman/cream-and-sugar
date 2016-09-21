@@ -274,4 +274,10 @@ export { map/2 }
 
 The `/2` on the end of the function name denotes the allowed arity that the function is to be exported with. Now, when a user imports `map` from your module, they will get an error if they try to call it with any amount of arguments other than 2. However, recursion within the function will still work just fine with 3 arguments.
 
+Note that you do not have to force an arity when you export a function. You could just as easily write the following to allow users to call your function with any arity at all:
+
+```javascript
+export { map }
+```
+
 [<- Back to the overview](overview.md)

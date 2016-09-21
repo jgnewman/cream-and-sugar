@@ -17,7 +17,11 @@ var _utils = require('../utils');
   this.shared.lib.add('aritize');
   return '' + this.toExport.map(function (item) {
     var compiled = item.name.compile(true);
-    var aritize = 'CNS_SYSTEM.aritize(' + compiled + ', ' + item.arity.compile(true) + ')';
-    return 'CNS_SYSTEM.exp("' + compiled + '", ' + aritize + ')';
+    if (item.arity === '*') {
+      return 'CNS_SYSTEM.exp("' + compiled + '", ' + compiled + ')';
+    } else {
+      var aritize = 'CNS_SYSTEM.aritize(' + compiled + ', ' + item.arity.compile(true) + ')';
+      return 'CNS_SYSTEM.exp("' + compiled + '", ' + aritize + ')';
+    }
   }).join(';\n');
 });

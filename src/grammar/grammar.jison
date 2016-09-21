@@ -168,6 +168,7 @@ Import
 
 ExportItem
   : Identifier "/" Num { $$ = { name: $1, arity: $3 }; }
+  | Identifier         { $$ = { name: $1, arity: '*'}; }
   ;
 
 ExportItems
