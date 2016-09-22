@@ -34,12 +34,26 @@ describe('Scope Piping', () => {
     assert.equal(expected, compileCode(toCompile));
   });
 
+  it('should allow piping with variable assignments', () => {
+    const toCompile = 'x = y :: z';
+    const expected = nlToSpace(`
+      const x = CNS_SYSTEM.pipe(y).to(z)()
+    `);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+  });
+
   it('should allow piping with module imports', () => {
     const toCompile = 'import x from y :: z';
     const expected = nlToSpace(`
       const __ref0__ = require(y);
       const x = CNS_SYSTEM.pipe(__ref0__).to(z)()
     `);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+  });
+
+  it('should allow piping with cons statements', () => {
+    const toCompile = '[x | y :: z]';
+    const expected = nlToSpace(`[x].concat(CNS_SYSTEM.pipe(y).to(z)())`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 

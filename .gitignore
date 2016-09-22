@@ -1,2 +1,4 @@
 node_modules
 .DS_Store
+test-irl/output/*
+test-irl/.browserifycache.js
