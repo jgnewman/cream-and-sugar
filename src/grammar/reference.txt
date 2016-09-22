@@ -296,3 +296,48 @@ export { someValue/2 }
         }
       };
     };
+
+
+# Piping
+--------
+
+addNum x -> @ + x
+subNum x -> @ - x
+
+4 :: addNum(2) :: subNum(2)
+
+    function addNum(x) {
+      return this + x;
+    }
+
+    function subNum(x) {
+      return this - x;
+    }
+
+    CNS_SYSTEM.pipe(4).to(addNum, 2).to(subNum, 2)();
+
+    CNS_SYSTEM.pipe = function (val) {
+      const layers = [], to = function (name) {
+        const args = Array.prototype.slice.call(arguments, 1), exec = function () {
+          var ctxt = val;
+          layers.forEach(function (layer) { ctxt = layer[0].apply(ctxt, layer[1]) });
+          return ctxt;
+        };
+        layers.push([name, args]) && (exec.to = to);
+        return exec;
+      };
+      return to.to = to;
+    };
+
+    // This is especially useful for transforming imports
+
+import functions from './Module' :: moduleKeys
+
+moduleKeys() -> Object.keys(@)
+
+    const __functions__ = require('./Module');
+    const functions = CNS_SYSTEM.pipe(__functions__).to(moduleKeys)();
+
+    function moduleKeys() {
+      return Object.keys(this.pipe);
+    }

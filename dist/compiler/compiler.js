@@ -78,6 +78,8 @@ require('./nodes/Wrap');
 
 require('./nodes/BackCons');
 
+require('./nodes/Pipe');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /*

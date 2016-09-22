@@ -60,6 +60,7 @@ true|false|null|undefined            return "SPECIALVAL";
 "@"                                  return "IDENTIFIER";
 ","                                  return ",";
 "->"                                 return "->";
+"::"                                 return "::";
 ":"                                  return ":";
 "=>"                                 return "=>";
 "="                                  return "=";
@@ -143,6 +144,7 @@ SourceElement
   | Export
   | Html
   | Regexp
+  | Pipe
   ;
 
 CommonElement
@@ -300,6 +302,27 @@ Operation
   | CommonElement OPERATOR SourceElement
     {
       $$ = new OperationNode($2, $1, $3, createSourceLocation(null, @1, @3));
+    }
+  ;
+
+Pipe
+  : CommonElement "::" CommonElement
+    {
+      $$ = new PipeNode($1, [$3], createSourceLocation(null, @1, @3));
+    }
+  | Pipe "::" CommonElement
+    {
+      $1.chain = [$3].concat($1.chain);
+      $$ = $1;
+    }
+  | SourceElement "::" CommonElement
+    {
+      $$ = new PipeNode($1, [$3], createSourceLocation(null, @1, @3));
+    }
+  | Pipe "::" SourceElement
+    {
+      $1.chain = [$3].concat($1.chain);
+      $$ = $1;
     }
   ;
 
@@ -1014,6 +1037,14 @@ function HtmlNode(selfClosing, openTag, attrs, body, closeTag, loc) {
   this.shared = shared;
 }
 
+function PipeNode(initVal, chain, loc) {
+  this.type = 'Pipe';
+  this.initVal = initVal;
+  this.chain = chain;
+  this.loc = loc;
+  this.shared = shared;
+}
+
 function WrapNode(item, loc) {
   this.type = 'Wrap';
   this.item = item;
@@ -1056,4 +1087,5 @@ n.TryCatchNode = TryCatchNode;
 n.ImportNode = ImportNode;
 n.ExportNode = ExportNode;
 n.HtmlNode = HtmlNode;
+n.PipeNode = PipeNode;
 n.WrapNode = WrapNode;

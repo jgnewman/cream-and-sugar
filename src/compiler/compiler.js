@@ -32,6 +32,7 @@ import './nodes/List';
 import './nodes/Regexp';
 import './nodes/Wrap';
 import './nodes/BackCons';
+import './nodes/Pipe';
 
 /*
  * Export a function for initializing compilation.

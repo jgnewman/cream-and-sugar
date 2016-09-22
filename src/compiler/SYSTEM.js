@@ -24,6 +24,20 @@ const CNS_SYSTEM = {
     return false;
   },
 
+  // CNS_SYSTEM.pipe(value).to(fnName, addtlArg).to(fnName, addtlArg)()
+  pipe: function (val) {
+    const layers = [], to = function (name) {
+      const args = Array.prototype.slice.call(arguments, 1), exec = function () {
+        var ctxt = val;
+        layers.forEach(function (layer) { ctxt = layer[0].apply(ctxt, layer[1]) });
+        return ctxt;
+      };
+      layers.push([name, args]) && (exec.to = to);
+      return exec;
+    };
+    return to.to = to;
+  },
+
   // CNS_SYSTEM.match(args, [['Identifier', 'x']])
   match: function (args, pattern) {
     return args.every(function (arg, index) {
