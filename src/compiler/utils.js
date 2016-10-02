@@ -1,6 +1,9 @@
 import parser from '../parser/parser';
+import { getLexer } from '../lexer/lexer';
 
 const nodes = parser.parser.nodes;
+
+parser.parser.lexer = getLexer();
 
 /**
  * Create an error, log a problem, and die.

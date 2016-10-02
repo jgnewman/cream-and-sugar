@@ -9,9 +9,10 @@ function getLastChar(str) {
  * Newlines output newlines.
  */
 compile(nodes.NewLineNode, function () {
-  const insertConditions = this.shared.insertSemis
-                           && getLastChar(this.shared.output) !== ';'
-                           && /[^\n\;]/.test(this.shared.output);
-  const output = insertConditions ? ';\n' : '\n';
-  return output;
+  // const insertConditions = this.shared.insertSemis
+  //                          && getLastChar(this.shared.output) !== ';'
+  //                          && /[^\n\;]/.test(this.shared.output);
+  // const output = insertConditions ? ';\n' : '\n';
+  // return output;
+  return '\n';
 });
