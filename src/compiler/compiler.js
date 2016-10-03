@@ -54,6 +54,7 @@ export function compile(path, callback, options) {
 export function compileCode(str, callback, options) {
   let tree;
   options = options || {};
+  str = str + '\n';
 
   // Parse the tree.
   try {

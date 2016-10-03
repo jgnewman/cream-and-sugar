@@ -31,7 +31,7 @@ ProgramBody
 
 ProgramElement
   : Expression
-  | NewLine
+  | NewLines
   ;
 
 Expression
@@ -94,26 +94,49 @@ NewLine
     }
   ;
 
+SingelineList
+  : Expression                   { $$ = [$1]; }
+  | SingelineList "," Expression { $$ = $1.concat($3); }
+  ;
+
+NewLines
+  : NewLine          { $$ = $1; }
+  | NewLines NewLine { $$ = $2; }
+  ;
+
+MultilineList
+  : Expression                   { $$ = [$1]; }
+  | NewLines                     { $$ = []; }
+  | MultilineList "," Expression { $$ = $1.concat($3); }
+  | MultilineList "," NewLines   { $$ = $1; }
+  | MultilineList NewLines       { $$ = $1; }
+  ;
+
 FunctionCall
   : Expression "(" ")"
     {
       $$ = new FunctionCallNode($1, {items:[]}, createSourceLocation(null, @1, @3));
     }
-  | Expression "(" CommaList ")"
+  | Expression "(" SingelineList ")"
     {
       $$ = new FunctionCallNode($1, {items:$3}, createSourceLocation(null, @1, @4));
     }
-  | Expression CommaList
+  | Expression "(" MultilineList ")"
+    {
+      $$ = new FunctionCallNode($1, {items:$3}, createSourceLocation(null, @1, @4));
+    }
+  | Expression "(" INDENT MultilineList DEDENT ")"
+    {
+      $$ = new FunctionCallNode($1, {items:$4}, createSourceLocation(null, @1, @6));
+    }
+  | Expression SingelineList
     {
       $$ = new FunctionCallNode($1, {items:$2}, createSourceLocation(null, @1, @2));
     }
-  ;
-
-CommaList
-  : Expression               { $$ = [$1]; }
-  | NewLine                  { $$ = []; }
-  | CommaList "," Expression { $$ = $1.concat($3); }
-  | CommaList "," NewLine    { $$ = $1; }
+  | Expression INDENT MultilineList DEDENT
+    {
+      $$ = new FunctionCallNode($1, {items:$3}, createSourceLocation(null, @1, @3));
+    }
   ;
 
 Arr
@@ -121,9 +144,17 @@ Arr
     {
       $$ = new ArrNode([], createSourceLocation(null, @1, @2));
     }
-  | "[" CommaList "]"
+  | "[" SingelineList "]"
     {
       $$ = new ArrNode($2, createSourceLocation(null, @1, @3));
+    }
+  | "[" MultilineList "]"
+    {
+      $$ = new ArrNode($2, createSourceLocation(null, @1, @3));
+    }
+  | "[" INDENT MultilineList DEDENT "]"
+    {
+      $$ = new ArrNode($3, createSourceLocation(null, @1, @5));
     }
   ;
 
