@@ -219,8 +219,6 @@ compile(nodes.PolymorphNode, function () {
     }`;
   }).join(' ');
 
-  console.log('--------', patternOrder.length);
-
   // Add appropriate library functions
   this.shared.lib.add('match');
   this.shared.lib.add('eql'); // necessary to run match

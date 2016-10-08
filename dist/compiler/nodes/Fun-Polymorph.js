@@ -213,8 +213,6 @@ function sanitizeFnMeta(fnList) {
     return keyword + ' (args.length === ' + matchObjs[0].args.length + ' && CNS_SYSTEM.match(args, ' + pattern + ')) {\n      ' + compileArgs(pattern) + '\n      ' + subBodies + '\n    }';
   }).join(' ');
 
-  console.log('--------', patternOrder.length);
-
   // Add appropriate library functions
   this.shared.lib.add('match');
   this.shared.lib.add('eql'); // necessary to run match
