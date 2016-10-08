@@ -10,7 +10,6 @@ describe('Polymorphic Function Definitions', () => {
       a is 4 and b is 4
     end`;
     const expected = nlToSpace(`function myfun () {
-      const args = CNS_SYSTEM.args(arguments);
       doStuff();
       return a === 4 && b === 4;
     }`);
@@ -185,9 +184,7 @@ describe('Polymorphic Function Definitions', () => {
       end
     end`;
     const expected = nlToSpace(`function up () {
-      const args = CNS_SYSTEM.args(arguments);
       return CNS_SYSTEM.spawn(function () {
-        const args = CNS_SYSTEM.args(arguments);
         CNS_SYSTEM.receive(function () {
           const args = CNS_SYSTEM.args(arguments);
           if (args.length === 1 && CNS_SYSTEM.match(args, [["Arr","[~factorial, num]"]])) {

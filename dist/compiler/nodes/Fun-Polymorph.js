@@ -110,8 +110,9 @@ function sanitizeFnMeta(fnList) {
   var preFn = this.preArrow.type === 'FunctionCall';
   var args = compileArgs(getPatterns(preFn ? this.preArrow.args.items : this.preArrow.items));
   var prefix = preFn ? this.preArrow.fn.compile(true) + ' ()' : '()';
-  this.shared.lib.add('args');
-  return 'function ' + prefix + ' {\n    const args = CNS_SYSTEM.args(arguments);\n    ' + args + '\n    ' + (0, _utils.compileBody)(this.body) + ';\n  }' + (this.bind ? '.bind(this)' : '');
+  var argStr = !args.length ? '' : 'const args = CNS_SYSTEM.args(arguments);';
+  args.length && this.shared.lib.add('args');
+  return 'function ' + prefix + ' {\n    ' + argStr + '\n    ' + args + '\n    ' + (0, _utils.compileBody)(this.body) + ';\n  }' + (this.bind ? '.bind(this)' : '');
 });
 
 /*
@@ -211,6 +212,8 @@ function sanitizeFnMeta(fnList) {
     // Spit out the top-level condition based on precompiled information
     return keyword + ' (args.length === ' + matchObjs[0].args.length + ' && CNS_SYSTEM.match(args, ' + pattern + ')) {\n      ' + compileArgs(pattern) + '\n      ' + subBodies + '\n    }';
   }).join(' ');
+
+  console.log('--------', patternOrder.length);
 
   // Add appropriate library functions
   this.shared.lib.add('match');

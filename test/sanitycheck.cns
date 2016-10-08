@@ -215,3 +215,5 @@ import 'y'
 foo(x, y) :: add(2) :: sub(3) :: mlt(4) :: div(5)
 
 {foo: 'bar'} :: add :: sub(3)
+
+foo _

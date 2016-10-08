@@ -28,6 +28,11 @@ describe('Function Calls', () => {
     assert.equal('foo(bar)', compileCode(toCompile));
   });
 
+  it('should treat the single argument "_" as 0 arity', () => {
+    const toCompile = 'foo _';
+    assert.equal('foo()', compileCode(toCompile));
+  });
+
   it('should compile a multi argument call WITHOUT parentheses', () => {
     const toCompile = 'foo bar, baz, quux';
     assert.equal('foo(bar, baz, quux)', compileCode(toCompile));
@@ -48,7 +53,6 @@ describe('Function Calls', () => {
   it('should compile with various types of arguments', () => {
     const toCompile = 'foo bar, 0, [a, b, c], fn -> eat(food)';
     assert.equal(nlToSpace(`foo(bar, 0, [a, b, c], function () {
-      const args = CNS_SYSTEM.args(arguments);
       return eat(food);
     })`), nlToSpace(compileCode(toCompile)));
   });

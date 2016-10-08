@@ -7,7 +7,6 @@ describe('Anonymous Functions', () => {
   it('should compile an anonymous function', () => {
     const toCompile = `fn -> eat(food)`;
     const expected = nlToSpace(`function () {
-      const args = CNS_SYSTEM.args(arguments);
       return eat(food);
     }`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
@@ -16,7 +15,6 @@ describe('Anonymous Functions', () => {
   it('should compile an anonymous function with implicit binding', () => {
     const toCompile = `fn => eat(food)`;
     const expected = nlToSpace(`function () {
-      const args = CNS_SYSTEM.args(arguments);
       return eat(food);
     }.bind(this)`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));

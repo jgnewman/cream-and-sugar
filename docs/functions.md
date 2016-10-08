@@ -38,7 +38,7 @@ And at this point, you should have a decent grasp on the first technique for def
 
 Function calls in CnS look like function calls in most other languages. That is, they are usually marked by a word followed by parentheses. For example `foo()`. If the function takes arguments, they should be placed inside the parentheses and separated by commas. For example `foo(x, y)`.
 
-For convenience, CnS does not require these parentheses. As such, writing `foo x, y` is directly equivalent to writing `foo(x, y)`. However, if you are not passing any arguments to your function, you will need to include the parentheses in order to indicate that you are actually calling the function instead of just referencing it. For example, `foo` does not actually call the function but `foo()` does.
+However, for convenience, CnS does not require these parentheses. As such, writing `foo x, y` is directly equivalent to writing `foo(x, y)`. If you are not passing any arguments to your function, you will still need to include some indication of an argument list in order to show that you are actually calling the function instead of just referencing it. For example, `foo` does not actually call the function but `foo()` does. If you would rather not use parentheses _at all_, you can also call a function using the "empty identifier" `_` as follows: `foo _` which translates to `foo()` in JavaScript. In CnS, a lone underscore signifies either an un-needed parameter in pattern matches (more on that later) or an empty argument list in function calls.
 
 In most of the following examples in this section we'll be including the parentheses. This is simply because most people are used to them and it should help newcomers get a feel for the language more quickly.
 
