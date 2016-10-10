@@ -18,9 +18,11 @@ function stringify(val) {
 
 export default function finalize(tree) {
   const lib = [...tree.shared.lib];
-  tree.shared.output = prepend(tree.shared.output, lib.map(name => {
-    return `CNS_SYSTEM.${name} = CNS_SYSTEM.${name} || ${stringify(CNS_SYSTEM[name])}`;
-  }).join(';\n') + ';\n');
+  const libPieces = [];
+  lib.forEach(name => {
+    libPieces.push(`CNS_SYSTEM.${name} = CNS_SYSTEM.${name} || ${stringify(CNS_SYSTEM[name])}`);
+  });
+  tree.shared.output = prepend(tree.shared.output, libPieces.length ? libPieces.join(';\n') + ';\n' : '\n');
   tree.shared.output = prepend(tree.shared.output, '//**END LIBRARY**//');
   tree.shared.output = prepend(tree.shared.output, `
     if      (typeof global !== "undefined") { global.CNS_SYSTEM = CNS_SYSTEM }

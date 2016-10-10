@@ -110,9 +110,10 @@ function sanitizeFnMeta(fnList) {
   var preFn = this.preArrow.type === 'FunctionCall';
   var args = compileArgs(getPatterns(preFn ? this.preArrow.args.items : this.preArrow.items));
   var prefix = preFn ? this.preArrow.fn.compile(true) + ' ()' : '()';
-  var argStr = !args.length ? '' : 'const args = CNS_SYSTEM.args(arguments);';
+  var argStr = !args.length ? '' : '\nconst args = CNS_SYSTEM.args(arguments);';
+  var body = (0, _utils.compileBody)(this.body);
   args.length && this.shared.lib.add('args');
-  return 'function ' + prefix + ' {\n    ' + argStr + '\n    ' + args + '\n    ' + (0, _utils.compileBody)(this.body) + ';\n  }' + (this.bind ? '.bind(this)' : '');
+  return 'function ' + prefix + ' {' + argStr + (args.length ? '\n' + args : '') + (body.length ? '\n  ' + body + ';\n' : '') + ('}' + (this.bind ? '.bind(this)' : ''));
 });
 
 /*

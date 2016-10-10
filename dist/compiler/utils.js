@@ -79,13 +79,15 @@ function removeNewlines(body) {
 function compileBody(body, delim) {
   var end = delim || ';';
   var cleanBody = removeNewlines(body);
-  return cleanBody.map(function (item, index) {
+  var bodyPieces = [];
+  cleanBody.forEach(function (item, index) {
     var prefix = index === cleanBody.length - 1 && !delim ? 'return ' : '';
     if (!item.compile) {
       throw new Error('Item type ' + item.type + ' has no compile method.');
     }
-    return prefix + item.compile(true);
-  }).join(end + '\n') + (delim === ';' ? ';' : '');
+    bodyPieces.push(prefix + item.compile(true));
+  });
+  return !bodyPieces.length ? '' : bodyPieces.join(end + '\n') + (delim === ';' ? ';' : '');
 }
 
 // Official list of exposed system functions

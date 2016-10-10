@@ -108,13 +108,14 @@ compile(nodes.FunNode, function () {
   const preFn  = this.preArrow.type === 'FunctionCall';
   const args   = compileArgs(getPatterns(preFn ? this.preArrow.args.items : this.preArrow.items));
   const prefix = preFn ? `${this.preArrow.fn.compile(true)} ()` : `()`;
-  const argStr = !args.length ? '' : 'const args = CNS_SYSTEM.args(arguments);';
+  const argStr = !args.length ? '' : '\nconst args = CNS_SYSTEM.args(arguments);';
+  const body   = compileBody(this.body);
   args.length && this.shared.lib.add('args');
-  return `function ${prefix} {
-    ${argStr}
-    ${args}
-    ${compileBody(this.body)};
-  }${this.bind ? '.bind(this)' : ''}`;
+  return `function ${prefix} {`
+         +  argStr
+         +  (args.length ? '\n' + args : '')
+         +  (body.length ? '\n  ' + body + ';\n' : '')
+         +  `}${this.bind ? '.bind(this)' : ''}`;
 });
 
 /*

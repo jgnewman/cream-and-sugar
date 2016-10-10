@@ -1,3 +1,5 @@
+
+
 []
 [
   1, 2, 3]
@@ -193,6 +195,10 @@ catch err:
 end
 
 myVar = doStuff(err) incase otherStuff() throws err
+
+doStuff(err) incase do fn ->
+  otherStuff()
+end throws err
 
 [1, 2, 3].forEach(fn -> end)
 
