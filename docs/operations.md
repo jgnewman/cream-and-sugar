@@ -8,8 +8,8 @@ Let's start with basic math:
 - Subtraction is performed with the `-` operator: `a - b`
 - Multiplication is performed with the `*` operator: `a * b`
 - Basic division is performed in two ways –
-  - To get a rounded float, use the `dv` operator: `3 dv 2` (1.5)
-  - To get the a remainder, use the `rm` operator: `3 rm 2` (1)
+  - To get a rounded float, use the `/` operator: `3 / 2` (1.5)
+  - To get the a remainder, use the `%` operator: `3 % 2` (1)
 
 You will also use infix operators to perform comparisons:
 

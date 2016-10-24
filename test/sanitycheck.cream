@@ -218,3 +218,7 @@ apply (fn =>
 ), [4]
 
 apply fn => _
+
+x / y
+
+x % y

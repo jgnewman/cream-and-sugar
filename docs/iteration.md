@@ -37,7 +37,7 @@ The above code essentially equates to `[1, 2, 3].map(num => num + 1)` in JavaScr
 You also have the option of adding qualifiers to the end of your comprehensions. For example...
 
 ```ruby
-for num, index in [1, 2, 3] do num * 1 onlyif index rm 2 is 0
+for num, index in [1, 2, 3] do num * 1 onlyif index % 2 is 0
 #=> [1, 3]
 ```
 

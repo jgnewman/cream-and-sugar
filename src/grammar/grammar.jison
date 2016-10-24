@@ -104,7 +104,7 @@
 "from"                               return "FROM";
 "onlyif"                             return "ONLYIF";
 
-and|or|lte|gte|lt|gt|dv|rm           return "LOGIC";
+and|or|lte|gte|lt|gt                 return "LOGIC";
 isnt|is|\=\=|\!\=                    return "LOGIC";
 
 true|false|null|undefined            return "SPECIALVAL";
@@ -131,10 +131,9 @@ true|false|null|undefined            return "SPECIALVAL";
 "=>"                                 return "=>";
 "="                                  return "=";
 "."                                  return ".";
-"/"                                  return "/";
 "||"                                 return "||";
 
-\+|\-|\*                             return "OPERATOR";
+\+|\-|\*|\/|\%                       return "OPERATOR";
 
 "("                                  return "(";
 ")"                                  return ")";

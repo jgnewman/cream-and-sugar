@@ -96,7 +96,7 @@ if some 'condition' then perform 'task' else dont 'perform task'
 
 # comprehensions
 for x, i in list do perform x, i
-for x, i in list do perform x, i onlyif i rm 2 is 0
+for x, i in list do perform x, i onlyif i % 2 == 0
 
 # destructuring
 obj = { a: 1, b: 2 }

@@ -11,8 +11,6 @@ compile(nodes.LogicNode, function () {
     gt: '>',
     lte: '<=',
     gte: '>=',
-    dv: '/',
-    rm: '%',
     is: '===',
     isnt: '!==',
     "==": '===',
