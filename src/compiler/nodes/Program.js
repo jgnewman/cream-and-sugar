@@ -1,4 +1,4 @@
-import { compile, nodes } from '../utils';
+import { compile, nodes, groupPolymorphs } from '../utils';
 
 /*
  * Loop over all nodes in the program body and call
@@ -6,11 +6,12 @@ import { compile, nodes } from '../utils';
  * to contain the output.
  */
 compile(nodes.ProgramNode, function () {
+  const newBody = groupPolymorphs(this.body);
   this.shared.output = '';
   this.shared.lib = new Set();
   this.shared.insertSemis = true; // Turn this off when we're going to manually handle it
   this.shared.refs = -1;
-  this.body.forEach(node => {
+  newBody.forEach(node => {
     try {
       node.compile();
     } catch (err) {

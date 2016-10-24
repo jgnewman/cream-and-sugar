@@ -6,8 +6,9 @@ function maybeQuote(str) {
 
 function compileAttrs(attrs) {
   return attrs.map(attr => {
-    let val = attr[1].compile(true);
-    attr[1].type === 'Tuple' && (val = val.replace(/^\{|\}$/g, ''));
+    let val = attr[1].type === 'Tuple'
+                ? attr[1].items[0].compile(true)
+                : attr[1].compile(true);
     return `${attr[0].compile(true)}: ${val}`;
   }).join(', ');
 }
@@ -24,5 +25,5 @@ compile(nodes.HtmlNode, function () {
   if (!this.selfClosing && close !== name.replace(/[\'\"\`]/g, '')) {
     die(this, `Closing tag "${close}" does not match opening tag ${name}.`);
   }
-  return `CNS_SYSTEM.createElement(${name}, {${attrs}}, [${body ? '\n' + body + '\n' : ''}])`;
+  return `CNS_.createElement(${name}, {${attrs}}, [${body ? '\n' + body + '\n' : ''}])`;
 });

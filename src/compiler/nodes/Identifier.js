@@ -4,25 +4,32 @@ import { compile, nodes, die, getExposedFns, getReservedWords, getMsgPassingFns 
  * Drop in identifiers.
  */
 compile(nodes.IdentifierNode, function () {
+  if (this.text === '@') return 'this';
+
   const base = this.text.replace(/^\@/, '');
+  const clean = base.split('.').map(piece => {
 
-  // Disallow identifiers that look like __this__
-  if (/^__/.test(base) && /__$/.test(base)) {
-    die(this, `${this.text} matches the pattern __IDENTIFIER__ which is reserved for system variables.`);
+    // Disallow identifiers that look like this_
+    if (/[^_]_$/.test(piece)) {
+      die(this, `${this.text} matches the pattern IDENTIFIER_ which is reserved for system variables.`);
 
-  // Disallow reserved words
-  } else if (getReservedWords().indexOf(base) > -1) {
-    die(this, `${this.text} is a reserved word.`);
+    // Disallow reserved words
+    } else if (getReservedWords().indexOf(piece) > -1) {
+      die(this, `${this.text} is a reserved word or contains a reserved word as a property name.`);
 
-  // Translate system library functions
-  } else if (getExposedFns().indexOf(base) > -1) {
-    if (getMsgPassingFns().indexOf(base) > -1) {
-      this.shared.lib.add('msgs');
+    // Translate system library functions
+    } else if (getExposedFns().indexOf(piece) > -1) {
+      if (getMsgPassingFns().indexOf(piece) > -1) {
+        this.shared.lib.add('msgs');
+      }
+      this.shared.lib.add(this.text);
+      return `CNS_.${this.text}`;
+
+    } else {
+      return piece;
     }
-    this.shared.lib.add(this.text);
-    return `CNS_SYSTEM.${this.text}`;
-  }
 
-  // Otherwise, just make sure to replace @ with "this"
-  return this.text.replace(/^\@/, 'this.').replace(/\.$/, ''); // Strip trailing dots in case of "@" -> "this."
+  });
+
+  return `${this.text[0] === '@' ? 'this.' : ''}${clean.join('.')}`;
 });

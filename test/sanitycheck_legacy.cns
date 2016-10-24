@@ -1,0 +1,225 @@
+
+
+[]
+[
+  1, 2, 3]
+import {a, b, c} from 'farts'
+import {a, b, c
+} from 'farts'
+import {
+  a, b, c} from 'farts'
+import {
+  a, b, c
+  } from 'farts'
+import {
+  a,
+  b, c
+} from 'farts'
+import {a,
+b, c} from 'farts'
+
+export { a/2 }
+export { a/1, b/2, c/3 }
+export { a/1, b, c/2 }
+export { a, b, c }
+export { a, b/1, c/2 }
+export { a, b, c/2 }
+export {a/1, b/2, c/3
+}
+export {
+  a/1, b/2, c/3}
+export {
+  a/1, b/2, c/3
+}
+export {
+  a/1,
+  b/2, c/3
+}
+export {a/1,
+b/2, c/3}
+export {
+  a/1,
+  b/2,
+  c/3
+}
+
+{a, b, c} = props
+{a, b, c
+} = props
+{
+  a, b, c} = props
+{
+  a, b, c
+} = props
+{
+  a,
+  b, c
+} = props
+{a,
+b, c} = props
+
+(2 + 2)
+
+3 + 3
+
+myfun(hola)
+myfun hola
+myfun 2 + 2, hello, 'fart'
+myfun(2 + 2, hello, 'fart')
+
+def
+  factorial 0 -> 1
+  factorial n -> n * factorial n - 1
+end
+
+def
+  factorial(0) -> 1
+  factorial(n) -> n * factorial(n - 1)
+end
+
+<div className={ 2 + 2 } farts="sharts"></div>
+
+{}
+{a:foo(a)}
+{a: true}
+{
+  a: true
+}
+{a: true, b: 2 + 2, c: value}
+{a: true, 'b': true, 0: true, ~atom: true}
+{
+  a: true, 'b': true, 0: true, ~atom: true}
+{a: true, 'b': true, 0: true, ~atom: true
+}
+{a: true,
+'b': true, 0: true, ~atom: true}
+{
+  a: true, # comment is successfully ignored
+  'b': true,
+  0: true,
+  ~atom: true
+}
+
+~atom
+@whatever
+
+match
+  (0, 1) -> 1
+  x, y -> n * factorial n - 1
+end
+
+a is 4 and b is 4
+
+cond
+  a is 4 and b is 4 -> doStuff()
+end
+
+# Parens are necessary here becaue the idea is to show what
+# the pattern for calling the function looks like. If you don't
+# specify a parameter list at all, that's not a pattern for calling
+# a function.
+myfun() ->
+  doStuff()
+  a is 4 and b is 4
+end
+
+def
+  foo [hd|tl] ->
+    {a, b, c} = something
+    foo doStuff(hd), tl
+  end
+  foo item, [] -> item
+  foo item, list ->
+    doStuff()
+    doMoreStuff()
+  end
+end
+
+ReactDOM.render(
+  React.createElement('h1', {}, ['Hello, world!']),
+  document.getElementById('app')
+)
+
+def
+  factorial 0 -> 1
+  factorial n when n lte 2 -> 1
+  factorial n -> n * factorial n - 1
+end
+
+factorial = match
+  n when n lte 1 -> 1
+  n -> n * factorial n - 1
+end
+
+def
+  foo x -> x
+  foo [1, x, 2] -> x
+end
+
+'
+single quote
+'
+'
+single\nquote
+'
+"
+double quote
+"
+`
+back tick
+`
+
+# single line comment
+
+###
+multi-line Comments
+are
+really cool
+###
+
+[1|[2, 3, 4]]
+[[1, 2, 3]||4]
+
+def
+  foo [ld || lst] ->
+    doStuff ld, lst
+  end
+end
+
+do fn -> 2 + 2
+
+try
+  doStuff()
+catch err:
+  moreStuff()
+end
+
+myVar = doStuff(err) incase otherStuff() throws err
+
+doStuff(err) incase do fn ->
+  otherStuff()
+end throws err
+
+[1, 2, 3].forEach(fn -> end)
+
+num + num for num, index in [1, 2, 3] when index rm 2 is 0
+
+elem 'foo', {foo: 'bar'}
+
+myfun = match
+  [~factorial, num] -> reply [~ok, factorial num]
+  _ -> reply [~err, 'Unknown command received']
+end
+
+import x from y
+import x from 'y'
+import { x } from y
+import { x } from 'y'
+import y
+import 'y'
+
+foo(x, y) :: add(2) :: sub(3) :: mlt(4) :: div(5)
+
+{foo: 'bar'} :: add :: sub(3)
+
+foo _

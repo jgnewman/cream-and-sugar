@@ -1,18 +1,28 @@
-const CNS_SYSTEM = {
+const CNS_ = {
 
-  // CNS_SYSTEM.qualify(x === 4, function () { return doSomething() })
+  _: {},
+
+  tuple: function (arr) {
+    if (!arr.length) throw new Error('Tuples can not be empty.');
+    Object.defineProperty
+      ? Object.defineProperty(arr, 'CNS_isTuple', {enumerable: false, configurable: false, writable: false, value: CNS_._})
+      : (arr.CNS_isTuple = CNS_._);
+    return arr;
+  },
+
+  // CNS_.qualify(x === 4, function () { return doSomething() })
   qualify: function (condition, callback, elseCase) {
     return condition ? callback() : elseCase ? elseCase() : undefined;
   },
 
-  // CNS_SYSTEM.noMatch('cond')
+  // CNS_.noMatch('cond')
   noMatch: function (type) {
     throw new Error('No match found for ' + type + ' statement.');
   },
 
-  // CNS_SYSTEM.eql([1, 2, 3], [1, 2, 3]) -> true
+  // CNS_.eql([1, 2, 3], [1, 2, 3]) -> true
   eql: function (a, b) {
-    if (a === CNS_SYSTEM || b === CNS_SYSTEM) return true; // <- Hack to force a match
+    if (a === CNS_ || b === CNS_) return true; // <- Hack to force a match
     if (a === b || (typeof a === 'number' && typeof b === 'number' && isNaN(a) && isNaN(b))) return true;
     if (typeof a !== typeof b) return false;
     if (typeof a === 'object') {
@@ -24,7 +34,7 @@ const CNS_SYSTEM = {
     return false;
   },
 
-  // CNS_SYSTEM.pipe(value).to(fnName, addtlArg).to(fnName, addtlArg)()
+  // CNS_.pipe(value).to(fnName, addtlArg).to(fnName, addtlArg)()
   pipe: function (val) {
     const layers = [], to = function (name) {
       const args = Array.prototype.slice.call(arguments, 1), exec = function () {
@@ -38,7 +48,7 @@ const CNS_SYSTEM = {
     return to.to = to;
   },
 
-  // CNS_SYSTEM.match(args, [['Identifier', 'x']])
+  // CNS_.match(args, [['Identifier', 'x']])
   match: function (args, pattern) {
     return args.every(function (arg, index) {
       if (!pattern[index]) return false;
@@ -60,7 +70,7 @@ const CNS_SYSTEM = {
               if (each === 'true') return true;
               if (each === 'false') return false;
               if (each[0] === '~') return Symbol.for(each.slice(1));
-              return /^[\$_A-z][\$_A-z0-9]*$/.test(each) ? CNS_SYSTEM : JSON.parse(each);
+              return /^[\$_A-z][\$_A-z0-9]*$/.test(each) ? CNS_ : JSON.parse(each);
             });
             return this.eql(arg, eqlTest);
           }
@@ -79,29 +89,29 @@ const CNS_SYSTEM = {
     }.bind(this));
   },
 
-  // CNS_SYSTEM.args(arguments) -> [...arguments]
+  // CNS_.args(arguments) -> [...arguments]
   args: function (args) {
     const out = [];
     Array.prototype.push.apply(out, args);
     return out;
   },
 
-  // CNS_SYSTEM.elem(0, [1, 2, 3, 4]) -> 1
+  // CNS_.elem(0, [1, 2, 3, 4]) -> 1
   elem: function (item, collection) {
     return collection[item];
   },
 
-  // CNS_SYSTEM.throw(create(Error))
+  // CNS_.throw(create(Error))
   throw: function (err) {
     throw err;
   },
 
-  // CNS_SYSTEM.create(ClassName, arg1, arg2) -> ClassName { ... }
+  // CNS_.create(ClassName, arg1, arg2) -> ClassName { ... }
   create: function(cls) {
     return new (Function.prototype.bind.apply(cls, arguments));
   },
 
-  // CNS_SYSTEM.typeof('hello') -> 'string'
+  // CNS_.typeof('hello') -> 'string'
   type: function (val) {
     const type = typeof val;
     switch (type) {
@@ -121,52 +131,53 @@ const CNS_SYSTEM = {
     }
   },
 
-  // CNS_SYSTEM.instanceof([], Object) -> true
+  // CNS_.instanceof([], Object) -> true
   instanceof: function (val, type) {
     return val instanceof type;
   },
 
-  // CNS_SYSTEM.head([1, 2, 3]) -> 1
+  // CNS_.head([1, 2, 3]) -> 1
   head: function (list) {
     return list[0];
   },
 
-  // CNS_SYSTEM.tail([1, 2, 3]) -> [2, 3]
+  // CNS_.tail([1, 2, 3]) -> [2, 3]
   tail: function (list) {
     return list.slice(1);
   },
 
-  // CNS_SYSTEM.exp('myFn', function () { ... })
-  exp: "(function () {" +
-    "var exp = (typeof module === 'undefined' || !module.exports) ? this : module.exports;" +
-    "return function (name, val) {" +
-      "exp[name] = val;" +
-    "};" +
-  "}())",
+  // CNS_.exp(someValue)
+  exp: function (val) {
+    typeof module === 'undefined'
+      ? typeof console !== 'undefined' &&
+        console.warn('Warning: You are attempting to export module values in a non-modular environment.')
+      : module.exports = val;
+  },
 
-  // CNS_SYSTEM.random([1, 2, 3, 4]) -> 3
+
+  // CNS_.random([1, 2, 3, 4]) -> 3
   random: function (list) {
     return list[Math.floor(Math.random()*list.length)];
   },
 
-  // CNS_SYSTEM.lead([1, 2, 3]) -> [1, 2]
+  // CNS_.lead([1, 2, 3]) -> [1, 2]
   lead: function (list) {
     return list.slice(0, list.length - 1);
   },
 
-  // CNS_SYSTEM.last([1, 2, 3]) -> 3
+  // CNS_.last([1, 2, 3]) -> 3
   last: function (list) {
     return list[list.length - 1];
   },
 
-  // CNS_SYSTEM.do(function () { ... }, [1, 2, 3])
-  do: function (fn) {
+  // CNS_.apply(function () { ... }, [1, 2, 3])
+  apply: function (fn) {
     var args = Array.prototype.slice.call(arguments, 1);
     return args.length ? fn.apply(null, args) : fn();
   },
 
-  // CNS_SYSTEM.update('name', 'john', {name: 'bill'}) -> {name: 'john'}
-  // CNS_SYSTEM.update(1, 'x', ['a', 'b', 'c']) -> ['a', 'x', 'c']
+  // CNS_.update('name', 'john', {name: 'bill'}) -> {name: 'john'}
+  // CNS_.update(1, 'x', ['a', 'b', 'c']) -> ['a', 'x', 'c']
   update: function (keyOrIndex, val, collection) {
     if (Array.isArray(collection)) {
       const newSlice = collection.slice();
@@ -183,8 +194,8 @@ const CNS_SYSTEM = {
     }
   },
 
-  // CNS_SYSTEM.remove(1, ['a', 'b', 'c']) -> ['a', 'b']
-  // CNS_SYSTEM.remove('name', {name: 'john', age: 33}) -> {age: 33}
+  // CNS_.remove(1, ['a', 'b', 'c']) -> ['a', 'b']
+  // CNS_.remove('name', {name: 'john', age: 33}) -> {age: 33}
   remove: function (keyOrIndex, collection) {
     if (Array.isArray(collection)) {
       const splicer = collection.slice();
@@ -202,7 +213,7 @@ const CNS_SYSTEM = {
     }
   },
 
-  // CNS_SYSTEM.createElement('div', {className: 'foo'}, [CNS_SYSTEM.createElement(...)])
+  // CNS_.createElement('div', {className: 'foo'}, [CNS_.createElement(...)])
   createElement: function (type, attrs, body) {
     var react;
     const a = attrs || {}, b = body || [];
@@ -221,7 +232,7 @@ const CNS_SYSTEM = {
     return elem;
   },
 
-  // CNS_SYSTEM.aritize(fun, 2);
+  // CNS_.aritize(fun, 2);
   aritize: function (fun, arity) {
     return function () {
       if (arguments.length === arity) {
@@ -262,9 +273,9 @@ const CNS_SYSTEM = {
        } else if (obj === true || obj === false) {
          return obj;
        } else if (Array.isArray(obj)) {
-         return '[' + obj.map(function (item) { return CNS_SYSTEM.msgs.stringify(item) }).join(', ') + ']';
+         return '[' + obj.map(function (item) { return CNS_.msgs.stringify(item) }).join(', ') + ']';
        } else {
-         return '{' + Object.keys(obj).map(function (key) { return key + ':' + CNS_SYSTEM.msgs.stringify(obj[key]) }).join(',\n') + '}';
+         return '{' + Object.keys(obj).map(function (key) { return key + ':' + CNS_.msgs.stringify(obj[key]) }).join(',\n') + '}';
        }
      },
 
@@ -274,23 +285,23 @@ const CNS_SYSTEM = {
          return Symbol.for(data.replace(/^__Symbol\(|\)__$/g, ''));
        }
        if (Array.isArray(data)) {
-         return data.map(function (item) { return CNS_SYSTEM.msgs.symbolize(item, reSymbolize) });
+         return data.map(function (item) { return CNS_.msgs.symbolize(item, reSymbolize) });
        } else if (typeof data === 'object' && data !== null) {
          var out = {};
-         Object.keys(data).forEach(function (key) { out[key] = CNS_SYSTEM.msgs.symbolize(data[key], reSymbolize) });
+         Object.keys(data).forEach(function (key) { out[key] = CNS_.msgs.symbolize(data[key], reSymbolize) });
          return out;
        }
        return data;
      },
 
      onMsg: function (msg) {
-       CNS_SYSTEM.msgs.isBrowser() && (msg = msg.data);
-       const m = CNS_SYSTEM.msgs.symbolize(msg, true);
-       CNS_SYSTEM.msgs.queue.push(m);
-       if (!CNS_SYSTEM.msgs.isWaiting) {
-         CNS_SYSTEM.msgs.isWaiting = true;
+       CNS_.msgs.isBrowser() && (msg = msg.data);
+       const m = CNS_.msgs.symbolize(msg, true);
+       CNS_.msgs.queue.push(m);
+       if (!CNS_.msgs.isWaiting) {
+         CNS_.msgs.isWaiting = true;
          setTimeout(function () {
-           CNS_SYSTEM.msgs.runQueue();
+           CNS_.msgs.runQueue();
          }, 0);
        }
      },
@@ -307,11 +318,11 @@ const CNS_SYSTEM = {
 
      Thread: function(fnBody) {
        const isBrowser = typeof navigator !== 'undefined';
-       const body = 'const CNS_SYSTEM = ' + CNS_SYSTEM.msgs.stringify(CNS_SYSTEM) + ';\n' +
-                    'CNS_SYSTEM.msgs.isChild = true;\n' +
-                    'CNS_SYSTEM.msgs.handlers = [];\n' +
-                    (isBrowser ? 'this.onmessage = CNS_SYSTEM.msgs.onMsg;\n'
-                               : 'process.on("message", CNS_SYSTEM.msgs.onMsg);\n') +
+       const body = 'const CNS_ = ' + CNS_.msgs.stringify(CNS_) + ';\n' +
+                    'CNS_.msgs.isChild = true;\n' +
+                    'CNS_.msgs.handlers = [];\n' +
+                    (isBrowser ? 'this.onmessage = CNS_.msgs.onMsg;\n'
+                               : 'process.on("message", CNS_.msgs.onMsg);\n') +
                     'var arguments = [];\n' +
                     fnBody;
        this.isBrowser  = isBrowser;
@@ -324,8 +335,8 @@ const CNS_SYSTEM = {
                            execArgv: ['-e', body]
                          })
                        ;
-       isBrowser ? (this.thread.onmessage = CNS_SYSTEM.msgs.onMsg)
-                 : this.thread.on('message', CNS_SYSTEM.msgs.onMsg);
+       isBrowser ? (this.thread.onmessage = CNS_.msgs.onMsg)
+                 : this.thread.on('message', CNS_.msgs.onMsg);
        !isBrowser && this.thread.on('exit', function () { console.log('process exited') })
        return this;
      }
@@ -340,12 +351,12 @@ const CNS_SYSTEM = {
    // end
    // export { createProcess/0 }
    spawn: function (fn) {
-    return new CNS_SYSTEM.msgs.Thread('(' + fn.toString() + '())');
+    return new CNS_.msgs.Thread('(' + fn.toString() + '())');
    },
 
    // Specifies what to do when a message comes in
    receive: function (fn) {
-     CNS_SYSTEM.msgs.handlers.push(fn);
+     CNS_.msgs.handlers.push(fn);
    },
 
    // Kills a process
@@ -355,14 +366,14 @@ const CNS_SYSTEM = {
 
    // Should be like send(msg)
    reply: function (msg) {
-     const m = CNS_SYSTEM.msgs.symbolize(msg, false);
-     CNS_SYSTEM.msgs.isBrowser() ? postMessage(m) : process.send(m) ;
+     const m = CNS_.msgs.symbolize(msg, false);
+     CNS_.msgs.isBrowser() ? postMessage(m) : process.send(m) ;
    },
 
    // Should be like send(thread, msg)
    send: function (thread, msg) {
-     const m = CNS_SYSTEM.msgs.symbolize(msg, false);
-     CNS_SYSTEM.msgs.isBrowser() ? thread.thread.postMessage(m) : thread.thread.send(m);
+     const m = CNS_.msgs.symbolize(msg, false);
+     CNS_.msgs.isBrowser() ? thread.thread.postMessage(m) : thread.thread.send(m);
    }
 
    /********************************
@@ -374,5 +385,5 @@ const CNS_SYSTEM = {
 
 
 
-// export default CNS_SYSTEM;
-module.exports = CNS_SYSTEM;
+// export default CNS_;
+module.exports = CNS_;

@@ -6,16 +6,29 @@ import { compile, nodes, die } from '../utils';
  * are constants and should not be overwritable.
  */
 compile(nodes.AssignmentNode, function () {
-  let tuple;
+  let tuple, ref, base;
   switch (this.left.type) {
 
     case 'Identifier':
+    case 'Lookup':
       return `const ${this.left.compile(true)} = ${this.right.compile(true)}`;
 
+    case 'Arr':
     case 'Tuple':
-      const ref = `__ref${this.shared.refs += 1}__`;
+      ref = `ref${this.shared.refs += 1}_`;
       // Use var here so it can be redeclared in the REPL.
-      let base = `var ${ref} = ${this.right.compile(true)};\n`;
+      base = `var ${ref} = ${this.right.compile(true)};\n`;
+      this.left.items.forEach((item, index) => {
+        const varName = item.compile(true);
+        base += `const ${varName} = ${ref}[${index}]`;
+        index !== this.left.items.length - 1 && (base += ';\n');
+      });
+      return base;
+
+    case 'Keys':
+      ref = `ref${this.shared.refs += 1}_`;
+      // Use var here so it can be redeclared in the REPL.
+      base = `var ${ref} = ${this.right.compile(true)};\n`;
       this.left.items.forEach((item, index) => {
         const varName = item.compile(true);
         base += `const ${varName} = ${ref}.${varName}`;
@@ -23,21 +36,47 @@ compile(nodes.AssignmentNode, function () {
       });
       return base;
 
-    case 'Cons':
-      const head = this.left.src.match(/^\[(.+)\|/)[1];
-      const tail = this.left.src.match(/\|([^\]]+)\]/)[1];
-      const aref = `__ref${this.shared.refs += 1}__`;
-      return `var ${aref} = ${this.right.compile(true)};
-      const ${head} = ${aref}[0];
-      const ${tail} = ${aref}.slice(1)`;
+    case 'Obj':
+      ref = `ref${this.shared.refs += 1}_`;
+      // Use var here so it can be redeclared in the REPL.
+      base = `var ${ref} = ${this.right.compile(true)};\n`;
+      this.left.pairs.forEach((item, index) => {
+        const varName = item.right.compile(true);
+        const propName = item.left.compile(true);
+        base += `const ${varName} = ${ref}.${propName}`;
+        index !== this.left.pairs.length - 1 && (base += ';\n');
+      });
+      return base;
 
-    case 'BackCons':
-      const lead = this.left.src.match(/^\[(.+)\|\|/)[1];
-      const last = this.left.src.match(/\|\|([^\]]+)\]/)[1];
-      const bref = `__ref${this.shared.refs += 1}__`;
-      return `var ${bref} = ${this.right.compile(true)};
-      const ${lead} = ${bref}.slice(0, ${bref}.length - 1);
-      const ${last} = ${bref}[${bref}.length - 1]`;
+    case 'HeadTail':
+      ref = `ref${this.shared.refs += 1}_`;
+      // Use var here so it can be redeclared in the REPL.
+      base = `var ${ref} = ${this.right.compile(true)};\n`;
+      this.left.items.forEach((item, index) => {
+        const varName = item.compile(true);
+        if (index === 0) {
+          base += `const ${varName} = ${ref}[0]`;
+        } else {
+          base += `const ${varName} = ${ref}.slice(1)`;
+        }
+        index !== this.left.items.length - 1 && (base += ';\n');
+      });
+      return base;
+
+    case 'LeadLast':
+      ref = `ref${this.shared.refs += 1}_`;
+      // Use var here so it can be redeclared in the REPL.
+      base = `var ${ref} = ${this.right.compile(true)};\n`;
+      this.left.items.forEach((item, index) => {
+        const varName = item.compile(true);
+        if (index === 0) {
+          base += `const ${varName} = ${ref}.slice(0, ${ref}.length - 1)`;
+        } else {
+          base += `const ${varName} = ${ref}[${ref}.length - 1]`;
+        }
+        index !== this.left.items.length - 1 && (base += ';\n');
+      });
+      return base;
 
     default:
       die(this, `Invalid expression in left hand assignment: ${this.left.type}`);

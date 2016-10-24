@@ -14,7 +14,7 @@ compile(nodes.CondNode, function () {
   this.shared.lib.add('noMatch');
   return `(function () {
     ${compiled} else {
-      return CNS_SYSTEM.noMatch('cond');
+      return CNS_.noMatch('when');
     }
   }.bind(this)())`;
 });

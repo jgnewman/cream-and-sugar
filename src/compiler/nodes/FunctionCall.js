@@ -5,14 +5,8 @@ import { compile, nodes, die } from '../utils';
  */
 compile(nodes.FunctionCallNode, function () {
 
-  // If the arguments node a wrap...
-  if (this.args.src === "()" && this.args.items.length === 1 && this.args.items[0].type === 'Wrap') {
-    return `${this.fn.compile(true)}${this.args.items.map(arg => {
-      return arg.compile(true);
-    }).join(', ')}`;
-
   // If the only argument is `_`, compile it like an empty call...
-  } else if (this.args.items.length === 1 && this.args.items[0].type === 'Identifier' && this.args.items[0].src === '_') {
+  if (this.args.items.length === 1 && this.args.items[0].type === 'Identifier' && this.args.items[0].src === '_') {
     return `${this.fn.compile(true)}()`;
 
   // Anything else...

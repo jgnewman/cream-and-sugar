@@ -12,7 +12,7 @@ compile(nodes.QualifierNode, function () {
     return ${this.elseCase.compile(true)};
   }.bind(this)`;
   this.shared.lib.add('qualify');
-  return `CNS_SYSTEM.qualify(${condition}, function () {
+  return `CNS_.qualify(${condition}, function () {
     return ${this.action.compile(true)};
   }.bind(this)${elseCase})`.replace(/\s+/g, ' ');
 });

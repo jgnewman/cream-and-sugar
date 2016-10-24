@@ -1,225 +1,210 @@
+"hello"
+'hello'
+`hello`
+"
+hello
+"
+'
+hello
+'
+`
+hello
+`
 
+/regex/gim
+
+ATOM
+
+@
+@foo
+foo
+@foo
+@foo.bar.baz
+
+true
+false
+null
+undefined
+
+100
+-100
+100e6
+
+!hello
+!!hello
+
+a >> b
+a << b
+
+2 + 4
+7 lte 10
 
 []
+[ ]
+[
+
+]
+[
+
+
+]
+[ 1, 2, 3 ]
+[
+  1,
+  2,
+  3
+]
+[
+  1, 2, 3
+]
 [
   1, 2, 3]
-import {a, b, c} from 'farts'
-import {a, b, c
-} from 'farts'
-import {
-  a, b, c} from 'farts'
-import {
-  a, b, c
-  } from 'farts'
-import {
-  a,
-  b, c
-} from 'farts'
-import {a,
-b, c} from 'farts'
+[ 1, 2, 3
+]
 
-export { a/2 }
-export { a/1, b/2, c/3 }
-export { a/1, b, c/2 }
-export { a, b, c }
-export { a, b/1, c/2 }
-export { a, b, c/2 }
-export {a/1, b/2, c/3
-}
-export {
-  a/1, b/2, c/3}
-export {
-  a/1, b/2, c/3
-}
-export {
-  a/1,
-  b/2, c/3
-}
-export {a/1,
-b/2, c/3}
-export {
-  a/1,
-  b/2,
-  c/3
-}
-
-{a, b, c} = props
-{a, b, c
-} = props
+{{ a, b, c }}
+{}
+{ }
 {
-  a, b, c} = props
+
+}
 {
-  a, b, c
-} = props
+
+
+}
+
+{ a: 1, b: 2, c: 3 }
 {
-  a,
-  b, c
-} = props
-{a,
-b, c} = props
-
-(2 + 2)
-
-3 + 3
-
-myfun(hola)
-myfun hola
-myfun 2 + 2, hello, 'fart'
-myfun(2 + 2, hello, 'fart')
-
-def
-  factorial 0 -> 1
-  factorial n -> n * factorial n - 1
-end
-
-def
-  factorial(0) -> 1
-  factorial(n) -> n * factorial(n - 1)
-end
+  a: 1,
+  b: 2,
+  c: 3
+}
+{
+  a:1, b:2, c:3
+}
+{
+  a: 1, b: 2, c: 3}
+{ a: 1, b: 2, c: 3
+}
 
 <div className={ 2 + 2 } farts="sharts"></div>
+<div
+  className={ 2 + 2 }
+  farts="sharts">
+</div>
+<div
+  className={ 2 + 2 }
+  farts="sharts"
+></div>
+<div
+  className={ 2 + 2 }
+  farts="sharts"
+>
+</div>
+<div
+  className={ 2 + 2 }
+  farts="sharts">
 
-{}
-{a:foo(a)}
-{a: true}
-{
-  a: true
-}
-{a: true, b: 2 + 2, c: value}
-{a: true, 'b': true, 0: true, ~atom: true}
-{
-  a: true, 'b': true, 0: true, ~atom: true}
-{a: true, 'b': true, 0: true, ~atom: true
-}
-{a: true,
-'b': true, 0: true, ~atom: true}
-{
-  a: true, # comment is successfully ignored
-  'b': true,
-  0: true,
-  ~atom: true
-}
+    'Hello'
 
-~atom
-@whatever
+    <span className="name">'Bob'</span>
 
-match
-  (0, 1) -> 1
-  x, y -> n * factorial n - 1
-end
+</div>
 
-a is 4 and b is 4
+a >>= b >>= c
 
-cond
-  a is 4 and b is 4 -> doStuff()
-end
+for x, y in list do x + y
+for x, y in [1, 2, 3] do /fart/.test x onlyif x == y
 
-# Parens are necessary here becaue the idea is to show what
-# the pattern for calling the function looks like. If you don't
-# specify a parameter list at all, that's not a pattern for calling
-# a function.
-myfun() ->
-  doStuff()
-  a is 4 and b is 4
-end
+if x == y then x + y
+if x == y then x + y else x - y
 
-def
-  foo [hd|tl] ->
-    {a, b, c} = something
-    foo doStuff(hd), tl
-  end
-  foo item, [] -> item
-  foo item, list ->
-    doStuff()
-    doMoreStuff()
-  end
-end
+export {{ factorial, schmactorial }}
+export { factorial: factorial, schmactorial: schmactorial }
+export [ factorial, schmactorial ]
 
-ReactDOM.render(
-  React.createElement('h1', {}, ['Hello, world!']),
-  document.getElementById('app')
-)
+import 'factorial'
+import factorial from 'factorial'
+import [ factorial, schmactorial ] from 'factorial'
+import { factorial, schmactorial } from 'factorial'
+import {{ factorial, schmactorial }} from 'factorial'
+import { factorial: f, schmactorial: s } from 'factorial'
+import [ fn1 | restFns ] from 'factorial'
+import [ leadFns || lastFn ] from 'factorial'
 
-def
-  factorial 0 -> 1
-  factorial n when n lte 2 -> 1
-  factorial n -> n * factorial n - 1
-end
+a = b
+[a, b] = c
+{a, b} = c
+{{a, b}} = c
+{a:b, c:d} = e
+[a | b] = c
+[a || b] = c
+foo =
 
-factorial = match
-  n when n lte 1 -> 1
-  n -> n * factorial n - 1
-end
+  'bar'
 
-def
-  foo x -> x
-  foo [1, x, 2] -> x
-end
+perform()
+perform(hard, task)
+perform _
+perform task
+perform hard, task
 
-'
-single quote
-'
-'
-single\nquote
-'
-"
-double quote
-"
-`
-back tick
-`
+when
+  'bar' -> x + y
+  true  -> 'hello'
 
-# single line comment
+when
+  'bar'
+    x + y
+  true
+    'hello'
 
-###
-multi-line Comments
-are
-really cool
-###
+caseof foo
+  'bar' -> x + y
+  'baz' -> a + b
+  default -> c + d
 
-[1|[2, 3, 4]]
-[[1, 2, 3]||4]
-
-def
-  foo [ld || lst] ->
-    doStuff ld, lst
-  end
-end
-
-do fn -> 2 + 2
+caseof foo
+  'bar'
+    x + y
+    1 + 2
+  'baz'
+    a + b
+  default
+    c + d
 
 try
-  doStuff()
-catch err:
-  moreStuff()
-end
 
-myVar = doStuff(err) incase otherStuff() throws err
+  perform 'task'
 
-doStuff(err) incase do fn ->
-  otherStuff()
-end throws err
+catch err
+  perform 'other task'
 
-[1, 2, 3].forEach(fn -> end)
+fn _ => x + y
 
-num + num for num, index in [1, 2, 3] when index rm 2 is 0
+fn(x, y) =>
 
-elem 'foo', {foo: 'bar'}
+  x + y
 
-myfun = match
-  [~factorial, num] -> reply [~ok, factorial num]
-  _ -> reply [~err, 'Unknown command received']
-end
+fn =>
+  x + y
 
-import x from y
-import x from 'y'
-import { x } from y
-import { x } from 'y'
-import y
-import 'y'
+foo x => x * 2
 
-foo(x, y) :: add(2) :: sub(3) :: mlt(4) :: div(5)
+bar _ => x * 2
 
-{foo: 'bar'} :: add :: sub(3)
+stringify val ::=>
+  when
+    typeof val is 'object' -> Json.stringify val # change Json to JSON
+    true                   -> val.toString _
 
-foo _
+# The next 2 fns should merge into a polymorph.
+foo 0 => 1
+
+# This one should be included with the one above because
+# they have the same name.
+foo x => 2
+
+receive match
+  {{ FACTORIAL, num }} => reply {{ OK, factorial num }}
+  _                    => {{ ERR, 'Unknown command received' }}

@@ -105,13 +105,15 @@ function sanitizeFnMeta(fnList) {
  * Handle format of basic functions.
  */
 compile(nodes.FunNode, function () {
-  const preFn  = this.preArrow.type === 'FunctionCall';
-  const args   = compileArgs(getPatterns(preFn ? this.preArrow.args.items : this.preArrow.items));
-  const prefix = preFn ? `${this.preArrow.fn.compile(true)} ()` : `()`;
-  const argStr = !args.length ? '' : '\nconst args = CNS_SYSTEM.args(arguments);';
-  const body   = compileBody(this.body);
+  const preFn   = this.preArrow.type === 'FunctionCall';
+  const args    = compileArgs(getPatterns(preFn ? this.preArrow.args.items : this.preArrow));
+  const fnName  = preFn ? this.preArrow.fn.compile(true) : '';
+  const prefix  = preFn ? `${fnName} ()` : `()`;
+  const argStr  = !args.length ? '' : '\nconst args = CNS_.args(arguments);';
+  const body    = compileBody(this.body);
+  const begin   = fnName && this.bind ? `const ${fnName} = function () {` : `function ${prefix} {`;
   args.length && this.shared.lib.add('args');
-  return `function ${prefix} {`
+  return begin
          +  argStr
          +  (args.length ? '\n' + args : '')
          +  (body.length ? '\n  ' + body + ';\n' : '')
@@ -139,7 +141,7 @@ compile(nodes.PolymorphNode, function () {
   this.fns.map((fn, index) => {
 
     // Isolate the array containing the parameter items
-    const args = meta.anon ? fn.preArrow.items : fn.preArrow.args.items;
+    const args = meta.anon ? fn.preArrow : fn.preArrow.args.items;
 
     // Create a list of pattern matches like [["Identifier", "foo"], ...]
     const pattern = JSON.stringify(getPatterns(args));
@@ -172,7 +174,7 @@ compile(nodes.PolymorphNode, function () {
 
     // Generate an else case to use when we're finished with sub conditions.
     const elseCase = ` else {
-      return CNS_SYSTEM.noMatch('${this.isNamed ? 'def' : 'match'}');
+      return CNS_.noMatch('${this.isNamed ? 'def' : 'match'}');
     }`;
 
     let subBodies;
@@ -214,7 +216,7 @@ compile(nodes.PolymorphNode, function () {
     }
 
     // Spit out the top-level condition based on precompiled information
-    return `${keyword} (args.length === ${matchObjs[0].args.length} && CNS_SYSTEM.match(args, ${pattern})) {
+    return `${keyword} (args.length === ${matchObjs[0].args.length} && CNS_.match(args, ${pattern})) {
       ${compileArgs(pattern)}
       ${subBodies}
     }`;
@@ -230,9 +232,9 @@ compile(nodes.PolymorphNode, function () {
   // conditions for different function bodies and add an else case for
   // no match at the end.
   return `function ${prefix} {
-    const args = CNS_SYSTEM.args(arguments);
+    const args = CNS_.args(arguments);
     ${compiledFns} else {
-      return CNS_SYSTEM.noMatch('${this.isNamed ? 'def' : 'match'}');
+      return CNS_.noMatch('${this.isNamed ? 'def' : 'match'}');
     }
   }${meta.anon && meta.bind ? '.bind(this)' : ''}`;
 });

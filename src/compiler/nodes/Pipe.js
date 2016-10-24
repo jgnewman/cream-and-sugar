@@ -15,7 +15,7 @@ function collectChain(orig, accum) {
 /*
  * Translate scope piping chains.
  */
-// CNS_SYSTEM.pipe(4).to(addNum, 2).to(subNum, 2)();
+// CNS_.pipe(4).to(addNum, 2).to(subNum, 2)();
 compile(nodes.PipeNode, function () {
   const flatChain = collectChain(this.chain, []);
   
@@ -35,9 +35,9 @@ compile(nodes.PipeNode, function () {
     }
     const ref = `__ref${this.shared.refs += 1}__`;
     const imp = this.initVal.compile(true).replace(/[^\s]+\s*=/, `${ref} =`);
-    return `${imp};\nconst ${this.initVal.toImport.compile(true)} = CNS_SYSTEM.pipe(${ref})${links}()`;
+    return `${imp};\nconst ${this.initVal.toImport.compile(true)} = CNS_.pipe(${ref})${links}()`;
 
   } else {
-    return `CNS_SYSTEM.pipe(${this.initVal.compile(true)})${links}()`;
+    return `CNS_.pipe(${this.initVal.compile(true)})${links}()`;
   }
 });
