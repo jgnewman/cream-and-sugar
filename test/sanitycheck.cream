@@ -195,8 +195,8 @@ bar _ => x * 2
 
 stringify val ::=>
   when
-    typeof val is 'object' -> Json.stringify val # change Json to JSON
-    true                   -> val.toString _
+    type val is 'object' -> Json.stringify val # change Json to JSON
+    true                 -> val.toString _
 
 # The next 2 fns should merge into a polymorph.
 foo 0 => 1
@@ -208,3 +208,13 @@ foo x => 2
 receive match
   {{ FACTORIAL, num }} => reply {{ OK, factorial num }}
   _                    => {{ ERR, 'Unknown command received' }}
+
+apply fn => x + 2, [2]
+
+apply (fn => x + 3), [3]
+
+apply (fn =>
+  x + 4
+), [4]
+
+apply fn => _

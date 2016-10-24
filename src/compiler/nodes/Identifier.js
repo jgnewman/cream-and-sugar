@@ -21,6 +21,7 @@ compile(nodes.IdentifierNode, function () {
     } else if (getExposedFns().indexOf(piece) > -1) {
       if (getMsgPassingFns().indexOf(piece) > -1) {
         this.shared.lib.add('msgs');
+        this.shared.lib.add('tuple');
       }
       this.shared.lib.add(this.text);
       return `CNS_.${this.text}`;

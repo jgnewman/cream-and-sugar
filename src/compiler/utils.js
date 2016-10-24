@@ -169,8 +169,8 @@ function getReservedWords() {
     'cond', 'for', 'in', 'when', 'var', 'const', 'let', 'while',
     'switch', 'function', 'with', 'else', 'instanceof', 'super',
     'enum', 'break', 'extends', 'catch', 'new', 'class',
-    'try', 'continue', 'type', 'delete', 'return',
-    'static', 'CNS_SYSTEM'
+    'try', 'continue', 'typeof', 'delete', 'return',
+    'static', 'CNS_'
   ];
 }
 

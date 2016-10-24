@@ -116,7 +116,7 @@ change the amount of items they contain.
 
   CNS_.tuple = function (arr) {
     if (!arr.length) throw new Error('Tuples can not be empty.');
-    Object.defineProperty(arr, 'CNS_isTuple', {enumerable: false, configurable: false, writable: false, value: CNS_._});
+    Object.defineProperty(arr, 'CNS_isTuple_', {enumerable: false, configurable: false, writable: false, value: CNS_});
     return arr;
   };
 
@@ -159,8 +159,8 @@ change the amount of items they contain.
 We're removing the `def` keyword as well as the end keyword so we'll need a
 way to combine functions for example:
 
-  factorial 0 -> 1
-  factorial n -> n * factorial n - 1
+  factorial 0 => 1
+  factorial n => n * factorial n - 1
 
   const newBody   = [];
   const gather    = [];

@@ -52,6 +52,8 @@ fnname 0 => perform 'task'
 fnname 1 => perform 'other test'
 fnname 2 where 2 isnt 4 => perform 'last task'
 
+fn => _
+
 # tuples
 {{ item, item, item }}
 

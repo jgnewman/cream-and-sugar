@@ -116,7 +116,8 @@ compile(nodes.FunNode, function () {
   return begin
          +  argStr
          +  (args.length ? '\n' + args : '')
-         +  (body.length ? '\n  ' + body + ';\n' : '')
+            // If the whole body has been compiled to "return _", then it's an empty function.
+         +  (body.length && !/^\s*return\s+_;?\s*$/.test(body) ? '\n  ' + body + ';\n' : '')
          +  `}${this.bind ? '.bind(this)' : ''}`;
 });
 

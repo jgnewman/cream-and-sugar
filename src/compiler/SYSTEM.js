@@ -5,8 +5,8 @@ const CNS_ = {
   tuple: function (arr) {
     if (!arr.length) throw new Error('Tuples can not be empty.');
     Object.defineProperty
-      ? Object.defineProperty(arr, 'CNS_isTuple', {enumerable: false, configurable: false, writable: false, value: CNS_._})
-      : (arr.CNS_isTuple = CNS_._);
+      ? Object.defineProperty(arr, 'CNS_isTuple_', {enumerable: false, configurable: false, writable: false, value: CNS_})
+      : (arr.CNS_isTuple_ = CNS_);
     return arr;
   },
 
@@ -61,15 +61,18 @@ const CNS_ = {
         case 'String': return arg === matchVal;
         case 'Cons': case 'BackCons': return Array.isArray(arg);
         case 'Arr':
+        case 'Tuple':
           if (Array.isArray(arg)) {
-            const eqlTestStr = matchVal.replace(/^\[|\s+|\]$/g, '');
+            if (matchType === 'Tuple' && arg.CNS_isTuple_ !== CNS_) return false;
+            if (matchType === 'Arr' && arg.CNS_isTuple_ === CNS_) return false;
+            const eqlTestStr = matchVal.replace(/^(\[|\{\{)|\s+|(\]|\}\})$/g, '');
             const eqlTest = !eqlTestStr.length ? [] : eqlTestStr.split(',').map(function (each) {
               if (each === 'null') return null;
               if (each === 'undefined') return undefined;
               if (each === 'NaN') return NaN;
               if (each === 'true') return true;
               if (each === 'false') return false;
-              if (each[0] === '~') return Symbol.for(each.slice(1));
+              if (/^[A-Z][A-Z_]+$/.test(each)) return Symbol.for(each.slice(1));
               return /^[\$_A-z][\$_A-z0-9]*$/.test(each) ? CNS_ : JSON.parse(each);
             });
             return this.eql(arg, eqlTest);
@@ -96,8 +99,8 @@ const CNS_ = {
     return out;
   },
 
-  // CNS_.elem(0, [1, 2, 3, 4]) -> 1
-  elem: function (item, collection) {
+  // CNS_.get(0, [1, 2, 3, 4]) -> 1
+  get: function (item, collection) {
     return collection[item];
   },
 
@@ -111,14 +114,14 @@ const CNS_ = {
     return new (Function.prototype.bind.apply(cls, arguments));
   },
 
-  // CNS_.typeof('hello') -> 'string'
+  // CNS_.type('hello') -> 'string'
   type: function (val) {
     const type = typeof val;
     switch (type) {
       case 'symbol': return 'atom';
       case 'number': return isNaN(val) ? 'nan' : type;
       case 'object': return val === null ? 'null' :
-                              Array.isArray(val) ? 'array' :
+                              Array.isArray(val) ? (val.CNS_isTuple_ === CNS_ ? 'tuple' : 'array') :
                                 val instanceof Date ? 'date' :
                                   val instanceof RegExp ? 'regexp':
                                     (typeof HTMLElement !== 'undefined' && val instanceof HTMLElement) ? 'htmlelement' :
@@ -180,6 +183,9 @@ const CNS_ = {
   // CNS_.update(1, 'x', ['a', 'b', 'c']) -> ['a', 'x', 'c']
   update: function (keyOrIndex, val, collection) {
     if (Array.isArray(collection)) {
+      if (collection.CNS_isTuple_ === CNS && collection.indexOf(keyorIndex) === -1) {
+        throw new Error('Can not add extra items to tuples.');
+      }
       const newSlice = collection.slice();
       newSlice[keyOrIndex] = val;
       return newSlice;
@@ -198,6 +204,7 @@ const CNS_ = {
   // CNS_.remove('name', {name: 'john', age: 33}) -> {age: 33}
   remove: function (keyOrIndex, collection) {
     if (Array.isArray(collection)) {
+      if (collection.CNS_isTuple_ === CNS) throw new Error('Can not remove items from tuples.');
       const splicer = collection.slice();
       splicer.splice(keyOrIndex, 1);
       return splicer;
@@ -280,16 +287,34 @@ const CNS_ = {
      },
 
      symbolize: function (data, reSymbolize) {
+       // If we need to stringify a symbol, give it a special syntax and return it.
        if (!reSymbolize && typeof data === 'symbol') return '__' + data.toString() + '__';
+       // If we need to turn a string into a symbol, generate a symbol and return it.
        if (reSymbolize && typeof data === 'string' && /^__Symbol\(.+\)__$/.test(data)) {
          return Symbol.for(data.replace(/^__Symbol\(|\)__$/g, ''));
        }
+       // If this is an array, map over it and see if we need to symbolize any data in it.
+       // Return the new array.
        if (Array.isArray(data)) {
-         return data.map(function (item) { return CNS_.msgs.symbolize(item, reSymbolize) });
-       } else if (typeof data === 'object' && data !== null) {
-         var out = {};
-         Object.keys(data).forEach(function (key) { out[key] = CNS_.msgs.symbolize(data[key], reSymbolize) });
+         var out = [];
+         data.forEach(function (item) { out.push(CNS_.msgs.symbolize(item, reSymbolize)) });
+         if (!reSymbolize && data.CNS_isTuple_ === CNS_) (out = { CNS_tuple_: out });
          return out;
+       // If this is an object, check to see if it's supposed to be a tuple.
+       } else if (typeof data === 'object' && data !== null) {
+         // If it's supposed to be a tuple, take care of recursively building a new
+         // array and then turn it into a tuple and return it.
+         if (reSymbolize && data.CNS_tuple_) {
+           var out = CNS_.msgs.symbolize(data.CNS_tuple_, true);
+           return CNS_.tuple(out);
+         // If it's actually an object, build a new object, symbolizing all the values.
+         // We don't try to symbolize object keys because the purpose of a symbol as an object
+         // key is to not have it be enumerable.
+         } else {
+           var out = {};
+           Object.keys(data).forEach(function (key) { out[key] = CNS_.msgs.symbolize(data[key], reSymbolize) });
+           return out;
+         }
        }
        return data;
      },
@@ -344,12 +369,10 @@ const CNS_ = {
 
    // Create a new process exclusively from a function body.
    // Example:
-   // createProcess ->
-   //   spawn fn ->
+   // createProcess _ =>
+   //   spawn fn =>
    //     ...process body...
-   //   end
-   // end
-   // export { createProcess/0 }
+   // export { createProcess: aritize createProcess 0 }
    spawn: function (fn) {
     return new CNS_.msgs.Thread('(' + fn.toString() + '())');
    },

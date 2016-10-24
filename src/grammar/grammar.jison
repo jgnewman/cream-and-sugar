@@ -215,6 +215,10 @@ Wrap
     {
       $$ = new WrapNode($2, createSourceLocation(null, @1, @3));
     }
+  | "(" SourceElement NewLines ")"
+    {
+      $$ = new WrapNode($2, createSourceLocation(null, @1, @4));
+    }
   ;
 
 NewLine
