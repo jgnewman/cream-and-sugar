@@ -33,15 +33,13 @@ function factorial(n) {
 
 And this is how you'd write that using the most equivalent structures in CnS:
 
-```ruby
-factorial(n) ->
-  cond
+```coffeescript
+factorial(n) =>
+  when
     n is 0 -> 1
     n isnt 0 -> n * factorial(n - 1)
-  end
-end
 
-# 6 lines, 85 chars
+# 4 lines, 75 chars
 ```
 
 Of course, we can simplify this example even further by using other structures.
@@ -58,7 +56,7 @@ standard in a lot of functional languages and you'll get used to it. The
 reason we do it this way is two-fold. Firstly, it has to do with the psychology
 of readability. But also, this way the language can complain if something we
 didn't intend to happen ends up happening. Instead of ambiguously erroring at
-some point after hitting the else case, the `cond` expression will throw an
+some point after hitting the else case, the `when` expression will throw an
 error if it runs and doesn't find a match to one of its conditions. This lets us
 catch the error right away and be able to figure out more quickly where it came
 from.
@@ -66,13 +64,11 @@ from.
 Now let's talk about another way we could have written our function that comes
 out even smaller:
 
-```ruby
-def
-  factorial(0) -> 1
-  factorial(n) -> n * factorial(n - 1)
-end
+```coffeescript
+factorial(0) => 1
+factorial(n) => n * factorial(n - 1)
 
-# 4 lines, 66 chars
+# 2 lines, 54 chars
 ```
 
 This example uses a concept called pattern matching. Essentially we're defining
@@ -88,26 +84,23 @@ form depending on how it was called by the user. It also illustrates another
 important facet of CnS (and indeed all major functional languages) – that all
 iterations should be done via recursion.
 
-Yep, you heard that right. CnS has no, `for`, `while`, or `do`. (Technically,
-it does have `do`, but not for iteration). CnS can only
-recurse. That said, there are tons of convenience functions you can use in
-order to do iterations. CnS is just sits on top of JavaScript after all so
-you've got `Array.map` and everything similar that you can use. But for cases
-where you'll have to define your own iterations, let's look at a basic example
-implementing an iterative function on our own.
+Yep, you heard that right. CnS has no, `for`, `while`, or `do` loops. CnS can
+only recurse. That said, there are a couple of sugary structures and
+tons of convenience functions you can use to help make iterations quicker.
+CnS is just sits on top of JavaScript after all so you've got `Array.map` and
+everything similar that you can use. But for cases where you'll have to define
+your own iterations, let's look at a basic example implementing an iterative
+function on our own.
 
-```ruby
-def
-  each(list, fun) -> each(list, fun, 0)
-  each([], fun, counter) -> counter
-  each(list, fun, counter) ->
-    inc = counter + 1
-    fun(head(list), counter)
-    each(tail(list), fun, inc)
-  end
-end
+```coffeescript
+each(list, fun) => each(list, fun, 0)
+each([], fun, counter) => counter
+each(list, fun, counter) =>
+  inc = counter + 1
+  fun(head(list), counter)
+  each(tail(list), fun, inc)
 
-# 9 lines, 201 chars
+# 6 lines, 175 chars
 ```
 
 Admittedly, this could be somewhat simplified and we'll take care of that
@@ -138,8 +131,8 @@ we'll hit pattern 2 and return the counter.
 
 When we call the `each` function, it'll look like this:
 
-```ruby
-each([1, 2, 3], fn(item, index) -> item + index)
+```coffeescript
+each([1, 2, 3], fn(item, index) => item + index)
 #=> 3
 ```
 
@@ -153,17 +146,14 @@ Now let's simplify our example a little bit.
 Step 1: **Parentheses are optional!**
 
 ```ruby
-def
-  each list, fun -> each list, fun, 0
-  each [], fun, counter -> counter
-  each list, fun, counter ->
-    inc = counter + 1
-    fun (head list), counter
-    each (tail list), fun, inc
-  end
-end
+each list, fun => each list, fun, 0
+each [], fun, counter => counter
+each list, fun, counter =>
+  inc = counter + 1
+  fun (head list), counter
+  each (tail list), fun, inc
 
-# 9 lines, 197 chars
+# 6 lines, 171 chars
 ```
 
 This piece should be pretty self explanatory. Pick a style and stick with it.
@@ -171,23 +161,20 @@ This piece should be pretty self explanatory. Pick a style and stick with it.
 And, of course, it means we can also call the function like this:
 
 ```ruby
-each [1, 2, 3], fn item, index -> item + index
+each [1, 2, 3], fn item, index => item + index
 #=> 3
 ```
 
 Step 2: Destructuring
 
 ```ruby
-def
-  each list, fun -> each list, fun, 0
-  each [], fun, counter -> counter
-  each [hd|tl], fun, counter ->
-    fun hd, counter
-    each tl, fun, counter + 1
-  end
-end
+each list, fun => each list, fun, 0
+each [], fun, counter => counter
+each [hd|tl], fun, counter =>
+  fun hd, counter
+  each tl, fun, counter + 1
 
-# 8 lines, 168 chars
+# 5 lines, 144 chars
 ```
 
 Here, we've actually simplified in two ways: first, by destructuring in order
@@ -202,22 +189,6 @@ determine that the argument that comes in should be an array and will be
 separated out into two variables: `hd`, which indicates the first item in the
 array and `tl` which captures the remaining array items.
 
-#### When to use `end`
-
-Before moving on, let's talk about one other thing that you've hopefully picked
-up on already. CnS tries to let you remove clutter wherever possible. As such,
-there are no curly braces surrounding "blocks". Those are reserved for
-object syntax. Instead, blocks tend to begin with either an arrow or a keyword.
-
-If the block begins with a keyword like `def` or `cond`, it will always be
-closed out with the keyword `end`.
-
-If the block begins with an arrow, you have
-the option to take a shortcut. When the block only contains 1 expression, you
-can put that expression on the same line as the arrow and avoid any closing
-delimiters. When it needs multiple expressions, list them all on their own lines
-and use `end` to close the block.
-
 #### Locking down arities
 
 You may have noticed that defining a function in this way requires that you
@@ -227,25 +198,16 @@ users down to calling the `each` function with just a list and a function. You
 may not want them to have access to the counter because it could easily ruin
 the function's logic.
 
-Never fear. You can take care of this when you export the function. In CnS,
-you will always export functions as a group. For each one being exported, you
-have the option of choosing the arity with which users will be allowed to call
-the function. For example...
+Never fear. You can take care of this when you export the function (or really
+at any other time), by using the built-in `aritize` function. For example...
 
-```erlang
-export { each/2 }
+```javascript
+export aritize(each, 2)
 ```
 
 In this example, we're exporting the `each` function with an arity of 2, meaning
 that users who import it will only be allowed to pass it 2 arguments. If they
 call the function with any other number of arguments, they'll get an error.
-
-If you would like to leave the arity open, simply omit the slash and number when
-you name the exported function. For example...
-
-```erlang
-export { each }
-```
 
 #### Recursion in CnS vs recursion in JavaScript
 
@@ -255,16 +217,13 @@ JavaScript.
 
 *CnS*
 ```ruby
-def
-  each list, fun -> each list, fun, 0
-  each [], fun, counter -> counter
-  each [hd|tl], fun, counter ->
-    fun hd, counter
-    each tl, fun, counter + 1
-  end
-end
+each list, fun => each list, fun, 0
+each [], fun, counter => counter
+each [hd|tl], fun, counter =>
+  fun hd, counter
+  each tl, fun, counter + 1
 
-# 8 lines, 168 chars
+# 5 lines, 144 chars
 ```
 
 *JavaScript*
@@ -296,11 +255,9 @@ effectually how you'd accomplish the same thing.
 One other thing we ought to mention when talking about pattern matching is
 using guards. Earlier we implemented a `factorial` function like this:
 
-```ruby
-def
-  factorial(0) -> 1
-  factorial(n) -> n * factorial(n - 1)
-end
+```coffeescript
+factorial(0) => 1
+factorial(n) => n * factorial(n - 1)
 ```
 
 With pattern matching we actually have lots of options and another way we
@@ -309,19 +266,17 @@ certain aspects of a pattern that are harder to express in the pattern itself.
 
 Consider this:
 
-```ruby
-def
-  factorial(n) when n lt 2 -> 1
-  factorial(n) -> n * factorial(n - 1)
-end
+```coffeescript
+factorial(n) where n lt 2 => 1
+factorial(n) => n * factorial(n - 1)
 ```
 
 In this version of the function, we're matching against a single argument of
 indeterminate value in both patterns. However, in the first pattern, we
-qualify that match by saying `when n lt 2` (or, "when n is less than 2").
+qualify that match by saying `where n lt 2` (or, "where n is less than 2").
 
 The way this function is now read would be as follows: "If a user calls
-factorial of some value (n) when n is less than 2, return 1. If a user
+factorial of some value (n) where n is less than 2, return 1. If a user
 calls factorial n in any other case, return n times factorial of n minus 1."
 
 ## How do I learn more?
@@ -354,13 +309,13 @@ compile a file:
 ```javascript
 import { compile } from 'cns';
 
-compile('path/to/file.cns', (err, result) => {
+compile('path/to/file.cream', (err, result) => {
   if (err) throw err;
   console.log(result);
 }, {finalize: true});
 ```
 
-> Notice that the file extension for a Cream & Sugar file is .cns
+> Notice that the file extension for a Cream & Sugar file is .cream
 
 Running the compiler on a file is an asynchronous operation behaving like most
 async functions in Node.js. As a third argument, you can pass in some options.

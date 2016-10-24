@@ -30,7 +30,7 @@ In this example, we begin with the value 4. We then pipe it to the `add2` functi
 
 This concept is especially useful when you need to use CnS with other libraries because you can create transformers that run on the imported data of standard CnS modules written in functional style. In the following example, we'll write a module containing a few functions and then use scope piping to turn our module into a React.js class.
 
-In **AppContainer.cns** we write the functions that should be used to be converted into a React class and export them:
+In **AppContainer.cream** we write the functions that should be used to be converted into a React class and export them:
 
 ```coffeescript
 componentDidMount() -> console.log('I mounted!')
@@ -40,7 +40,7 @@ render() -> <div>'Hello, world!'</div>
 export { componentDidMount, render }
 ```
 
-In **reactify.cns** we write a piping function that will create a React class out of its scope values and export it.
+In **reactify.cream** we write a piping function that will create a React class out of its scope values and export it.
 
 ```coffeescript
 import React from 'react'
@@ -50,7 +50,7 @@ reactify() -> React.createClass(@)
 export { reactify }
 ```
 
-In **main.cns** we'll import our piping function and then pipe the imported `AppContainer` to it, thus quickly transforming an object full of functions into a React class.
+In **main.cream** we'll import our piping function and then pipe the imported `AppContainer` to it, thus quickly transforming an object full of functions into a React class.
 
 ```coffeescript
 import React from 'react'
