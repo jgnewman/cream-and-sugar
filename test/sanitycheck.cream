@@ -143,11 +143,10 @@ foo =
 
   'bar'
 
-perform()
-perform(hard, task)
 perform _
 perform task
 perform hard, task
+(perform hard, task)
 
 when
   'bar' -> x + y
@@ -182,7 +181,7 @@ catch err
 
 fn _ => x + y
 
-fn(x, y) =>
+fn x, y =>
 
   x + y
 
@@ -222,3 +221,5 @@ apply fn => _
 x / y
 
 x % y
+
+foo >>= (bar 'a') >>= baz 'b'

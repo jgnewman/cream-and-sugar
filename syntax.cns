@@ -2,7 +2,7 @@
 New Syntax
 ###
 
-up() =>
+up _ =>
   spawn fn =>
 
     # Define the factorial function so that we can actually calculate them.
@@ -39,10 +39,10 @@ nodes.HtmlNode.compile = fn =>
     no this.selfClosing and close isnt name.replace /[\'\"\`]/g, ''
       die this, `Closing tag "${close}" does not match opening tag ${name}.`
 
-  `CNS_SYSTEM.createElement(${name}, {${attrs}}, [${if body then '\n' + body + '\n' else ''}])`
+  `CNS_.createElement(${name}, {${attrs}}, [${if body then '\n' + body + '\n' else ''}])`
 
 # function definitions
-fnname() =>
+fnname _ =>
   perform 'task'
 
 fn =>

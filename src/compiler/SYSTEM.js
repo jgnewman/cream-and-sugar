@@ -1,7 +1,5 @@
 const CNS_ = {
 
-  _: {},
-
   tuple: function (arr) {
     if (!arr.length) throw new Error('Tuples can not be empty.');
     Object.defineProperty
@@ -32,20 +30,6 @@ const CNS_ = {
       return ak.every(function (key) { return this.eql(a[key], b[key]) }.bind(this));
     }
     return false;
-  },
-
-  // CNS_.pipe(value).to(fnName, addtlArg).to(fnName, addtlArg)()
-  pipe: function (val) {
-    const layers = [], to = function (name) {
-      const args = Array.prototype.slice.call(arguments, 1), exec = function () {
-        var ctxt = val;
-        layers.forEach(function (layer) { ctxt = layer[0].apply(ctxt, layer[1]) });
-        return ctxt;
-      };
-      layers.push([name, args]) && (exec.to = to);
-      return exec;
-    };
-    return to.to = to;
   },
 
   // CNS_.match(args, [['Identifier', 'x']])

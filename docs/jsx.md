@@ -44,9 +44,9 @@ There are a few minor differences between pure JSX and CnS' JSX, however. To lea
 
 CnS' ability to use handle JSX-like syntax is pretty handy because, if you aren't using React, you can still make use of this syntax to dynamically build DOM nodes. For example:
 
-```ruby
-container = dom('#my-container')
-update('innerHTML', <div>'Hello'</div>, container)
+```coffeescript
+container = dom '#my-container'
+update 'innerHTML', <div>'Hello'</div>, container
 #=> <div id="my-container"><div>Hello</div></div>
 ```
 
@@ -96,6 +96,8 @@ In order to stop the compiler from trying to do this:
 React.createElement('div', {}, [
   This(is(some(floating(text.))))
 ])
+
+//=> Error!
 ```
 
 Because a string is still a string, even if you're using html-like code.
@@ -146,7 +148,7 @@ of the html body:
 ```
 
 **Cream & Sugar**
-```javascript
+```coffeescript
 <div>
   'Two plus two is'
   apply fn => <strong>2 + 2</strong>

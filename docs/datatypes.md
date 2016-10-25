@@ -118,9 +118,9 @@ Tuples are designed to imbue meaning to the placement of each item in the list. 
 
 In this case, the first item in the tuple is an atom telling us that the request succeeded. The second item is a status code. The third item is the response message. We might use this data as follows:
 
-```ruby
+```coffeescript
 mylib.post '/api/mydata', fn response =>
-  caseof get 0, response
+  caseof (get 0, response)
     OK  -> doSomethingWith (get 2, response)
     ERR -> doSomethingElseWith (get 2, response)
 ```

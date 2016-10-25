@@ -5,7 +5,7 @@ CnS comes packaged with a few useful functions right off the bat. You don't need
 Following is a list of all built-in functions as well as descriptions of how to use them and what you can expect them to return.
 
 
-### `apply(fun [, argsArray])`
+### `apply fun [, argsArray]`
 
 - `fun {Function}`: Any type of function.
 - `argsArray {Array}`: Optional. An array of arguments to be passed to the function.
@@ -15,10 +15,10 @@ Invokes `fun` and returns the result. If `argsArray` is provided, passes those a
 ```coffeescript
 apply fn => 2 + 2 #=> 4
 
-apply(fn(x) => x + 2, [2]) #=> 4
+apply fn x => x + 2, [2] #=> 4
 ```
 
-### `aritize(fun, arity)`
+### `aritize fun, arity`
 
 - `fun {Function}`: Any type of function.
 - `arity {Number}`: The allowed arity to lock the function into.
@@ -26,102 +26,102 @@ apply(fn(x) => x + 2, [2]) #=> 4
 Returns a new function that can only be called with the number of arguments provided as `arity`. If the function is called with any other number of arguments, an error will be thrown.
 
 ```coffeescript
-iterate(list) => iterate(list, [])
-iterate([], accum) => accum
-iterate([h|t], accum) => iterate(t, accum << h)
+iterate list => iterate list, []
+iterate [], accum => accum
+iterate [h|t], accum => iterate t, accum << h
 
 # Only allow users to call `iterate` with 1 argument
-export aritize(iterate, 1)
+export aritize iterate, 1
 ```
 
 
-### `create(klass [, ...constructorArgs])`
+### `create klass [, ...constructorArgs]`
 
 - `klass {Function}`: A class constructor.
 - `constructorArgs {Any}`: Any arguments to be passed to the class constructor.
 
 Creates a new instance of `klass` by passing `constructorArgs` to the constructor. Returns the new class instance.
 
-```ruby
-create(Date) #=> Fri Sep 09 2016 17:00:43 GMT-0400 (EDT)
+```coffeescript
+create Date  #=> Fri Sep 09 2016 17:00:43 GMT-0400 (EDT)
 
-create(Error, "This is error text.") #=> Error: This is error text(…)
+create Error, "This is error text." #=> Error: This is error text(…)
 ```
 
-### `dom(selector)`
+### `dom selector`
 
 - `selector {String}`: Identifies the criteria for selecting a DOM element.
 
 Locates and returns a single DOM element identified by `selector`. If no element was found, returns `null`.
 
-```ruby
-dom('#my-div') #=> <HTMLElement>
+```coffeescript
+dom '#my-div' #=> <HTMLElement>
 
-dom('div') #=> <HTMLElement>
+dom 'div' #=> <HTMLElement>
 ```
 
-### `domArray(selector)`
+### `domArray selector`
 
 - `selector {String}`: Identifies the criteria for selecting DOM elements.
 
 Locates and returns a real array of DOM elements identified by `selector`. If no element was found, returns an empty array.
 
-```ruby
-domArray('#my-div') #=> [<HTMLElement>]
+```coffeescript
+domArray '#my-div' #=> [<HTMLElement>]
 
-dom('div') #=> [<HTMLElement>, <HTMLElement>, <HTMLElement>]
+dom 'div' #=> [<HTMLElement>, <HTMLElement>, <HTMLElement>]
 ```
 
-### `eql(a, b)`
+### `eql a, b`
 
 - `a {Any}`: Any type of data.
 - `b {Any}`: Any type of data.
 
 Determines whether `a` and `b` are deep equal by strict comparison and returns either `true` or `false`.
 
-```ruby
-eql(4, 4) #=> true
+```coffeescript
+eql 4, 4 #=> true
 
-eql(4, "4") #=> false
+eql 4, "4" #=> false
 
-eql([1, 2, 3], [1, 2, 3]) #=> true
+eql [1, 2, 3], [1, 2, 3] #=> true
 
-eql([1, 2, 3], [2, 3, 1]) #=> false
+eql [1, 2, 3], [2, 3, 1] #=> false
 
-eql([1, 2, {foo: 'bar'}], [1, 2, {foo: 'bar'}]) #=> true
+eql [1, 2, {foo: 'bar'}], [1, 2, {foo: 'bar'}] #=> true
 ```
 
-### `get(key, collection)`
+### `get key, collection`
 
 - `key {String|Number|Atom}`: An object key or array index.
 - `collection {Any Object-like type}`: Any kind of JavaScript collection.
 
 Retrieves an element identified by `key` from `collection` and returns the element.
 
-```ruby
-get(2, ['a', 'b', 'c', 'd']) #=> 'c'
+```coffeescript
+get 2, ['a', 'b', 'c', 'd'] #=> 'c'
 
-get('foo', {foo: 'bar', baz: 'quux'}) #=> 'bar'
+get 'foo', {foo: 'bar', baz: 'quux'} #=> 'bar'
 
-get(FOO, {FOO: 'bar'}) #=> 'bar'
+get FOO, {FOO: 'bar'} #=> 'bar'
 ```
 
 
-### `head(list)`
+### `head list`
 
 - `list {Array|Tuple|String}`: An list type.
 
 Returns the first item in a list or `undefined` if there are no items.
 
 ```ruby
-head([1, 2, 3]) #=> 1
+head [1, 2, 3] #=> 1
 
-head([1]) #=> 1
+head [1] #=> 1
 
-head([]) #=> undefined
+head [] #=> undefined
 ```
 
-### `instanceof(data, constructor)`
+### `instanceof data, constructor`
 
 - `data {Any}`: Any type of data.
 - `constructor {Function}`: A class constructor function.
@@ -129,64 +129,64 @@ head([]) #=> undefined
 Calls JavaScript's `instanceof` statement and returns the result, either `true` or `false`.
 
 ```ruby
-instanceof({}, Object) #=> true
+instanceof {}, Object #=> true
 
-instanceof(4, Object) #=> false
+instanceof 4, Object #=> false
 ```
 
-### `kill(process)`
+### `kill process`
 
 - `process {Process}`: A process created using the `spawn` function.
 
 Terminates the process. Returns `undefined`.
 
-```ruby
-process = spawn(fn => console.log("I'm alive!"))
+```coffeescript
+process = spawn fn => console.log "I'm alive!"
 
-kill(process)
+kill process
 ```
 
-### `last(list)`
+### `last list`
 
 - `list {Array|Tuple|String}`: A list type.
 
 Returns the last item in a list or `undefined` if there are no items.
 
 ```ruby
-last([1, 2, 3]) #=> 3
+last [1, 2, 3] #=> 3
 
-last([1]) #=> 1
+last [1] #=> 1
 
-last([]) #=> undefined
+last [] #=> undefined
 ```
 
-### `lead(list)`
+### `lead list`
 
 - `list {Array|Tuple|String}`: A list type.
 
 Returns a new array of all but the last item in `list`, or an empty array if there are no items or only 1 item.
 
 ```ruby
-lead([1, 2, 3]) #=> [1, 2]
+lead [1, 2, 3] #=> [1, 2]
 
-lead([1]) #=> []
+lead [1] #=> []
 
-lead([]) #=> []
+lead [] #=> []
 ```
 
-### `random(array)`
+### `random array`
 
 - `array {Array}`: An array.
 
 Selects a random item from `array` and returns the item.
 
 ```ruby
-random([1, 2, 3]) #=> 2
+random [1, 2, 3] #=> 2
 
-random([1, 2, 3]) #=> 1
+random [1, 2, 3] #=> 1
 ```
 
-### `receive(fun)`
+### `receive fun`
 
 - `fun {Function}`: Any type of function including a `fn`, a `def` block, or a `match` block.
 
@@ -194,121 +194,121 @@ Registers a handler for dealing with messages that come in from a separate proce
 
 ```ruby
 receive match
-  {{ OK, msg }}  -> doSomethingWith(msg)
-  {{ ERR, msg }} -> throw(create(Error, msg))
+  {{ OK, msg }}  => doSomethingWith msg
+  {{ ERR, msg }} => throw (create Error, msg)
 ```
 
-### `remove(key, collection)`
+### `remove key, collection`
 
 - `key {String|Number|Atom}`: An object key or array index.
 - `collection {Any Object-like type}`: Any kind of JavaScript collection.
 
 Creates a shallow clone of `collection` not including the item identified by `key`.
 
-```ruby
-remove('foo', {foo: 'bar', baz: 'quux'}) #=> {baz: 'quux'}
+```coffeescript
+remove 'foo', {foo: 'bar', baz: 'quux'} #=> {baz: 'quux'}
 
-remove(1, ['a', 'b', 'c']) #=> ['a', 'c']
+remove 1, ['a', 'b', 'c'] #=> ['a', 'c']
 ```
 
-### `reply(message)`
+### `reply message`
 
 - `message {Any Serializable Data|Atom}`: A message to send to an owner process.
 
 Sends `message` from a child process to an owner process. Returns `undefined`.
 
-```ruby
-reply({{ OK, 'This is my message.' }})
+```coffeescript
+reply {{ OK, 'This is my message.' }}
 ```
 
-### `send(process, message)`
+### `send process, message`
 
 - `process {Process}`: A process created using the `spawn` function.
 - `message {Any Serializable Data|Atom}`: A message to send to a owner process.
 
 Sends `message` to `process`. Returns `undefined`.
 
-```ruby
+```coffeescript
 process = spawn fn =>
   receive fn msg =>
-    console.log('I got', msg)
+    console.log 'I got', msg
 
-send(process, 'hello')
+send process, 'hello'
 
 #=> Logs: "I got hello"
 ```
 
-### `spawn(fun)`
+### `spawn fun`
 
 - `fun {Function}`: Any type of function, but normally an anonymous `fn`.
 
 Creates a new operating system process out of `fun`.
 
-```ruby
-process = spawn fn => console.log("I'm alive!")
+```coffeescript
+process = spawn fn => console.log "I'm alive!"
 ```
 
-### `tail(list)`
+### `tail list`
 
 `list {Array|Tuple|String}`: An list type.
 
 Returns a new array of all but the first item in `list`, or an empty array if there are no items or only 1 item.
 
-```ruby
-tail([1, 2, 3]) #=> [2, 3]
+```coffeescript
+tail [1, 2, 3] #=> [2, 3]
 
-tail([1]) #=> []
+tail [1] #=> []
 
-tail([]) #=> []
+tail [] #=> []
 ```
 
-### `throw(err)`
+### `throw err`
 
 - `err {Error}`: Any instance of any kind of error object.
 
 Throws an error.
 
-```ruby
-throw(create(Error, 'This is an error message'))
+```coffeescript
+throw (create Error, 'This is an error message')
 ```
 
-### `type(data)`
+### `type data`
 
 - `data {Any}`: Any data type.
 
 Intelligently and reasonably assesses data types and returns a string identifying the type of `data`.
 
 ```coffeescript
-type('hello') #=> 'string'
+type 'hello' #=> 'string'
 
-type(3.4) #=> 'number'
+type 3.4 #=> 'number'
 
-type(NaN) #=> 'nan'
+type NaN #=> 'nan'
 
-type(null) #=> 'null'
+type null #=> 'null'
 
-type([1, 2, 3]) #=> 'array'
+type [1, 2, 3] #=> 'array'
 
-type(/^foo$/) #=> 'regexp'
+type /^foo$/ #=> 'regexp'
 
-type(<div></div>) #=> 'htmlelement'
+type <div></div> #=> 'htmlelement'
 
-type(create(Date)) #=> 'date'
+type (create Date) #=> 'date'
 
-type(undefined) #=> 'undefined'
+type undefined #=> 'undefined'
 
-type(OK) #=> 'atom'
+type OK #=> 'atom'
 
-type(spawn(fn => 'hello')) #=> 'process'
+type (spawn fn => 'hello') #=> 'process'
 
-type(fn => 'hello') #=> 'function'
+type fn => 'hello' #=> 'function'
 
-type({foo: 'bar'}) #=> 'object'
+type {foo: 'bar'} #=> 'object'
 
-type({{ x, y }}) #=> 'tuple'
+type {{ x, y }} #=> 'tuple'
 ```
 
-### `update(key, value, collection)`
+### `update key, value, collection`
 
 - `key {String|Number|Atom}`: An object key or array index.
 - `value {Any}`: Any type of data.
@@ -316,10 +316,10 @@ type({{ x, y }}) #=> 'tuple'
 
 Creates a shallow clone of `collection` wherein the value for `key` has been updated to `value`.
 
-```ruby
-update('foo', 'Billy', {foo: 'bar', baz: 'quux'}) #=> {foo: 'Billy', baz: 'quux'}
+```coffeescript
+update 'foo', 'Billy', {foo: 'bar', baz: 'quux'} #=> {foo: 'Billy', baz: 'quux'}
 
-remove(1, 'd', ['a', 'b', 'c']) #=> ['a', 'd', 'c']
+remove 1, 'd', ['a', 'b', 'c'] #=> ['a', 'd', 'c']
 ```
 
 

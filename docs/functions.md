@@ -20,12 +20,12 @@ The mindset here is that we've created a function called `factorial` that takes 
 
 Now consider the same function written in CnS:
 
-```ruby
-factorial(0) => 1
-factorial(n) => n * factorial(n - 1)
+```coffeescript
+factorial 0 => 1
+factorial n => n * factorial n - 1
 ```
 
-In this case, `factorial(0)` is a pattern that matches up with the value 1. When the language detects this pattern, it spits out 1. We also have another pattern (`factorial(n)`) that will be matched in the case that the user attempts to call the function with a single argument that is not 0. This pattern matches up with a function body that ends up calling `factorial` over and over again, subtracting 1 from its argument each time until the first pattern is matched and the recursion ends.
+In this case, `factorial 0` is a pattern that matches up with the value 1. When the language detects this pattern, it spits out 1. We also have another pattern (`factorial n`) that will be matched in the case that the user attempts to call the function with a single argument that is not 0. This pattern matches up with a function body that ends up calling `factorial` over and over again, subtracting 1 from its argument each time until the first pattern is matched and the recursion ends.
 
 If you take a look at the CnS compiled output, you'll notice that, under the hood, we're still just building functions that do a conditional analysis of their arguments. However, getting yourself into the pattern match mindset will be very useful in terms of getting used to pattern matching as a tool for shortening your syntax and making your functions logically simpler.
 
@@ -34,11 +34,9 @@ And at this point, you should have a decent grasp on the first technique for def
 
 ## Function Calls
 
-Function calls in CnS look like function calls in most other languages. That is, they are usually marked by a word followed by parentheses. For example `foo()`. If the function takes arguments, they should be placed inside the parentheses and separated by commas. For example `foo(x, y)`.
+Function calls in CnS look like function calls in JavaScript, **minus** the parentheses. So, whereas in JavaScript you might write `foo(x, y)`, in CnS, you would write `foo x, y`. Arguments should still be separated by commas, however you will not surround them with parentheses. Instead, you will use parentheses to denote a function call taking another function call as an argument. For example, in JavaScript you might write `foo(bar(x), y)`, but in CnS you could write `foo (bar x), y`
 
-However, for convenience, CnS does not require these parentheses. As such, writing `foo x, y` is directly equivalent to writing `foo(x, y)`. If you are not passing any arguments to your function, you will still need to include some indication of an argument list in order to show that you are actually calling the function instead of just referencing it. For example, `foo` does not actually call the function but `foo()` does. If you would rather not use parentheses _at all_, you can also call a function using the "empty identifier" `_` as follows: `foo _` which translates to `foo()` in JavaScript. In CnS, a lone underscore signifies either an un-needed parameter in pattern matches (more on that later) or an empty argument list in function calls.
-
-In most of the following examples in this section we'll be including the parentheses. This is simply because most people are used to them and it should help newcomers get a feel for the language more quickly.
+If you need to call a function with no arguments, you will call it using the "empty identifier" `_` as follows: `foo _` which translates to `foo()` in JavaScript. In CnS, a lone underscore signifies either an un-needed parameter in pattern matches (more on that later) or an empty argument list in function calls.
 
 Now let's talk about the different ways you can create functions.
 
@@ -48,7 +46,7 @@ Now let's talk about the different ways you can create functions.
 Using named patterns means using a "rocket" symbol to match up a function call pattern with a body that should be executed when we detect that pattern. You can define as many patterns for a function call as you need. The compiled output is optimized for efficiency. For example this:
 
 ```coffeescript
-add(x, y) => x + y
+add x, y => x + y
 ```
 
 ...turns into the following JavaScript function:
@@ -62,8 +60,8 @@ function add(x, y) {
 And if we add in a pattern like this...
 
 ```coffeescript
-add(0, 0) => 0
-add(x, y) => x + y
+add 0, 0 => 0
+add x, y => x + y
 ```
 
 ...then we'll get something a little closer to this:
@@ -86,29 +84,18 @@ Because functions created with this technique are not any different than other f
 
 ```coffeescript
 # A pattern for when our argument is 0
-add2(0) => 2
+add2 0 => 2
 
 # A pattern for when our argument is anything else
-add2(x) => x + 2
-
-[1, 2, 3].map(add2) #=> [3, 4, 5]
-```
-
-Also, keep in mind that parentheses are optional when defining functions as well as calling them. As such, the above example could just as easily be written like this:
-
-```ruby
-add2 0 => 0
 add2 x => x + 2
 
 [1, 2, 3].map add2 #=> [3, 4, 5]
 ```
 
-For many people, this reduction in clutter makes things a bit easier to read. For others, it loses a bit of clarity through explicitness. A good rule of thumb is to pick a style that works for you and stick to it in most cases.
-
 Before moving on, it should be noted that often times you'll need a function block to span multiple lines. In a case like this, all we need to do is let the compiler know where the block ends. So if your function block spans multiple lines, just use indentation. Like so:
 
 ```coffeescript
-add2(x) =>
+add2 x =>
   x + 2
 ```
 
@@ -120,28 +107,28 @@ When it comes to pattern matching, there is a lot that you can do. But before we
 
 Sometimes you want to create a function on the fly. It won't be re-used anywhere so you don't need to give it a name. In CnS you can do this with the `fn` keyword. Like so:
 
-```ruby
-[1, 2, 3].map(fn(item) => item + 2)
+```coffeescript
+[1, 2, 3].map fn item => item + 2
 ```
 
 And, of course, you can use indentation if you want the function to span multiple lines.
 
 This syntax is also nice if you'd like to assign a function to a varaible:
 
-```ruby
-add = fn(x, y) => x + y
+```coffeescript
+add = fn x, y => x + y
 
-add(2, 2) #=> 4
+add 2, 2 #=> 4
 ```
 
-The `fn` keyword keeps our syntax consistent. Whereas in one case, we might say that `add(x, y) => x + y` could be read as "the function add of x and y returns the result of x plus y," we might also say that `add = fn(x, y) => x + y` could be read as "add is a function of x and y that returns the result of x plus y".
+The `fn` keyword keeps our syntax consistent. Whereas in one case, we might say that `add x, y => x + y` could be read as "the function add of x and y returns the result of x plus y," we might also say that `add = fn x, y => x + y` could be read as "add is a function of x and y that returns the result of x plus y".
 
 If there are no parameters to be passed to an anonymous function, then the parameter list is unnecessary:
 
-```ruby
-createDate = fn => create(Date)
+```coffeescript
+createDate = fn => create Date
 
-createDate() #=> Sat Sep 10 2016 16:06:07 GMT-0400 (EDT)
+createDate _ #=> Sat Sep 10 2016 16:06:07 GMT-0400 (EDT)
 ```
 
 ## Context Binding
@@ -149,20 +136,22 @@ createDate() #=> Sat Sep 10 2016 16:06:07 GMT-0400 (EDT)
 Whereas in JavaScript, the "fat arrow" (what we've been calling a "rocket") is used exclusively as a shortcut for `Function.bind`, in Cream & Sugar, all functions use the rocket. If you want to use `Function.bind`, you have 2 options. The first is to actually call `bind` like so...
 
 ```coffeescript
-uselessFn = (fn(x) => x).bind(@)
+uselessFn = (fn x => x).bind(@)
 ```
 
-But what's a whole lot nicer is using the scope resolution (or "bind") operator to make sure that your function is always executed within the current scope.
+Notice that, in Cream & Sugar, JavaScript's keyword `this` has become `@`. By the same token, an expression such as `this.foo` can be written as simply `@foo` in CnS.
+
+What's a whole lot nicer than using `.bind` is using the scope resolution (or "bind") operator to make sure that your function is always executed within the current scope.
 
 ```coffeescript
-uselessFn = fn(x) ::=> x
+uselessFn = fn x ::=> x
 ```
 
 In fact, you can even use this operator to apply bindings to named patterns!
 
 ```coffeescript
-add(0, 0) ::=> 0
-add(x, y) ::=> x + y
+add 0, 0 ::=> 0
+add x, y ::=> x + y
 ```
 
 You'll just need to make sure that if you use the bind operator in one of your patterns, you'll need to use it in all of them.
@@ -171,21 +160,21 @@ You'll just need to make sure that if you use the bind operator in one of your p
 
 One nice feature of Cream & Sugar is that you can actually define pattern matches without naming a function. Doing so follows as similar form as named patterns except that you'll use `match` and indentation to group your function bodies together rather than writing the name of the function for each pattern. Consider the following:
 
-```ruby
+```coffeescript
 eatFood =
   match
-    ('pizza') => 'ate pizza'
-    (food) => 'ate some other kind of food'
+    'pizza' => 'ate pizza'
+    food    => 'ate some other kind of food'
 
-eatFood('hamburger') #=> 'ate some other kind of food'
+eatFood 'hamburger' #=> 'ate some other kind of food'
 ```
 
 This technique is especially useful when accepting messages from [external processes](processes.md). For example, CnS actually allows you to quickly and easily spin up extra operating system processes and pass messages between them. In order to handle incoming messages, you call the `receive` function and pass a function to it. This is a great place to use `match`.
 
 ```ruby
 receive match
-  {{ OK, msg }} -> doSomethingWith(msg)
-  {{ ERR, msg }} -> throw(create(Error, msg))
+  {{ OK, msg }} => doSomethingWith msg
+  {{ ERR, msg }} => throw (create Error, msg)
 ```
 
 This example handles messages coming in from other OS processes. It expects messages to come in as tuples where the first item is an [atom](datatypes.md) and the second item is a string.
@@ -194,12 +183,12 @@ This example handles messages coming in from other OS processes. It expects mess
 
 Apart from simply detecting specific values and variable data, you can also use pattern matching to destructure your arguments and pick up on things like empty arrays. To illustrate, let's use pattern matching to re-write JavaScript's `Array.map` function.
 
-```ruby
-map(list, fun) => map(list, fun, [])
-map([], fun, acc) => acc
-map([h|t], fun, acc) => map(t, fun, acc << fun(h, acc.length))
+```coffeescript
+map list, fun => map list, fun, []
+map [], fun, acc => acc
+map [h|t], fun, acc => map t, fun, acc << (fun h, acc.length)
 
-# 3 lines, 124 chars
+# 3 lines, 120 chars
 ```
 
 Before we get into an explanation of what's going on here, let's look at a JavaScript equivalent.
@@ -229,15 +218,15 @@ In every other case, we'll be hitting pattern 3 and accumulating values. We use 
 When destructuring arguments, you may sometimes want to make use of part of a destructured collection, but not the rest of it. However, in CnS, it is bad practice to name a variable and then never use it. Consider the following:
 
 ```coffeescript
-recur([]) => undefined
-recur([h|t]) => recur(t)
+recur [] => undefined
+recur [h|t] => recur t
 ```
 
 In this example, we created a function called `recur` that takes an array and calls itself once for every item in that array. In the second pattern, we slice the head off of the array so that the function can be called again with only the tail. The gross part is that we went so far as to name the head of our array `h` but then never actually reference `h` anywhere in the function body. If we're not careful, it can look like a mistake. The way to compensate is to use the `_` identifier. Like so:
 
 ```coffeescript
-recur([]) => undefined
-recur([_|t]) => recur(t)
+recur [] => undefined
+recur [_|t] => recur t
 ```
 
 In this case, we've assigned the head of our array to `_` which is a special identifier in CnS that doesn't actually reference anything. It essentially tells the program (and anyone who may read your code), "something will be here but I don't care what it is because I'm not going to use it". If you were to try to get the value of `_` from within the function body, it would be undefined.
@@ -248,9 +237,9 @@ In this case, we've assigned the head of our array to `_` which is a special ide
 
 A good place to solve this problem is when you export the function from your module. An export statement can look like this:
 
-```javascript
+```coffeescript
 export {
-  map: aritize(map, 2)
+  map: aritize map, 2
 }
 ```
 

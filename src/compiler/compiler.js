@@ -2,6 +2,7 @@ import fs from 'fs';
 import { parser } from './utils';
 import finalize from './finalize';
 import './nodes/Program';
+import './nodes/Functionizer';
 import './nodes/NewLine';
 import './nodes/Comment';
 import './nodes/String';

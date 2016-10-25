@@ -2,7 +2,7 @@
 New Syntax
 ###
 
-up() ->
+up _ ->
   spawn fn ->
 
     # Define the factorial function so that we can actually calculate them.
@@ -198,3 +198,22 @@ another form. Why not just use a nice semantic function for that?
     });
     return out;
   };
+
+------------
+
+Let's not do scope piping anymore. Let's make it more useful by doing
+argument piping instead.
+
+  someValue >>= curried 'fn' >>= furried 'cn'
+
+  furried('cn', curried('fn', someValue));
+
+  Or, in reality...
+
+  function () {
+    return furried('cn', function () {
+      return curried('fn', function () {
+        return someValue
+      }.call())
+    }.call())
+  }.call()

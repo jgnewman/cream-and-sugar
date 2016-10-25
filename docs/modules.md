@@ -67,12 +67,12 @@ export {
 Exports are also a good place to lock down the allowed arities that may be used with your functions. For example, if you have defined a function called `funA` and you export it as `aritize funA, 2`, then when a user imports your function, they will only be allowed to call it with 2 arguments. If they try to call it with any other number of arguments, they'll get an error. Here's a great example of where that would be useful:
 
 ```coffeescript
-map(list, fun) => map(list, fun, [])
-map([], fun, acc) => acc
-map([h|t], fun, acc) => map(t, fun, acc << fun(h, acc.length))
+map list, fun => map list, fun, []
+map [], fun, acc => acc
+map [h|t], fun, acc => map t, fun, acc << (fun h, acc.length)
 
 export {
-  map: aritize(map, 2)
+  map: aritize map, 2
 }
 
 ```

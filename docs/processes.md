@@ -57,7 +57,7 @@ export { up: aritize up, 0 }
 
 Now that we have a process module, let's take a look at how we might use it within the body of another module.
 
-```ruby
+```coffeescript
 # Import the function that creates a process.
 import { up } from './factorial-process'
 

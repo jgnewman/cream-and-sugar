@@ -662,11 +662,7 @@ LineArgs
   ;
 
 FunctionCall
-  : Lookup "(" ListItems ")"
-    {
-      $$ = new FunctionCallNode($1, {items:$3}, createSourceLocation(null, @1, @4));
-    }
-  | Lookup LineArgs
+  : Lookup LineArgs
     {
       $$ = new FunctionCallNode($1, {items:$2}, createSourceLocation(null, @1, @2));
     }
@@ -1159,6 +1155,12 @@ function DestructureNode(item, destrType, loc) {
   this.shared = shared;
 }
 
+function Functionizer (node) {
+  this.node = node;
+  this.shared = node.shared;
+  this.loc = node.loc;
+}
+
 /* Expose the Node Constructors */
 var n = parser.nodes = {};
 
@@ -1197,3 +1199,4 @@ n.HtmlNode = HtmlNode;
 n.PipeNode = PipeNode;
 n.WrapNode = WrapNode;
 n.DestructureNode = DestructureNode;
+n.Functionizer = Functionizer;

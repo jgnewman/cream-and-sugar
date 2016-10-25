@@ -34,20 +34,21 @@ function factorial(n) {
 And this is how you'd write that using the most equivalent structures in CnS:
 
 ```coffeescript
-factorial(n) =>
+factorial n =>
   when
     n is 0 -> 1
-    n isnt 0 -> n * factorial(n - 1)
+    n isnt 0 -> n * factorial n - 1
 
-# 4 lines, 75 chars
+# 4 lines, 73 chars
 ```
 
 Of course, we can simplify this example even further by using other structures.
 But we'll get to that in a minute. More importantly there are a couple of
 takeaways right off the bat including...
 
-1. Every structure returns a value (including conditions).
-2. The value returned is always the final expression executed.
+1. Function calls in CnS **do not use** parentheses.
+2. Every structure returns a value (including conditions).
+3. The value returned is always the final expression executed.
 
 Also, you'll probably notice that, in lieu of an "else" case,
 we're explicitly requiring one of our conditions to evaluate to true. This is
@@ -65,10 +66,10 @@ Now let's talk about another way we could have written our function that comes
 out even smaller:
 
 ```coffeescript
-factorial(0) => 1
-factorial(n) => n * factorial(n - 1)
+factorial 0 => 1
+factorial n => n * factorial n - 1
 
-# 2 lines, 54 chars
+# 2 lines, 51 chars
 ```
 
 This example uses a concept called pattern matching. Essentially we're defining
@@ -93,14 +94,14 @@ your own iterations, let's look at a basic example implementing an iterative
 function on our own.
 
 ```coffeescript
-each(list, fun) => each(list, fun, 0)
-each([], fun, counter) => counter
-each(list, fun, counter) =>
+each list, fun => each list, fun, 0
+each [], fun, counter => counter
+each list, fun, counter =>
   inc = counter + 1
-  fun(head(list), counter)
-  each(tail(list), fun, inc)
+  fun (head list), counter
+  each (tail list), fun, inc
 
-# 6 lines, 175 chars
+# 6 lines, 171 chars
 ```
 
 Admittedly, this could be somewhat simplified and we'll take care of that
@@ -132,42 +133,20 @@ we'll hit pattern 2 and return the counter.
 When we call the `each` function, it'll look like this:
 
 ```coffeescript
-each([1, 2, 3], fn(item, index) => item + index)
+each [1, 2, 3], fn item, index => item + index
 #=> 3
 ```
 
 Notice that you can create anonymous functions using the keyword `fn`. This
 keeps our syntax consistent. Whereas a named function would be defined using
-something like `factorial(n)` (or, "factorial of n"), here we are using
-`fn(item, index)` (or, "function of item and index").
+something like `factorial n` (or, "factorial of n"), here we are using
+`fn item, index` (or, "function of item and index").
 
 Now let's simplify our example a little bit.
 
-Step 1: **Parentheses are optional!**
+#### Destructuring
 
-```ruby
-each list, fun => each list, fun, 0
-each [], fun, counter => counter
-each list, fun, counter =>
-  inc = counter + 1
-  fun (head list), counter
-  each (tail list), fun, inc
-
-# 6 lines, 171 chars
-```
-
-This piece should be pretty self explanatory. Pick a style and stick with it.
-
-And, of course, it means we can also call the function like this:
-
-```ruby
-each [1, 2, 3], fn item, index => item + index
-#=> 3
-```
-
-Step 2: Destructuring
-
-```ruby
+```coffeescript
 each list, fun => each list, fun, 0
 each [], fun, counter => counter
 each [hd|tl], fun, counter =>
@@ -202,7 +181,7 @@ Never fear. You can take care of this when you export the function (or really
 at any other time), by using the built-in `aritize` function. For example...
 
 ```javascript
-export aritize(each, 2)
+export aritize each, 2
 ```
 
 In this example, we're exporting the `each` function with an arity of 2, meaning
@@ -216,7 +195,7 @@ Cream & Sugar, vs how the same function would be implemented recursively in
 JavaScript.
 
 *CnS*
-```ruby
+```coffeescript
 each list, fun => each list, fun, 0
 each [], fun, counter => counter
 each [hd|tl], fun, counter =>
@@ -256,8 +235,8 @@ One other thing we ought to mention when talking about pattern matching is
 using guards. Earlier we implemented a `factorial` function like this:
 
 ```coffeescript
-factorial(0) => 1
-factorial(n) => n * factorial(n - 1)
+factorial 0 => 1
+factorial n => n * factorial n - 1
 ```
 
 With pattern matching we actually have lots of options and another way we
@@ -267,8 +246,8 @@ certain aspects of a pattern that are harder to express in the pattern itself.
 Consider this:
 
 ```coffeescript
-factorial(n) where n lt 2 => 1
-factorial(n) => n * factorial(n - 1)
+factorial n where n lt 2 => 1
+factorial n => n * factorial n - 1
 ```
 
 In this version of the function, we're matching against a single argument of
@@ -329,7 +308,7 @@ Here's how you'd compile a string instead:
 ```javascript
 import { compileCode } from 'cns';
 
-compileCode('add2(x) -> x + 2', (err, result) => {
+compileCode('add2 x -> x + 2', (err, result) => {
   if (err) throw err;
   console.log(result);
 }, {finalize: false});
