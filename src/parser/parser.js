@@ -1293,49 +1293,53 @@ options: {},
 performAction: function anonymous(yy,yy_,$avoiding_name_collisions,YY_START) {
 var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
-case 0:/* skip other whitespace */
+case 0:/* skip multiline comments whitespace */
 break;
-case 1:return 40;
+case 1:
+                                         this.unput('\n');
+                                       
 break;
-case 2:return "[";
+case 2:return 40; /* return NEWLINE for lines that end with comments */
 break;
-case 3:return "]";
+case 3:return "[";
 break;
-case 4:return "{{";
+case 4:return "]";
 break;
-case 5:return "}}";
+case 5:return "{{";
 break;
-case 6:return "{";
+case 6:return "}}";
 break;
-case 7:return "}";
+case 7:return "{";
 break;
-case 8:return ">>=";
+case 8:return "}";
 break;
-case 9:return "<<";
+case 9:return ">>=";
 break;
-case 10:return ">>";
+case 10:return "<<";
 break;
-case 11:return "CLOSER";
+case 11:return ">>";
 break;
-case 12:return "</";
+case 12:return "CLOSER";
 break;
-case 13:return "<";
+case 13:return "</";
 break;
-case 14:return "/>";
+case 14:return "<";
 break;
-case 15:return ">";
+case 15:return "/>";
 break;
-case 16:
+case 16:return ">";
+break;
+case 17:
                                        this.unput(yy_.yytext.replace(/^(\r\n|\r|\n)+[ \t]+/, ''));
                                      
 break;
-case 17:
-                                       // Track a global indent count on the parser.
-                                       parser.indentCount = parser.indentCount || [0];
-                                       parser.forceDedent = parser.forceDedent || 0;
+case 18:
+                                       // Track a global indent count.
+                                       this.indentCount = this.indentCount || [0];
+                                       this.forceDedent = this.forceDedent || 0;
 
-                                       if (parser.forceDedent) {
-                                         parser.forceDedent -= 1;
+                                       if (this.forceDedent) {
+                                         this.forceDedent -= 1;
                                          this.unput(yy_.yytext);
                                          return 58;
                                        }
@@ -1345,8 +1349,8 @@ case 17:
                                        // Return an indent when the white space is greater than
                                        // our current indent count. We also unshift a new indent
                                        // count on to the indent stack.
-                                       if (indentation > parser.indentCount[0]) {
-                                         parser.indentCount.unshift(indentation);
+                                       if (indentation > this.indentCount[0]) {
+                                         this.indentCount.unshift(indentation);
                                          return 56;
                                        }
 
@@ -1356,13 +1360,13 @@ case 17:
                                        // indent stack.
                                        var dedents = [];
 
-                                       while (indentation < parser.indentCount[0]) {
-                                         parser.indentCount.shift();
+                                       while (indentation < this.indentCount[0]) {
+                                         this.indentCount.shift();
                                          dedents.push('DEDENT');
                                        }
 
                                        if (dedents.length) {
-                                         parser.forceDedent = dedents.length - 1;
+                                         this.forceDedent = dedents.length - 1;
                                          this.unput(yy_.yytext);
                                          return 58;
                                        }
@@ -1372,61 +1376,61 @@ case 17:
                                        return 40;
                                      
 break;
-case 18:/* skip other whitespace */
+case 19:/* skip other whitespace */
 break;
-case 19:return "FN";
+case 20:return "FN";
 break;
-case 20:return "CASEOF";
+case 21:return "CASEOF";
 break;
-case 21:return "DEF";
+case 22:return "DEF";
 break;
-case 22:return "MATCH";
+case 23:return "MATCH";
 break;
-case 23:return "END";
+case 24:return "END";
 break;
-case 24:return "ARGS";
+case 25:return "ARGS";
 break;
-case 25:return "IF";
+case 26:return "IF";
 break;
-case 26:return "INCASE";
+case 27:return "INCASE";
 break;
-case 27:return "THROWS";
+case 28:return "THROWS";
 break;
-case 28:return "ELSE";
+case 29:return "ELSE";
 break;
-case 29:return "DO";
+case 30:return "DO";
 break;
-case 30:return "COND";
+case 31:return "COND";
 break;
-case 31:return "FOR";
+case 32:return "FOR";
 break;
-case 32:return "IN";
+case 33:return "IN";
 break;
-case 33:return "THEN";
+case 34:return "THEN";
 break;
-case 34:return "WHEN";
+case 35:return "WHEN";
 break;
-case 35:return "WHERE";
+case 36:return "WHERE";
 break;
-case 36:return "TRY";
+case 37:return "TRY";
 break;
-case 37:return "CATCH";
+case 38:return "CATCH";
 break;
-case 38:return "IMPORT";
+case 39:return "IMPORT";
 break;
-case 39:return "EXPORT";
+case 40:return "EXPORT";
 break;
-case 40:return "FROM";
+case 41:return "FROM";
 break;
-case 41:return "ONLYIF";
-break;
-case 42:return "LOGIC";
+case 42:return "ONLYIF";
 break;
 case 43:return "LOGIC";
 break;
-case 44:return "SPECIALVAL";
+case 44:return "LOGIC";
 break;
-case 45:
+case 45:return "SPECIALVAL";
+break;
+case 46:
                                                                     if (/^[A-Z][A-Z_]+$/.test(yy_.yytext)) {
                                                                       return 43;
                                                                     } else {
@@ -1434,50 +1438,50 @@ case 45:
                                                                     }
                                                                   
 break;
-case 46:return "NUMBER";
+case 47:return "NUMBER";
 break;
-case 47:return "REGEXP";
+case 48:return "REGEXP";
 break;
-case 48:return "STRING";       /* " fix syntax highlighting */
+case 49:return "STRING";       /* " fix syntax highlighting */
 break;
-case 49:return "STRING";       /* ' fix syntax highlighting */
+case 50:return "STRING";       /* ' fix syntax highlighting */
 break;
-case 50:return "STRING";       /* ` fix syntax highlighting */
+case 51:return "STRING";       /* ` fix syntax highlighting */
 break;
-case 51:return "IDENTIFIER";
+case 52:return "IDENTIFIER";
 break;
-case 52:return ",";
+case 53:return ",";
 break;
-case 53:return "->";
+case 54:return "->";
 break;
-case 54:return "::";
+case 55:return "::";
 break;
-case 55:return ":";
+case 56:return ":";
 break;
-case 56:return "=>";
+case 57:return "=>";
 break;
-case 57:return "=";
+case 58:return "=";
 break;
-case 58:return ".";
+case 59:return ".";
 break;
-case 59:return "||";
+case 60:return "||";
 break;
-case 60:return "OPERATOR";
+case 61:return "OPERATOR";
 break;
-case 61:return "(";
+case 62:return "(";
 break;
-case 62:return ")";
+case 63:return ")";
 break;
-case 63:return "|";
+case 64:return "|";
 break;
-case 64:return "!";
+case 65:return "!";
 break;
-case 65:return "EOF";
+case 66:return "EOF";
 break;
 }
 },
-rules: [/^(?:###(.|\r|\n)*?###)/,/^(?:#.*($|\r\n|\r|\n))/,/^(?:\[\s*)/,/^(?:\])/,/^(?:\{\{\s*)/,/^(?:\}\})/,/^(?:\{\s*)/,/^(?:\})/,/^(?:>>=)/,/^(?:<<)/,/^(?:>>)/,/^(?:<\/[^\>]+>)/,/^(?:<\/\s*)/,/^(?:<\s*)/,/^(?:\/>)/,/^(?:>)/,/^(?:(\r\n|\r|\n)+[ \t]+(\r\n|\r|\n))/,/^(?:(\r\n|\r|\n)+[ \t]*)/,/^(?:\s+)/,/^(?:fn\b)/,/^(?:caseof\b)/,/^(?:def\b)/,/^(?:match\b)/,/^(?:end\b)/,/^(?:args\b)/,/^(?:if\b)/,/^(?:incase\b)/,/^(?:throws\b)/,/^(?:else\b)/,/^(?:do\b)/,/^(?:cond\b)/,/^(?:for\b)/,/^(?:in\b)/,/^(?:then\b)/,/^(?:when\b)/,/^(?:where\b)/,/^(?:try\b)/,/^(?:catch\b)/,/^(?:import\b)/,/^(?:export\b)/,/^(?:from\b)/,/^(?:onlyif\b)/,/^(?:and|or|lte|gte|lt|gt\b)/,/^(?:isnt|is|==|!=)/,/^(?:true|false|null|undefined\b)/,/^(?:(@)?[a-zA-Z\_\$][a-zA-Z0-9\_\$]*((\s*\.\s*)?[a-zA-Z0-9\_\$]+)*)/,/^(?:(-)?[0-9]+(\.[0-9]+)?(e-?[0-9]+)?)/,/^(?:\/[^\/\s]+\/[gim]*)/,/^(?:"([^\"]|\\[\"])*")/,/^(?:'([^\']|\\[\'])*')/,/^(?:`([^\`]|\\[\`])*`)/,/^(?:@)/,/^(?:,)/,/^(?:->)/,/^(?:::)/,/^(?::)/,/^(?:=>)/,/^(?:=)/,/^(?:\.)/,/^(?:\|\|)/,/^(?:\+|-|\*|\/|%)/,/^(?:\()/,/^(?:\))/,/^(?:\|)/,/^(?:!)/,/^(?:$)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65],"inclusive":true}}
+rules: [/^(?:###(.|\r|\n)*?###)/,/^(?:(\r\n|\r|\n)+[ \t]*#.*($|\r\n|\r|\n))/,/^(?:#.*($|\r\n|\r|\n))/,/^(?:\[\s*)/,/^(?:\])/,/^(?:\{\{\s*)/,/^(?:\}\})/,/^(?:\{\s*)/,/^(?:\})/,/^(?:>>=)/,/^(?:<<)/,/^(?:>>)/,/^(?:<\/[^\>]+>)/,/^(?:<\/\s*)/,/^(?:<\s*)/,/^(?:\/>)/,/^(?:>)/,/^(?:(\r\n|\r|\n)+[ \t]+(\r\n|\r|\n))/,/^(?:(\r\n|\r|\n)+[ \t]*)/,/^(?:\s+)/,/^(?:fn\b)/,/^(?:caseof\b)/,/^(?:def\b)/,/^(?:match\b)/,/^(?:end\b)/,/^(?:args\b)/,/^(?:if\b)/,/^(?:incase\b)/,/^(?:throws\b)/,/^(?:else\b)/,/^(?:do\b)/,/^(?:cond\b)/,/^(?:for\b)/,/^(?:in\b)/,/^(?:then\b)/,/^(?:when\b)/,/^(?:where\b)/,/^(?:try\b)/,/^(?:catch\b)/,/^(?:import\b)/,/^(?:export\b)/,/^(?:from\b)/,/^(?:onlyif\b)/,/^(?:and|or|lte|gte|lt|gt\b)/,/^(?:isnt|is|==|!=)/,/^(?:true|false|null|undefined\b)/,/^(?:(@)?[a-zA-Z\_\$][a-zA-Z0-9\_\$]*((\s*\.\s*)?[a-zA-Z0-9\_\$]+)*)/,/^(?:(-)?[0-9]+(\.[0-9]+)?(e-?[0-9]+)?)/,/^(?:\/[^\/\s]+\/[gim]*)/,/^(?:"([^\"]|\\[\"])*")/,/^(?:'([^\']|\\[\'])*')/,/^(?:`([^\`]|\\[\`])*`)/,/^(?:@)/,/^(?:,)/,/^(?:->)/,/^(?:::)/,/^(?::)/,/^(?:=>)/,/^(?:=)/,/^(?:\.)/,/^(?:\|\|)/,/^(?:\+|-|\*|\/|%)/,/^(?:\()/,/^(?:\))/,/^(?:\|)/,/^(?:!)/,/^(?:$)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66],"inclusive":true}}
 });
 return lexer;
 })();

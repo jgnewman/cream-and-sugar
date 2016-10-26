@@ -167,7 +167,7 @@ const CNS_ = {
   // CNS_.update(1, 'x', ['a', 'b', 'c']) -> ['a', 'x', 'c']
   update: function (keyOrIndex, val, collection) {
     if (Array.isArray(collection)) {
-      if (collection.CNS_isTuple_ === CNS && collection.indexOf(keyorIndex) === -1) {
+      if (collection.CNS_isTuple_ === CNS_ && collection.indexOf(keyorIndex) === -1) {
         throw new Error('Can not add extra items to tuples.');
       }
       const newSlice = collection.slice();
@@ -188,7 +188,7 @@ const CNS_ = {
   // CNS_.remove('name', {name: 'john', age: 33}) -> {age: 33}
   remove: function (keyOrIndex, collection) {
     if (Array.isArray(collection)) {
-      if (collection.CNS_isTuple_ === CNS) throw new Error('Can not remove items from tuples.');
+      if (collection.CNS_isTuple_ === CNS_) throw new Error('Can not remove items from tuples.');
       const splicer = collection.slice();
       splicer.splice(keyOrIndex, 1);
       return splicer;

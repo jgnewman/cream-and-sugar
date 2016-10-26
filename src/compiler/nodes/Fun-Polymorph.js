@@ -40,6 +40,8 @@ function getPatterns(args) {
 function compileArgs(patterns) {
   const acc = [];
   const patts = typeof patterns === 'string' ? JSON.parse(patterns) : patterns;
+  const identRegex = /^[\$_A-z][\$_A-z0-9]*$/;
+  const atomRegex = /^[A-Z][A-Z_]+$/;
   patts.forEach((pattern, index) => {
     switch (pattern[0]) {
       case 'Identifier':
@@ -58,10 +60,13 @@ function compileArgs(patterns) {
         lastMatch !== '_' && acc.push(`const ${lastMatch} = args[${index}][args[${index}].length - 1];`);
         break;
       case 'Arr':
+      case 'Tuple':
         // This will come back to haunt us if the user tries to match against a string with a comma or space in it.
-        const items = pattern[1].replace(/^\[|\s+|\]$/g, '').split(',');
+        const items = pattern[0] === 'Arr' ? pattern[1].replace(/^\[|\s+|\]$/g, '').split(',')
+                                           : pattern[1].replace(/^\{\{|\s+|\}\}$/g, '').split(',');
         items.forEach((item, i) => {
-          if (item && item !== '_' && /^[\$_A-z][\$_A-z0-9]*$/.test(item)) {
+          if (item && item !== '_' && !atomRegex.test(item) && identRegex.test(item)) {
+            console.log(item);
             acc.push(`const ${item} = args[${index}][${i}];`);
           }
         });

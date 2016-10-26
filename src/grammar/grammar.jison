@@ -8,9 +8,11 @@
 %%
 
 /* Comments */
-"###"(.|\r|\n)*?"###"                /* skip other whitespace */
-// \#.*($|\r\n|\r|\n)                return "COMMENT"
-\#.*($|\r\n|\r|\n)                   return 'NEWLINE';
+"###"(.|\r|\n)*?"###"                  /* skip multiline comments whitespace */
+(\r\n|\r|\n)+[ \t]*\#.*($|\r\n|\r|\n)  %{
+                                         this.unput('\n');
+                                       %}
+\#.*($|\r\n|\r|\n)                   return 'NEWLINE'; /* return NEWLINE for lines that end with comments */
 
 \[\s*                                return "[";
 "]"                                  return "]";
@@ -36,12 +38,12 @@
                                      %}
 
 (\r\n|\r|\n)+[ \t]*                  %{
-                                       // Track a global indent count on the parser.
-                                       parser.indentCount = parser.indentCount || [0];
-                                       parser.forceDedent = parser.forceDedent || 0;
+                                       // Track a global indent count.
+                                       this.indentCount = this.indentCount || [0];
+                                       this.forceDedent = this.forceDedent || 0;
 
-                                       if (parser.forceDedent) {
-                                         parser.forceDedent -= 1;
+                                       if (this.forceDedent) {
+                                         this.forceDedent -= 1;
                                          this.unput(yytext);
                                          return 'DEDENT';
                                        }
@@ -51,8 +53,8 @@
                                        // Return an indent when the white space is greater than
                                        // our current indent count. We also unshift a new indent
                                        // count on to the indent stack.
-                                       if (indentation > parser.indentCount[0]) {
-                                         parser.indentCount.unshift(indentation);
+                                       if (indentation > this.indentCount[0]) {
+                                         this.indentCount.unshift(indentation);
                                          return 'INDENT';
                                        }
 
@@ -62,13 +64,13 @@
                                        // indent stack.
                                        var dedents = [];
 
-                                       while (indentation < parser.indentCount[0]) {
-                                         parser.indentCount.shift();
+                                       while (indentation < this.indentCount[0]) {
+                                         this.indentCount.shift();
                                          dedents.push('DEDENT');
                                        }
 
                                        if (dedents.length) {
-                                         parser.forceDedent = dedents.length - 1;
+                                         this.forceDedent = dedents.length - 1;
                                          this.unput(yytext);
                                          return 'DEDENT';
                                        }

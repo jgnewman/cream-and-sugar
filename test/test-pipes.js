@@ -5,56 +5,60 @@ import { compileCode } from  '../src/compiler/compiler';
 describe('Scope Piping', () => {
 
   it('should compile a simple scope pipe', () => {
-    const toCompile = 'x :: y';
-    const expected = `CNS_SYSTEM.pipe(x).to(y)()`
-    assert.equal(expected, compileCode(toCompile));
+    const toCompile = 'x >>= y';
+    const expected = nlToSpace(`
+    (function () {
+      return y((function () {
+        return x
+      }()))
+    }())`);
+    assert.equal(compileCode(toCompile), expected);
   });
 
   it('should assign a scope pipe to a variable', () => {
-    const toCompile = 'result = x :: y';
-    const expected = `const result = CNS_SYSTEM.pipe(x).to(y)()`
-    assert.equal(expected, compileCode(toCompile));
+    const toCompile = 'result = x >>= y';
+    const expected = nlToSpace(`
+    const result = (function () {
+      return y((function () {
+        return x
+      }()))
+    }())`);
+    assert.equal(compileCode(toCompile), expected);
   });
 
   it('should compile a more complex scope pipe', () => {
-    const toCompile = '{foo: "bar"} :: add(2) :: somethingElse';
-    const expected = `CNS_SYSTEM.pipe({ foo: "bar" }).to(add, 2).to(somethingElse)()`
-    assert.equal(expected, compileCode(toCompile));
+    const toCompile = '{foo: "bar"} >>= (add 2) >>= somethingElse';
+    const expected = nlToSpace(`
+    (function () {
+      return somethingElse((function () {
+        return add(2, (function () {
+          return { foo: "bar" }
+        }()))
+      }()))
+    }())`);
+    assert.equal(compileCode(toCompile), expected);
   });
 
   it('should give scope pipes priority as arguments', () => {
-    const toCompile = 'foo x, y :: z';
-    const expected = `foo(x, CNS_SYSTEM.pipe(y).to(z)())`
-    assert.equal(expected, compileCode(toCompile));
-  });
-
-  it('should compile a scope pipe within a scope pipe', () => {
-    const toCompile = 'a :: (b :: c :: d) :: e';
-    const expected = `CNS_SYSTEM.pipe(a).to((CNS_SYSTEM.pipe(b).to(c).to(d)())).to(e)()`
-    assert.equal(expected, compileCode(toCompile));
-  });
-
-  it('should allow piping with variable assignments', () => {
-    const toCompile = 'x = y :: z';
+    const toCompile = 'foo x, y >>= z';
     const expected = nlToSpace(`
-      const x = CNS_SYSTEM.pipe(y).to(z)()
-    `);
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
-  });
-
-  it('should allow piping with module imports', () => {
-    const toCompile = 'import x from y :: z';
-    const expected = nlToSpace(`
-      const __ref0__ = require(y);
-      const x = CNS_SYSTEM.pipe(__ref0__).to(z)()
-    `);
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+    foo(x, (function () {
+      return z((function () {
+        return y
+      }()))
+    }()))`);
+    assert.equal(compileCode(toCompile), expected);
   });
 
   it('should allow piping with cons statements', () => {
-    const toCompile = '[x | y :: z]';
-    const expected = nlToSpace(`[x].concat(CNS_SYSTEM.pipe(y).to(z)())`);
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+    const toCompile = 'x >> (y >>= z)';
+    const expected = nlToSpace(`
+    [x].concat(((function () {
+      return z((function () {
+        return y
+      }()))
+    }())))`);
+    assert.equal(compileCode(toCompile), expected);
   });
 
 });

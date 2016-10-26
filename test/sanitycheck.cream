@@ -1,225 +1,124 @@
-"hello"
-'hello'
-`hello`
-"
-hello
-"
-'
-hello
-'
-`
-hello
-`
-
-/regex/gim
-
-ATOM
-
-@
-@foo
-foo
-@foo
-@foo.bar.baz
-
-true
-false
-null
-undefined
-
-100
--100
-100e6
-
-!hello
-!!hello
-
-a >> b
-a << b
-
-2 + 4
-7 lte 10
-
-[]
-[ ]
+[1, 2, 3]
 [
-
+  1, 2, 3
 ]
-[
-
-
-]
-[ 1, 2, 3 ]
 [
   1,
   2,
   3
 ]
 [
-  1, 2, 3
+1,
+2,
+3
 ]
 [
+
   1, 2, 3]
-[ 1, 2, 3
+[1, 2, 3
+
 ]
 
-{{ a, b, c }}
-{}
-{ }
-{
+x = foo
+{ x, y } = foo
+[x|y] = foo
+[x||y] = foo
+{ keyx: x, keyy: y } = foo
+[ x, y ] = foo
 
-}
-{
+ATOM
 
+'string'
+"string"
+`string`
 
-}
+/regext/gim
 
-{ a: 1, b: 2, c: 3 }
-{
-  a: 1,
-  b: 2,
-  c: 3
-}
-{
-  a:1, b:2, c:3
-}
-{
-  a: 1, b: 2, c: 3}
-{ a: 1, b: 2, c: 3
-}
+true
+false
+null
+undefined
 
-<div className={ 2 + 2 } farts="sharts"></div>
-<div
-  className={ 2 + 2 }
-  farts="sharts">
-</div>
-<div
-  className={ 2 + 2 }
-  farts="sharts"
-></div>
-<div
-  className={ 2 + 2 }
-  farts="sharts"
->
-</div>
-<div
-  className={ 2 + 2 }
-  farts="sharts">
+{{ x, y, z }}
 
-    'Hello'
+1 >> [2, 3, 4]
+[1, 2, 3] << 4
 
-    <span className="name">'Bob'</span>
+# This is a comment
 
-</div>
+###
+This is also a Comment
+###
 
-a >>= b >>= c
+foo _
+foo x
+foo x, y
+foo x, bar y
+@foo.bar.baz quux
 
 for x, y in list do x + y
-for x, y in [1, 2, 3] do /fart/.test x onlyif x == y
-
-if x == y then x + y
-if x == y then x + y else x - y
-
-export {{ factorial, schmactorial }}
-export { factorial: factorial, schmactorial: schmactorial }
-export [ factorial, schmactorial ]
-
-import 'factorial'
-import factorial from 'factorial'
-import [ factorial, schmactorial ] from 'factorial'
-import { factorial, schmactorial } from 'factorial'
-import {{ factorial, schmactorial }} from 'factorial'
-import { factorial: f, schmactorial: s } from 'factorial'
-import [ fn1 | restFns ] from 'factorial'
-import [ leadFns || lastFn ] from 'factorial'
-
-a = b
-[a, b] = c
-{a, b} = c
-{{a, b}} = c
-{a:b, c:d} = e
-[a | b] = c
-[a || b] = c
-foo =
-
-  'bar'
-
-perform _
-perform task
-perform hard, task
-(perform hard, task)
+for x, y in list do x + y onlyif x % 2 == 0
 
 when
-  'bar' -> x + y
-  true  -> 'hello'
+  something -> dosomething _
+  true      -> doesomethingelse _
 
-when
-  'bar'
-    x + y
-  true
-    'hello'
-
-caseof foo
-  'bar' -> x + y
-  'baz' -> a + b
-  default -> c + d
-
-caseof foo
-  'bar'
-    x + y
-    1 + 2
-  'baz'
-    a + b
-  default
-    c + d
+if x == y then dosomething _
+if x == y then dosomething _ else dosomethingelse _
 
 try
-
-  perform 'task'
-
+  something _
 catch err
-  perform 'other task'
+  somethingelse err
 
-fn _ => x + y
+incase dosomething _ throws err do somethingelse err
 
-fn x, y =>
+<div className={foo} dataSomething="bar">
+  'hello'
+  <span></span>
+</div>
 
-  x + y
+import x from y
+import { x, y } from z
+import [ x, y ] from z
+import { xkey: x, ykey: y } from z
+import {{ x, y }} from z
 
-fn =>
-  x + y
+export aritize foo, 1
 
-foo x => x * 2
+export {
+  foo: foo,
+  bar: bar, # random comment here
+  BAZ: baz
+}
 
-bar _ => x * 2
+2 + 2
+2 - 2
+2 * 2
+2 / 2
+2 % 2
 
-stringify val ::=>
-  when
-    type val is 'object' -> Json.stringify val # change Json to JSON
-    true                 -> val.toString _
+!foo
 
-# The next 2 fns should merge into a polymorph.
-foo 0 => 1
+foo >>= bar >>= baz x
 
-# This one should be included with the one above because
-# they have the same name.
-foo x => 2
+# Create a function we can use to spin up a new process.
+up _ =>
 
-receive match
-  {{ FACTORIAL, num }} => reply {{ OK, factorial num }}
-  _                    => {{ ERR, 'Unknown command received' }}
+  # Create and return a new process from a function.
+  spawn fn =>
 
-apply fn => x + 2, [2]
+    # When we receive a message, pattern match it to figure out what to do.
+    receive match
 
-apply (fn => x + 3), [3]
+      # If the message is an array beginning with the atom ~factorial, we'll
+      # calculate the factorial of num and send it back marked as ~ok.
+      {{ FACTORIAL, num }} => reply {{ OK, factorial num }}
 
-apply (fn =>
-  x + 4
-), [4]
+      # If the message is anything else, send a reply marked as `ERR` and
+      # pass along a reason.
+      _ => reply {{ ERR, 'Unknown command received' }}
 
-apply fn => _
-
-x / y
-
-x % y
-
-foo >>= (bar 'a') >>= baz 'b'
+    # Define the factorial function so that we can actually calculate them.
+    factorial 0 => 1
+    factorial n => n * factorial n - 1

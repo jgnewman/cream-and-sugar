@@ -39,13 +39,16 @@ import './nodes/Pipe';
  * Export a function for initializing compilation.
  */
 export function compile(path, callback, options) {
+  // Read in a file.
   return fs.readFile(path, function (err, result) {
+    // Throw an error if we have one.
     if (err) {
       if (callback) {
         return callback(err);
       } else {
         throw err;
       }
+    // If not, convert the result to a string and call compileCode with it.
     } else {
       return compileCode(result.toString(), callback, options);
     }
