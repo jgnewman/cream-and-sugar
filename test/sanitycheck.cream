@@ -1,3 +1,4 @@
+###
 [1, 2, 3]
 [
   1, 2, 3
@@ -45,10 +46,6 @@ undefined
 [1, 2, 3] << 4
 
 # This is a comment
-
-###
-This is also a Comment
-###
 
 foo _
 foo x
@@ -122,3 +119,18 @@ up _ =>
     # Define the factorial function so that we can actually calculate them.
     factorial 0 => 1
     factorial n => n * factorial n - 1
+###
+
+###
+foo {{ x }} => x
+foo [ x ] => x
+foo [ x | _ ] => x
+foo [ _ || x ] => x
+foo { xx: x } => x
+foo x => x
+###
+
+foo { xx: x } => x
+
+# MAKE SURE DESTRUCTURING IS COMING THROUGH CORRECTLY FOR POLYMORPHS
+# REWRITE THE MATCHING LIBRARY CODE

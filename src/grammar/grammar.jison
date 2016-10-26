@@ -8,10 +8,10 @@
 %%
 
 /* Comments */
-"###"(.|\r|\n)*?"###"                  /* skip multiline comments whitespace */
-(\r\n|\r|\n)+[ \t]*\#.*($|\r\n|\r|\n)  %{
-                                         this.unput('\n');
-                                       %}
+((\r\n|\r|\n)+[ \t]*)?\#\#\#(.|\r|\n)*?\#\#\#  %{ this.unput('\n'); %}
+
+(\r\n|\r|\n)+[ \t]*\#.*($|\r\n|\r|\n)          %{ this.unput('\n'); %}
+
 \#.*($|\r\n|\r|\n)                   return 'NEWLINE'; /* return NEWLINE for lines that end with comments */
 
 \[\s*                                return "[";
@@ -652,12 +652,28 @@ Args
     }
   ;
 
+LineArg
+ : SourceElement
+ | "{" ListItems "}"
+   {
+     $$ = new DestructureNode($2, 'Keys', createSourceLocation(null, @1, @1));
+   }
+ | "[" Identifier "|" Identifier "]"
+   {
+     $$ = new DestructureNode([$2, $4], 'HeadTail', createSourceLocation(null, @1, @5));
+   }
+ | "[" Identifier "||" Identifier "]"
+   {
+     $$ = new DestructureNode([$2, $4], 'LeadLast', createSourceLocation(null, @1, @5));
+   }
+ ;
+
 LineArgs
-  : LineArgs "," SourceElement
+  : LineArgs "," LineArg
     {
       $$ = $1.concat($3);
     }
-  | SourceElement
+  | LineArg
     {
       $$ = [$1];
     }
@@ -770,7 +786,7 @@ FnBody
   ;
 
 Params
-  : "(" ListItems ")"
+  : "(" LineArgs ")"
     {
       $$ = $2;
     }

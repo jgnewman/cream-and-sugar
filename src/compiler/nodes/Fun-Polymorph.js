@@ -24,7 +24,14 @@ function handleStrings(type, src) {
 function getPatterns(args) {
   return args.map(arg => {
     const realArg = arg.type === 'Wrap' ? arg.item : arg ;
-    return [realArg.type, handleStrings(realArg.type, realArg.src)];
+    switch (realArg.type) {
+      case 'Destructure':
+        return [realArg.destrType, realArg.toDestructure.map(item => handleStrings(item.type, item.compile(true))).join(',')];
+      case 'Obj':
+        const pairs = realArg.pairs.map(pair => `${pair.left.compile(true)}:${pair.right.compile(true)}`).join(',');
+        return [realArg.type, pairs];
+      default: return [realArg.type, handleStrings(realArg.type, realArg.src)];
+    }
   });
 }
 
@@ -47,17 +54,30 @@ function compileArgs(patterns) {
       case 'Identifier':
         pattern[1] !== '_' && acc.push(`const ${pattern[1]} = args[${index}];`);
         break;
-      case 'Cons':
-        const headMatch = pattern[1].match(/^\[(.+)\|/)[1];
-        const tailMatch = pattern[1].match(/\|([^\]]+)\]/)[1];
+      case 'Keys':
+        const keyList = pattern[1].split(',');
+        keyList.forEach(key => key !== '_' && acc.push(`const ${key} = args[${index}].${key};`));
+        break;
+      case 'HeadTail':
+        const htList = pattern[1].split(',');
+        const headMatch = htList[0];
+        const tailMatch = htList[1];
         headMatch !== '_' && acc.push(`const ${headMatch} = args[${index}][0];`);
         tailMatch !== '_' && acc.push(`const ${tailMatch} = args[${index}].slice(1);`);
         break;
-      case 'BackCons':
-        const leadMatch = pattern[1].match(/^\[(.+)\|\|/)[1];
-        const lastMatch = pattern[1].match(/\|\|([^\]]+)\]/)[1];
+      case 'LeadLast':
+        const llList = pattern[1].split(',');
+        const leadMatch = llList[0];
+        const lastMatch = llList[1];
         leadMatch !== '_' && acc.push(`const ${leadMatch} = args[${index}].slice(0, args[${index}].length - 1);`);
         lastMatch !== '_' && acc.push(`const ${lastMatch} = args[${index}][args[${index}].length - 1];`);
+        break;
+      case 'Obj':
+        const pairList = pattern[1].split(',');
+        pairList.forEach(pair => {
+          const kv = pair.split(':');
+          kv[1] !== '_' && acc.push(`const ${kv[1]} = args[${index}].${kv[0]};`);
+        });
         break;
       case 'Arr':
       case 'Tuple':
@@ -66,7 +86,6 @@ function compileArgs(patterns) {
                                            : pattern[1].replace(/^\{\{|\s+|\}\}$/g, '').split(',');
         items.forEach((item, i) => {
           if (item && item !== '_' && !atomRegex.test(item) && identRegex.test(item)) {
-            console.log(item);
             acc.push(`const ${item} = args[${index}][${i}];`);
           }
         });
