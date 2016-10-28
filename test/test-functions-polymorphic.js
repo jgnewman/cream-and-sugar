@@ -59,15 +59,15 @@ describe('Polymorphic Function Definitions', () => {
                     + '  doMoreStuff _\n\n';
     const expected = nlToSpace(`function foo () {
       const args = CNS_.args(arguments);
-      if (args.length === 1 && CNS_.match(args, [["Cons","[hd|tl]"]])) {
+      if (args.length === 1 && CNS_.match(args, [["HeadTail",["hd","tl"]]])) {
         const hd = args[0][0];
         const tl = args[0].slice(1);
-        var __ref0__ = something;
-        const a = __ref0__.a;
-        const b = __ref0__.b;
-        const c = __ref0__.c;
+        var ref0_ = something;
+        const a = ref0_.a;
+        const b = ref0_.b;
+        const c = ref0_.c;
         return foo(doStuff(hd), tl);
-      } else if (args.length === 2 && CNS_.match(args, [["Identifier","item"],["Arr","[]"]])) {
+      } else if (args.length === 2 && CNS_.match(args, [["Identifier","item"],["Arr",[]]])) {
         const item = args[0];
         return item;
       } else if (args.length === 2 && CNS_.match(args, [["Identifier","item"],["Identifier","list"]])) {
@@ -78,7 +78,7 @@ describe('Polymorphic Function Definitions', () => {
       } else {
         throw new Error('No match found for def statement.');
       }
-    }`);
+    };`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
@@ -146,13 +146,13 @@ describe('Polymorphic Function Definitions', () => {
       return CNS_.spawn(function () {
         CNS_.receive(function () {
           const args = CNS_.args(arguments);
-          if (args.length === 1 && CNS_.match(args, [["Arr","[FACTORIAL, num]"]])) {
+          if (args.length === 1 && CNS_.match(args, [["Arr",["Symbol.for('FACTORIAL')","num"]]])) {
             const num = args[0][1];
             return CNS_.reply([Symbol.for('OK'), factorial(num)]);
           } else if (args.length === 1 && CNS_.match(args, [["Identifier","_"]])) {
             return CNS_.reply([Symbol.for('ERR'), "Unknown command received"]);
           } else {
-            throw new Error('No match found for def statement.');
+            throw new Error('No match found for match statement.');
           }
         });
         return function factorial () {

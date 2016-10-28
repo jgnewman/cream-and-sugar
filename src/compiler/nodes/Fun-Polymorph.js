@@ -1,4 +1,4 @@
-import { compile, nodes, compileBody } from '../utils';
+import { compile, nodes, compileBody, die } from '../utils';
 
 /*
  * Possible destructuring forms
@@ -29,7 +29,7 @@ function handleStrings(type, src) {
  *
  * @param  {Array} args  A list of parameter nodes.
  *
- * @return {Array}       [["Arr", "[]"], ["Identifier", "foo"], ["HeadTail", "[h|t]"]]
+ * @return {Array}       [["Arr", []], ["Identifier", "foo"], ["HeadTail", ["h","t"]]]
  */
 function getPatterns(args) {
   return args.map(arg => {
@@ -43,6 +43,8 @@ function getPatterns(args) {
       case 'Arr':
       case 'Tuple':
         return [realArg.type, realArg.items.map(item => handleStrings(item.type, item.compile(true)))];
+      case 'String':
+        return die(realArg, 'Can not pattern match against strings');
       default: return [realArg.type, handleStrings(realArg.type, realArg.src)];
     }
   });

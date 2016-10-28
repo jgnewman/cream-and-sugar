@@ -19,15 +19,53 @@ describe('SYSTEM Library', () => {
     assert.equal(CNS_.eql({a: [1, 2, {e: 'f'}], b: {c: 'd'}}, {a: [1, 2, {e: 'f'}], b: {c: 'd'}}), true);
   });
 
-  it('should match against patterns', () => {
-    assert.equal(CNS_.match([1],      [['Identifier', 'x']]), true);
-    assert.equal(CNS_.match([1, 2],   [['Identifier', 'x']]), false);
-    assert.equal(CNS_.match([1, 2],   [['Number', '1'], ['Number', '2']]), true);
-    assert.equal(CNS_.match([[1, 2]], [['Arr', '[1, 2]']]), true);
-    assert.equal(CNS_.match([[1, 2]], [['Arr', '[1, x]']]), true);
-    assert.equal(CNS_.match([[1, 2]], [['Arr', '[1]']]), false);
-    assert.equal(CNS_.match([[1, 2]], [['Cons', '[hd|tl]']]), true);
-    assert.equal(CNS_.match([1, 2],   [['Cons', '[hd|tl]']]), false);
+  it('should pattern match against identifiers', () => {
+    assert.equal(CNS_.match([1],    [['Identifier', 'x']]), true);
+    assert.equal(CNS_.match([1, 2], [['Identifier', 'x']]), false);
+  });
+
+  it('should pattern match against special values', () => {
+    assert.equal(CNS_.match([true],  [['Special', 'true']]), true);
+    assert.equal(CNS_.match([false], [['Special', 'true']]), false);
+    assert.equal(CNS_.match([NaN],   [['Special', 'NaN']]), true);
+  });
+
+  it('should pattern match against numbers', () => {
+    assert.equal(CNS_.match([1, 2], [['Number', '1'], ['Number', '2']]), true);
+  });
+
+  it('should pattern match against arrays', () => {
+    assert.equal(CNS_.match([[1, 2]], [['Arr', [1, 2]]]), true);
+    assert.equal(CNS_.match([[1, 2]], [['Arr', [1, 'x']]]), true);
+    assert.equal(CNS_.match([[1, 2]], [['Arr', [1]]]), false);
+    assert.equal(CNS_.match([[NaN]],  [['Arr', ['NaN']]]), true);
+    assert.equal(CNS_.match([[300]],  [['Arr', ['NaN']]]), false);
+  });
+
+  it('should pattern match against tuples', () => {
+    assert.equal(CNS_.match([CNS_.tuple([1, 2])], [['Tuple', [1, 'x']]]), true);
+    assert.equal(CNS_.match([CNS_.tuple([1, 2])], [['Tuple', [1]]]), false);
+    assert.equal(CNS_.match([[1, 2]], [['Tuple', [1, 'x']]]), false);
+  });
+
+  it('should pattern match against HeadTails and LeadLasts', () => {
+    assert.equal(CNS_.match([[1, 2]], [['HeadTail', ['a', 'b']]]), true);
+    assert.equal(CNS_.match([1, 2],   [['HeadTail', ['a', 'b']]]), false);
+    assert.equal(CNS_.match([[1, 2]], [['LeadLast', ['a', 'b']]]), true);
+    assert.equal(CNS_.match([1, 2],   [['LeadLast', ['a', 'b']]]), false);
+  });
+
+  it('should pattern match against keys', () => {
+    assert.equal(CNS_.match([{x:1,y:2}], [['Keys', ['x', 'y']]]), true);
+  });
+
+  it('should pattern match against objects', () => {
+    assert.equal(CNS_.match([{x:1,y:2}], [['Obj', ['x:1', 'y:2']]]), true);
+    assert.equal(CNS_.match([{x:1,y:2}], [['Obj', ['x:1']]]), true);
+    assert.equal(CNS_.match([{x:1}], [['Obj', ['x:1', 'y:a']]]), true);
+    assert.equal(CNS_.match([{x:1}], [['Obj', ['x:y']]]), true);
+    assert.equal(CNS_.match([{[Symbol.for('FOO')]:1}], [['Obj', ['Symbol.for("FOO"):1']]]), true);
+    assert.equal(CNS_.match([{x:Symbol.for('FOO')}], [['Obj', ['x:Symbol.for("FOO")']]]), true);
   });
 
   it('should convert arguments to arrays', () => {
