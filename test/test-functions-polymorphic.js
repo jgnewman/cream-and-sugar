@@ -16,8 +16,8 @@ describe('Polymorphic Function Definitions', () => {
   });
 
   it('should compile a basic polymorphic function', () => {
-    const toCompile = 'factorial 0 -> 1\n'
-                    + 'factorial n -> n * factorial n - 1\n\n';
+    const toCompile = 'factorial 0 => 1\n'
+                    + 'factorial n => n * factorial n - 1\n\n';
     const expected = nlToSpace(`function factorial () {
       const args = CNS_.args(arguments);
       if (args.length === 1 && CNS_.match(args, [["Number","0"]])) {
@@ -26,9 +26,9 @@ describe('Polymorphic Function Definitions', () => {
         const n = args[0];
         return n * factorial(n - 1);
       } else {
-        return CNS_.noMatch('def');
+        throw new Error('No match found for def statement.');
       }
-    }`);
+    };`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
@@ -43,7 +43,7 @@ describe('Polymorphic Function Definitions', () => {
         const n = args[0];
         return n * factorial(n - 1);
       } else {
-        return CNS_.noMatch('def');
+        throw new Error('No match found for def statement.');
       }
     };`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
@@ -56,7 +56,7 @@ describe('Polymorphic Function Definitions', () => {
                     + 'foo item, [] => item\n'
                     + 'foo item, list =>\n'
                     + '  doStuff _\n'
-                    + '  doMoreStuff_\n\n';
+                    + '  doMoreStuff _\n\n';
     const expected = nlToSpace(`function foo () {
       const args = CNS_.args(arguments);
       if (args.length === 1 && CNS_.match(args, [["Cons","[hd|tl]"]])) {
@@ -76,7 +76,7 @@ describe('Polymorphic Function Definitions', () => {
         doStuff();
         return doMoreStuff();
       } else {
-        return CNS_.noMatch('def');
+        throw new Error('No match found for def statement.');
       }
     }`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
@@ -84,7 +84,7 @@ describe('Polymorphic Function Definitions', () => {
 
   it('should compile a polymorphic function with guards', () => {
     const toCompile = 'factorial 0 => 1\n'
-                    + 'factorial n when n lt 2 => 1\n'
+                    + 'factorial n where n lt 2 => 1\n'
                     + 'factorial n => n * factorial n - 1\n\n';
     const expected = nlToSpace(`function factorial () {
       const args = CNS_.args(arguments);
@@ -98,15 +98,15 @@ describe('Polymorphic Function Definitions', () => {
           return n * factorial(n - 1);
         }
       } else {
-        return CNS_.noMatch('def');
+        throw new Error('No match found for def statement.');
       }
-    }`);
+    };`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
   it('should compile a polymorphic function with more complex guards', () => {
     const toCompile = 'factorial 0 => 1\n'
-                    + 'factorial n when n lt 2 and n gt -1 => 1\n'
+                    + 'factorial n where n lt 2 and n gt -1 => 1\n'
                     + 'factorial n => n * factorial n - 1\n\n';
     const expected = nlToSpace(`function factorial () {
       const args = CNS_.args(arguments);
@@ -120,9 +120,9 @@ describe('Polymorphic Function Definitions', () => {
           return n * factorial(n - 1);
         }
       } else {
-        return CNS_.noMatch('def');
+        throw new Error('No match found for def statement.');
       }
-    }`);
+    };`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
@@ -152,7 +152,7 @@ describe('Polymorphic Function Definitions', () => {
           } else if (args.length === 1 && CNS_.match(args, [["Identifier","_"]])) {
             return CNS_.reply([Symbol.for('ERR'), "Unknown command received"]);
           } else {
-            return CNS_.noMatch('match');
+            throw new Error('No match found for def statement.');
           }
         });
         return function factorial () {
@@ -163,7 +163,7 @@ describe('Polymorphic Function Definitions', () => {
             const n = args[0];
             return n * factorial(n - 1);
           } else {
-            return CNS_.noMatch('def');
+            throw new Error('No match found for def statement.');
           }
         };
       });

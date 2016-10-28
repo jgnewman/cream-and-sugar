@@ -109,7 +109,7 @@
 and|or|lte|gte|lt|gt                 return "LOGIC";
 isnt|is|\=\=|\!\=                    return "LOGIC";
 
-true|false|null|undefined            return "SPECIALVAL";
+true|false|null|undefined|NaN        return "SPECIALVAL";
 
 (\@)?[a-zA-Z\_\$][a-zA-Z0-9\_\$]*((\s*\.\s*)?[a-zA-Z0-9\_\$]+)*   %{
                                                                     if (/^[A-Z][A-Z_]+$/.test(yytext)) {

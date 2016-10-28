@@ -17,7 +17,7 @@ describe('Polymorphic Match Expressions', () => {
         const y = args[1];
         return n * factorial(n - 1);
       } else {
-        return CNS_.noMatch('match');
+        throw new Error('No match found for match statement.');
       }
     };`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
@@ -36,7 +36,7 @@ describe('Polymorphic Match Expressions', () => {
         const y = args[1];
         return n * factorial(n - 1);
       } else {
-        return CNS_.noMatch('match');
+        throw new Error('No match found for match statement.');
       }
     }.bind(this);`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
@@ -50,18 +50,18 @@ describe('Polymorphic Match Expressions', () => {
                     + '  item, [] => item\n'
                     + '  item, list =>\n'
                     + '    doStuff _\n'
-                    + '    doMoreStuff_\n\n';
+                    + '    doMoreStuff _\n\n';
     const expected = nlToSpace(`function () {
       const args = CNS_.args(arguments);
-      if (args.length === 1 && CNS_.match(args, [["Cons","[hd|tl]"]])) {
+      if (args.length === 1 && CNS_.match(args, [["HeadTail",["hd","tl"]]])) {
         const hd = args[0][0];
         const tl = args[0].slice(1);
-        var __ref0__ = something;
-        const a = __ref0__.a;
-        const b = __ref0__.b;
-        const c = __ref0__.c;
+        var ref0_ = something;
+        const a = ref0_.a;
+        const b = ref0_.b;
+        const c = ref0_.c;
         return foo(doStuff(hd), tl);
-      } else if (args.length === 2 && CNS_.match(args, [["Identifier","item"],["Arr","[]"]])) {
+      } else if (args.length === 2 && CNS_.match(args, [["Identifier","item"],["Arr",[]]])) {
         const item = args[0];
         return item;
       } else if (args.length === 2 && CNS_.match(args, [["Identifier","item"],["Identifier","list"]])) {
@@ -70,16 +70,16 @@ describe('Polymorphic Match Expressions', () => {
         doStuff();
         return doMoreStuff();
       } else {
-        return CNS_.noMatch('match');
+        throw new Error('No match found for match statement.');
       }
-    }`);
+    };`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
   it('should compile a polymorphic match with guards', () => {
     const toCompile = 'factorial = match\n'
                     + '  0 => 1\n'
-                    + '  n when n lt 2 => 1\n'
+                    + '  n where n lt 2 => 1\n'
                     + '  n => n * factorial n - 1\n\n';
     const expected = nlToSpace(`const factorial = function () {
       const args = CNS_.args(arguments);
@@ -93,16 +93,16 @@ describe('Polymorphic Match Expressions', () => {
           return n * factorial(n - 1);
         }
       } else {
-        return CNS_.noMatch('match');
+        throw new Error('No match found for match statement.');
       }
-    }`);
+    };`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
   it('should compile a polymorphic match with more complex guards', () => {
     const toCompile = 'factorial = match\n'
                     + '  0 => 1\n'
-                    + '  n when n lt 2 and n gt -1 => 1\n'
+                    + '  n where n lt 2 and n gt -1 => 1\n'
                     + '  n => n * factorial n - 1\n\n';
     const expected = nlToSpace(`const factorial = function () {
       const args = CNS_.args(arguments);
@@ -116,9 +116,9 @@ describe('Polymorphic Match Expressions', () => {
           return n * factorial(n - 1);
         }
       } else {
-        return CNS_.noMatch('match');
+        throw new Error('No match found for match statement.');
       }
-    }`);
+    };`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 

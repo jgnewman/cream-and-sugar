@@ -19,6 +19,14 @@
 [1, 2, 3
 
 ]
+[
+  foo bar,
+  2 + 2,
+  3,
+  foo.bar,
+  [4, 5, 6],
+  {a: foo, b: bar}
+]
 
 x = foo
 { x, y } = foo
@@ -69,6 +77,11 @@ catch err
   somethingelse err
 
 incase dosomething _ throws err do somethingelse err
+
+caseof foo
+  'hello' -> dosomething _
+  'goodbye' -> somethingelse _
+  default -> thirdthing _
 
 <div className={foo} dataSomething="bar">
   'hello'
@@ -121,16 +134,18 @@ up _ =>
     factorial n => n * factorial n - 1
 ###
 
-###
-foo {{ x }} => x
-foo [ x ] => x
+foo {{ x, y }} => x
+foo [ x, _ ] => x
 foo [ x | _ ] => x
 foo [ _ || x ] => x
 foo { xx: x } => x
+foo { x, y } => x
+foo XX => XX
+foo 4 => 4
+foo false => true
 foo x => x
-###
 
-foo { xx: x } => x
 
+# RUN GULP TEST
 # MAKE SURE DESTRUCTURING IS COMING THROUGH CORRECTLY FOR POLYMORPHS
 # REWRITE THE MATCHING LIBRARY CODE

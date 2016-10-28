@@ -46,7 +46,7 @@ describe('Arrays', () => {
 
   it('should compile an array with different kinds of items', () => {
     const toCompile = '[\n'
-                    + '  foo(bar),\n'
+                    + '  (foo bar),\n'
                     + '  2 + 2,\n'
                     + '  3,\n'
                     + '  foo.bar,\n'

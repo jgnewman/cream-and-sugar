@@ -2,36 +2,32 @@ import assert from 'assert';
 import { nlToSpace } from './utils';
 import { compileCode } from  '../src/compiler/compiler';
 
-describe('Cond', () => {
+describe('When', () => {
 
-  it('should compile a basic cond statement', () => {
-    const toCompile = `cond
-      false -> doStuff()
-      true -> doOtherStuff()
-    end`;
+  it('should compile a basic when statement', () => {
+    const toCompile = 'when\n'
+                    + '  false -> doStuff _\n'
+                    + '  true -> doOtherStuff _\n\n';
     const expected = nlToSpace(`(function () {
       if (false) {
         return doStuff()
       } else if (true) {
         return doOtherStuff()
       } else {
-        return CNS_SYSTEM.noMatch('cond');
+        throw new Error('No match found for "when" statement.');
       }
-    }.bind(this)())`);
+    }.bind(this)());`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
-  it('should compile a basic cond statement with multi-line bodies', () => {
-    const toCompile = `cond
-      true ->
-        doA()
-        doB()
-      end
-      false ->
-        doC()
-        doD()
-      end
-    end`;
+  it('should compile a basic when statement with multi-line bodies', () => {
+    const toCompile = 'when\n'
+                    + '  true\n'
+                    + '    doA _\n'
+                    + '    doB _\n'
+                    + '  false\n'
+                    + '    doC _\n'
+                    + '    doD _\n\n';
     const expected = nlToSpace(`(function () {
       if (true) {
         doA();
@@ -40,9 +36,9 @@ describe('Cond', () => {
         doC();
         return doD()
       } else {
-        return CNS_SYSTEM.noMatch('cond');
+        throw new Error('No match found for "when" statement.');
       }
-    }.bind(this)())`);
+    }.bind(this)());`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 

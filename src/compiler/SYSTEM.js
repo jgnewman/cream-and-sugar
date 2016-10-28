@@ -13,11 +13,6 @@ const CNS_ = {
     return condition ? callback() : elseCase ? elseCase() : undefined;
   },
 
-  // CNS_.noMatch('cond')
-  noMatch: function (type) {
-    throw new Error('No match found for ' + type + ' statement.');
-  },
-
   // CNS_.eql([1, 2, 3], [1, 2, 3]) -> true
   eql: function (a, b) {
     if (a === CNS_ || b === CNS_) return true; // <- Hack to force a match
@@ -26,7 +21,7 @@ const CNS_ = {
     if (typeof a === 'object') {
       if (Array.isArray(a)) return a.every(function(item, index) { return this.eql(item, b[index]) }.bind(this));
       const ks = Object.keys, ak = ks(a), bk = ks(b);
-      if (!this.eql(ak, bk)) return false;
+      if (!CNS_.eql(ak, bk)) return false;
       return ak.every(function (key) { return this.eql(a[key], b[key]) }.bind(this));
     }
     return false;
@@ -34,46 +29,58 @@ const CNS_ = {
 
   // CNS_.match(args, [['Identifier', 'x']])
   match: function (args, pattern) {
-    return args.every(function (arg, index) {
-      if (!pattern[index]) return false;
-      var matchType = pattern[index][0];
-      var matchVal  = pattern[index][1];
+    function convertSpecial(special) {
+      switch (special) {
+        case 'null': return null; case 'undefined': return undefined;
+        case 'true': return true; case 'false': return false; default: return special;
+      }
+    }
+    function arrMismatch(matchType, arg) {
       switch (matchType) {
-        case 'Identifier': return true;
-        case 'Atom': return Symbol.for(matchVal.slice(1)) === arg;
-        case 'Number': return typeof arg === 'number' && arg === parseFloat(matchVal);
-        case 'String': return arg === matchVal;
-        case 'Cons': case 'BackCons': return Array.isArray(arg);
+        case 'Tuple': return arg.CNS_isTuple_ !== CNS_;
+        case 'Arr': return arg.CNS_isTuple_ === CNS_;
+      }
+    }
+    function testArrParam(arg, arrParam, position) {
+      if (arrParam === '_') return true; // Yes, if it's the catch all.
+      if (arrParam === 'NaN') return isNaN(arg[position]); // Yes, if they're both NaN.
+      if ((converted = convertSpecial(arrParam)) !== arrParam) return arg[position] === converted; // Yes, if it's a special and the specials match.
+      if (/^[A-Z][A-Z_]+$/.test(arrParam)) return arg[position] === Symbol.for(arrParam); // Yes, if it's a symbol and symbols match.
+      return /^[\$_A-z][\$_A-z0-9]*$/.test(arrParam) ? true : CNS_.eql(arg[position], JSON.parse(arrParam)); // Yes, for identifiers, recursive equality check for anything else.
+    }
+    return args.every(function (arg, index) {
+      if (!pattern[index]) return false; // No match if the arity's wrong.
+      var matchType = pattern[index][0]; // For example "Tuple"
+      var matchVal  = pattern[index][1]; // For example ["x","y"]
+      var converted;
+      switch(matchType) {
+        case 'Identifier': return true; // An identifier is a variable assignment so we allow it.
+        case 'Atom': return arg === Symbol.for(matchVal); // Match if it's the same atom.
+        case 'String': return arg === matchVal; // Match if it's the same string.
+        case 'Number': return typeof arg === 'Number' && arg === parseFloat(matchVal); // Match if the arg is a number and the numbers are equal.
+        case 'Special': return matchVal === 'NaN' ? isNaN(arg) : arg === convertSpecial(matchVal); // Match if the special values are equal.
+        case 'HeadTail':
+        case 'LeadLast':
+          return Array.isArray(arg); // Match any array because we're just doing array destructuring.
+        case 'Keys':
+        case 'Obj':
+          if (typeof arg !== 'object' || arg.constructor !== Object) return false; // No match if the arg isn't an object.
+          if (matchType === 'Keys') return true; // Match if the arg is an object and we're just destructuring keys.
+          return matchVal.every(function (pair) {
+            const kv = pair.split(':');
+            return testArrParam(arg, kv[1].trim(), kv[0].trim());
+          });
         case 'Arr':
         case 'Tuple':
-          if (Array.isArray(arg)) {
-            if (matchType === 'Tuple' && arg.CNS_isTuple_ !== CNS_) return false;
-            if (matchType === 'Arr' && arg.CNS_isTuple_ === CNS_) return false;
-            const eqlTestStr = matchVal.replace(/^(\[|\{\{)|\s+|(\]|\}\})$/g, '');
-            const eqlTest = !eqlTestStr.length ? [] : eqlTestStr.split(',').map(function (each) {
-              if (each === 'null') return null;
-              if (each === 'undefined') return undefined;
-              if (each === 'NaN') return NaN;
-              if (each === 'true') return true;
-              if (each === 'false') return false;
-              if (/^[A-Z][A-Z_]+$/.test(each)) return Symbol.for(each.slice(1));
-              return /^[\$_A-z][\$_A-z0-9]*$/.test(each) ? CNS_ : JSON.parse(each);
-            });
-            return this.eql(arg, eqlTest);
-          }
-          return false;
-        case 'Special':
-          if ((matchVal === 'null' && arg === null) ||
-              (matchVal === 'undefined' && arg === undefined) ||
-              (matchVal === 'true' && arg === true) ||
-              (matchVal === 'false' && arg === false) ||
-              (matchVal === 'NaN') && isNaN(arg)) return true;
-          return false;
-        case 'Tuple': throw new Error("Can't currently match against tuple forms.");
-        case 'Object': throw new Error("Can't currently match against object forms.");
-        default: return false;
+          // No match if it's not an array, we've mismatched arrays/tuples, or lengths don't match.
+          if (!Array.isArray(arg) || arrMismatch(matchType, arg) || arg.length !== matchVal.length) return false;
+          // Match if all of the subobjects match.
+          return matchVal.every(function (arrParam, position) {
+            return testArrParam(arg, arrParam, position);
+          });
+        default: throw new Error('Can not pattern match against type ' + matchType); // No match if we don't have a matchable type.
       }
-    }.bind(this));
+    });
   },
 
   // CNS_.args(arguments) -> [...arguments]

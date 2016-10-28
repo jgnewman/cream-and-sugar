@@ -1,5 +1,15 @@
 import { compile, nodes, compileBody } from '../utils';
 
+/*
+ * Possible destructuring forms
+ * - Arr
+ * - Tuple
+ * - Obj
+ * - Keys (Destructure)
+ * - HeadTail (Destrcuture)
+ * - LeadLast (Destructure)
+ */
+
 /**
  * Removes quotes from the beginning of a string if the value we get
  * is indeed a string.
@@ -19,17 +29,20 @@ function handleStrings(type, src) {
  *
  * @param  {Array} args  A list of parameter nodes.
  *
- * @return {Array}       [["Arr", "[]"], ["Identifier", "foo"], ["Cons", "[h|t]"]]
+ * @return {Array}       [["Arr", "[]"], ["Identifier", "foo"], ["HeadTail", "[h|t]"]]
  */
 function getPatterns(args) {
   return args.map(arg => {
     const realArg = arg.type === 'Wrap' ? arg.item : arg ;
     switch (realArg.type) {
       case 'Destructure':
-        return [realArg.destrType, realArg.toDestructure.map(item => handleStrings(item.type, item.compile(true))).join(',')];
+        return [realArg.destrType, realArg.toDestructure.map(item => handleStrings(item.type, item.compile(true)))];
       case 'Obj':
-        const pairs = realArg.pairs.map(pair => `${pair.left.compile(true)}:${pair.right.compile(true)}`).join(',');
+        const pairs = realArg.pairs.map(pair => `${pair.left.compile(true)}:${pair.right.compile(true)}`);
         return [realArg.type, pairs];
+      case 'Arr':
+      case 'Tuple':
+        return [realArg.type, realArg.items.map(item => handleStrings(item.type, item.compile(true)))];
       default: return [realArg.type, handleStrings(realArg.type, realArg.src)];
     }
   });
@@ -55,25 +68,25 @@ function compileArgs(patterns) {
         pattern[1] !== '_' && acc.push(`const ${pattern[1]} = args[${index}];`);
         break;
       case 'Keys':
-        const keyList = pattern[1].split(',');
+        const keyList = pattern[1];
         keyList.forEach(key => key !== '_' && acc.push(`const ${key} = args[${index}].${key};`));
         break;
       case 'HeadTail':
-        const htList = pattern[1].split(',');
+        const htList = pattern[1];
         const headMatch = htList[0];
         const tailMatch = htList[1];
         headMatch !== '_' && acc.push(`const ${headMatch} = args[${index}][0];`);
         tailMatch !== '_' && acc.push(`const ${tailMatch} = args[${index}].slice(1);`);
         break;
       case 'LeadLast':
-        const llList = pattern[1].split(',');
+        const llList = pattern[1];
         const leadMatch = llList[0];
         const lastMatch = llList[1];
         leadMatch !== '_' && acc.push(`const ${leadMatch} = args[${index}].slice(0, args[${index}].length - 1);`);
         lastMatch !== '_' && acc.push(`const ${lastMatch} = args[${index}][args[${index}].length - 1];`);
         break;
       case 'Obj':
-        const pairList = pattern[1].split(',');
+        const pairList = pattern[1];
         pairList.forEach(pair => {
           const kv = pair.split(':');
           kv[1] !== '_' && acc.push(`const ${kv[1]} = args[${index}].${kv[0]};`);
@@ -82,8 +95,7 @@ function compileArgs(patterns) {
       case 'Arr':
       case 'Tuple':
         // This will come back to haunt us if the user tries to match against a string with a comma or space in it.
-        const items = pattern[0] === 'Arr' ? pattern[1].replace(/^\[|\s+|\]$/g, '').split(',')
-                                           : pattern[1].replace(/^\{\{|\s+|\}\}$/g, '').split(',');
+        const items = pattern[1];
         items.forEach((item, i) => {
           if (item && item !== '_' && !atomRegex.test(item) && identRegex.test(item)) {
             acc.push(`const ${item} = args[${index}][${i}];`);
@@ -199,7 +211,7 @@ compile(nodes.PolymorphNode, function () {
 
     // Generate an else case to use when we're finished with sub conditions.
     const elseCase = ` else {
-      return CNS_.noMatch('${this.isNamed ? 'def' : 'match'}');
+      throw new Error('No match found for ${this.isNamed ? 'def' : 'match'} statement.');
     }`;
 
     let subBodies;
@@ -251,7 +263,6 @@ compile(nodes.PolymorphNode, function () {
   this.shared.lib.add('match');
   this.shared.lib.add('eql'); // necessary to run match
   this.shared.lib.add('args');
-  this.shared.lib.add('noMatch');
 
   // Spit out the top-level function string. Within it, drop in the
   // conditions for different function bodies and add an else case for
@@ -259,7 +270,7 @@ compile(nodes.PolymorphNode, function () {
   return `function ${prefix} {
     const args = CNS_.args(arguments);
     ${compiledFns} else {
-      return CNS_.noMatch('${this.isNamed ? 'def' : 'match'}');
+      throw new Error('No match found for ${this.isNamed ? 'def' : 'match'} statement.');
     }
   }${meta.anon && meta.bind ? '.bind(this)' : ''}`;
 });

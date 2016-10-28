@@ -64,9 +64,7 @@ describe('Assignments', () => {
   });
 
   it('should compile an tuple destructure ending with new lines', () => {
-    const toCompile = `{a, b, c
-
-    } = foo`;
+    const toCompile = `{a, b, c\n\n} = foo`;
     const expected = nlToSpace(`
       var ref0_ = foo;
       const a = ref0_.a;
@@ -77,11 +75,7 @@ describe('Assignments', () => {
   });
 
   it('should compile an tuple destructure beginning and ending with new lines', () => {
-    const toCompile = `{
-
-      a, b, c
-
-    } = foo`;
+    const toCompile = `{\n\na, b, c\n\n} = foo`;
     const expected = nlToSpace(`
       var ref0_ = foo;
       const a = ref0_.a;
@@ -92,9 +86,7 @@ describe('Assignments', () => {
   });
 
   it('should compile a tuple destructure with new lines between items', () => {
-    const toCompile = `{a,
-      b,
-      c} = foo`;
+    const toCompile = `{a,\nb,\nc} = foo`;
     const expected = nlToSpace(`
       var ref0_ = foo;
       const a = ref0_.a;
@@ -105,11 +97,7 @@ describe('Assignments', () => {
   });
 
   it('should compile a tuple destructure with new lines everywhere', () => {
-    const toCompile = `{
-      a,
-      b,
-      c
-    } = foo`;
+    const toCompile = `{\n  a,\n  b,\n  c\n} = foo`;
     const expected = nlToSpace(`
       var ref0_ = foo;
       const a = ref0_.a;

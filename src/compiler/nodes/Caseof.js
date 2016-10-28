@@ -17,8 +17,7 @@ compile(nodes.CaseofNode, function () {
     `;
   }).join('');
   if (needsDefault) {
-    this.shared.lib.add('noMatch');
-    compiled += `default: CNS_.noMatch('caseof');`;
+    compiled += `default: throw new Error('No match found for "caseof" statement.');`;
   }
   return `(function () {
     switch (${this.comparator.compile(true)}) {
