@@ -21,8 +21,7 @@ var _utils = require('../utils');
     return casePrefix + ':\n      ' + (0, _utils.compileBody)(body) + ';\n    ';
   }).join('');
   if (needsDefault) {
-    this.shared.lib.add('noMatch');
-    compiled += 'default: CNS_SYSTEM.noMatch(\'caseof\');';
+    compiled += 'default: throw new Error(\'No match found for "caseof" statement.\');';
   }
   return '(function () {\n    switch (' + this.comparator.compile(true) + ') {\n      ' + compiled + '\n    }\n  }.bind(this)())';
 });

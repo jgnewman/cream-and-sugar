@@ -18,6 +18,8 @@ var _finalize2 = _interopRequireDefault(_finalize);
 
 require('./nodes/Program');
 
+require('./nodes/Functionizer');
+
 require('./nodes/NewLine');
 
 require('./nodes/Comment');
@@ -86,13 +88,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * Export a function for initializing compilation.
  */
 function compile(path, callback, options) {
+  // Read in a file.
   return _fs2.default.readFile(path, function (err, result) {
+    // Throw an error if we have one.
     if (err) {
       if (callback) {
         return callback(err);
       } else {
         throw err;
       }
+      // If not, convert the result to a string and call compileCode with it.
     } else {
       return compileCode(result.toString(), callback, options);
     }

@@ -12,5 +12,5 @@ var _utils = require('../utils');
   var condition = this.keyword === 'if' ? conditionBase : '!(' + conditionBase + ')';
   var elseCase = !this.elseCase ? '' : ', function () {\n    return ' + this.elseCase.compile(true) + ';\n  }.bind(this)';
   this.shared.lib.add('qualify');
-  return ('CNS_SYSTEM.qualify(' + condition + ', function () {\n    return ' + this.action.compile(true) + ';\n  }.bind(this)' + elseCase + ')').replace(/\s+/g, ' ');
+  return ('CNS_.qualify(' + condition + ', function () {\n    return ' + this.action.compile(true) + ';\n  }.bind(this)' + elseCase + ')').replace(/\s+/g, ' ');
 });

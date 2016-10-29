@@ -1,7 +1,5 @@
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
 var _utils = require('../utils');
 
 /*
@@ -12,49 +10,81 @@ var _utils = require('../utils');
 (0, _utils.compile)(_utils.nodes.AssignmentNode, function () {
   var _this = this;
 
-  var tuple = void 0;
+  var tuple = void 0,
+      ref = void 0,
+      base = void 0;
+  switch (this.left.type) {
 
-  var _ret = function () {
-    switch (_this.left.type) {
+    case 'Identifier':
+    case 'Lookup':
+      return 'const ' + this.left.compile(true) + ' = ' + this.right.compile(true);
 
-      case 'Identifier':
-        return {
-          v: 'const ' + _this.left.compile(true) + ' = ' + _this.right.compile(true)
-        };
+    case 'Arr':
+    case 'Tuple':
+      ref = 'ref' + (this.shared.refs += 1) + '_';
+      // Use var here so it can be redeclared in the REPL.
+      base = 'var ' + ref + ' = ' + this.right.compile(true) + ';\n';
+      this.left.items.forEach(function (item, index) {
+        var varName = item.compile(true);
+        base += 'const ' + varName + ' = ' + ref + '[' + index + ']';
+        index !== _this.left.items.length - 1 && (base += ';\n');
+      });
+      return base;
 
-      case 'Tuple':
-        var ref = '__ref' + (_this.shared.refs += 1) + '__';
-        // Use var here so it can be redeclared in the REPL.
-        var base = 'var ' + ref + ' = ' + _this.right.compile(true) + ';\n';
-        _this.left.items.forEach(function (item, index) {
-          var varName = item.compile(true);
-          base += 'const ' + varName + ' = ' + ref + '.' + varName;
-          index !== _this.left.items.length - 1 && (base += ';\n');
-        });
-        return {
-          v: base
-        };
+    case 'Keys':
+      ref = 'ref' + (this.shared.refs += 1) + '_';
+      // Use var here so it can be redeclared in the REPL.
+      base = 'var ' + ref + ' = ' + this.right.compile(true) + ';\n';
+      this.left.items.forEach(function (item, index) {
+        var varName = item.compile(true);
+        base += 'const ' + varName + ' = ' + ref + '.' + varName;
+        index !== _this.left.items.length - 1 && (base += ';\n');
+      });
+      return base;
 
-      case 'Cons':
-        var head = _this.left.src.match(/^\[(.+)\|/)[1];
-        var tail = _this.left.src.match(/\|([^\]]+)\]/)[1];
-        var aref = '__ref' + (_this.shared.refs += 1) + '__';
-        return {
-          v: 'var ' + aref + ' = ' + _this.right.compile(true) + ';\n      const ' + head + ' = ' + aref + '[0];\n      const ' + tail + ' = ' + aref + '.slice(1)'
-        };
+    case 'Obj':
+      ref = 'ref' + (this.shared.refs += 1) + '_';
+      // Use var here so it can be redeclared in the REPL.
+      base = 'var ' + ref + ' = ' + this.right.compile(true) + ';\n';
+      this.left.pairs.forEach(function (item, index) {
+        var varName = item.right.compile(true);
+        var propName = item.left.compile(true);
+        base += 'const ' + varName + ' = ' + ref + '.' + propName;
+        index !== _this.left.pairs.length - 1 && (base += ';\n');
+      });
+      return base;
 
-      case 'BackCons':
-        var lead = _this.left.src.match(/^\[(.+)\|\|/)[1];
-        var last = _this.left.src.match(/\|\|([^\]]+)\]/)[1];
-        var bref = '__ref' + (_this.shared.refs += 1) + '__';
-        return {
-          v: 'var ' + bref + ' = ' + _this.right.compile(true) + ';\n      const ' + lead + ' = ' + bref + '.slice(0, ' + bref + '.length - 1);\n      const ' + last + ' = ' + bref + '[' + bref + '.length - 1]'
-        };
+    case 'HeadTail':
+      ref = 'ref' + (this.shared.refs += 1) + '_';
+      // Use var here so it can be redeclared in the REPL.
+      base = 'var ' + ref + ' = ' + this.right.compile(true) + ';\n';
+      this.left.items.forEach(function (item, index) {
+        var varName = item.compile(true);
+        if (index === 0) {
+          base += 'const ' + varName + ' = ' + ref + '[0]';
+        } else {
+          base += 'const ' + varName + ' = ' + ref + '.slice(1)';
+        }
+        index !== _this.left.items.length - 1 && (base += ';\n');
+      });
+      return base;
 
-      default:
-        (0, _utils.die)(_this, 'Invalid expression in left hand assignment: ' + _this.left.type);
-    }
-  }();
+    case 'LeadLast':
+      ref = 'ref' + (this.shared.refs += 1) + '_';
+      // Use var here so it can be redeclared in the REPL.
+      base = 'var ' + ref + ' = ' + this.right.compile(true) + ';\n';
+      this.left.items.forEach(function (item, index) {
+        var varName = item.compile(true);
+        if (index === 0) {
+          base += 'const ' + varName + ' = ' + ref + '.slice(0, ' + ref + '.length - 1)';
+        } else {
+          base += 'const ' + varName + ' = ' + ref + '[' + ref + '.length - 1]';
+        }
+        index !== _this.left.items.length - 1 && (base += ';\n');
+      });
+      return base;
 
-  if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+    default:
+      (0, _utils.die)(this, 'Invalid expression in left hand assignment: ' + this.left.type);
+  }
 });

@@ -2,6 +2,16 @@
 
 var _utils = require('../utils');
 
+/*
+ * Possible destructuring forms
+ * - Arr
+ * - Tuple
+ * - Obj
+ * - Keys (Destructure)
+ * - HeadTail (Destrcuture)
+ * - LeadLast (Destructure)
+ */
+
 /**
  * Removes quotes from the beginning of a string if the value we get
  * is indeed a string.
@@ -21,12 +31,31 @@ function handleStrings(type, src) {
  *
  * @param  {Array} args  A list of parameter nodes.
  *
- * @return {Array}       [["Arr", "[]"], ["Identifier", "foo"], ["Cons", "[h|t]"]]
+ * @return {Array}       [["Arr", []], ["Identifier", "foo"], ["HeadTail", ["h","t"]]]
  */
 function getPatterns(args) {
   return args.map(function (arg) {
     var realArg = arg.type === 'Wrap' ? arg.item : arg;
-    return [realArg.type, handleStrings(realArg.type, realArg.src)];
+    switch (realArg.type) {
+      case 'Destructure':
+        return [realArg.destrType, realArg.toDestructure.map(function (item) {
+          return handleStrings(item.type, item.compile(true));
+        })];
+      case 'Obj':
+        var pairs = realArg.pairs.map(function (pair) {
+          return pair.left.compile(true) + ':' + pair.right.compile(true);
+        });
+        return [realArg.type, pairs];
+      case 'Arr':
+      case 'Tuple':
+        return [realArg.type, realArg.items.map(function (item) {
+          return handleStrings(item.type, item.compile(true));
+        })];
+      case 'String':
+        return (0, _utils.die)(realArg, 'Can not pattern match against strings');
+      default:
+        return [realArg.type, handleStrings(realArg.type, realArg.src)];
+    }
   });
 }
 
@@ -42,28 +71,46 @@ function getPatterns(args) {
 function compileArgs(patterns) {
   var acc = [];
   var patts = typeof patterns === 'string' ? JSON.parse(patterns) : patterns;
+  var identRegex = /^[\$_A-z][\$_A-z0-9]*$/;
+  var atomRegex = /^[A-Z][A-Z_]+$/;
   patts.forEach(function (pattern, index) {
     switch (pattern[0]) {
       case 'Identifier':
         pattern[1] !== '_' && acc.push('const ' + pattern[1] + ' = args[' + index + '];');
         break;
-      case 'Cons':
-        var headMatch = pattern[1].match(/^\[(.+)\|/)[1];
-        var tailMatch = pattern[1].match(/\|([^\]]+)\]/)[1];
+      case 'Keys':
+        var keyList = pattern[1];
+        keyList.forEach(function (key) {
+          return key !== '_' && acc.push('const ' + key + ' = args[' + index + '].' + key + ';');
+        });
+        break;
+      case 'HeadTail':
+        var htList = pattern[1];
+        var headMatch = htList[0];
+        var tailMatch = htList[1];
         headMatch !== '_' && acc.push('const ' + headMatch + ' = args[' + index + '][0];');
         tailMatch !== '_' && acc.push('const ' + tailMatch + ' = args[' + index + '].slice(1);');
         break;
-      case 'BackCons':
-        var leadMatch = pattern[1].match(/^\[(.+)\|\|/)[1];
-        var lastMatch = pattern[1].match(/\|\|([^\]]+)\]/)[1];
+      case 'LeadLast':
+        var llList = pattern[1];
+        var leadMatch = llList[0];
+        var lastMatch = llList[1];
         leadMatch !== '_' && acc.push('const ' + leadMatch + ' = args[' + index + '].slice(0, args[' + index + '].length - 1);');
         lastMatch !== '_' && acc.push('const ' + lastMatch + ' = args[' + index + '][args[' + index + '].length - 1];');
         break;
+      case 'Obj':
+        var pairList = pattern[1];
+        pairList.forEach(function (pair) {
+          var kv = pair.split(':');
+          kv[1] !== '_' && acc.push('const ' + kv[1] + ' = args[' + index + '].' + kv[0] + ';');
+        });
+        break;
       case 'Arr':
+      case 'Tuple':
         // This will come back to haunt us if the user tries to match against a string with a comma or space in it.
-        var items = pattern[1].replace(/^\[|\s+|\]$/g, '').split(',');
+        var items = pattern[1];
         items.forEach(function (item, i) {
-          if (item && item !== '_' && /^[\$_A-z][\$_A-z0-9]*$/.test(item)) {
+          if (item && item !== '_' && !atomRegex.test(item) && identRegex.test(item)) {
             acc.push('const ' + item + ' = args[' + index + '][' + i + '];');
           }
         });
@@ -108,12 +155,16 @@ function sanitizeFnMeta(fnList) {
  */
 (0, _utils.compile)(_utils.nodes.FunNode, function () {
   var preFn = this.preArrow.type === 'FunctionCall';
-  var args = compileArgs(getPatterns(preFn ? this.preArrow.args.items : this.preArrow.items));
-  var prefix = preFn ? this.preArrow.fn.compile(true) + ' ()' : '()';
-  var argStr = !args.length ? '' : '\nconst args = CNS_SYSTEM.args(arguments);';
+  var args = compileArgs(getPatterns(preFn ? this.preArrow.args.items : this.preArrow));
+  var fnName = preFn ? this.preArrow.fn.compile(true) : '';
+  var prefix = preFn ? fnName + ' ()' : '()';
+  var argStr = !args.length ? '' : '\nconst args = CNS_.args(arguments);';
   var body = (0, _utils.compileBody)(this.body);
+  var begin = fnName && this.bind ? 'const ' + fnName + ' = function () {' : 'function ' + prefix + ' {';
   args.length && this.shared.lib.add('args');
-  return 'function ' + prefix + ' {' + argStr + (args.length ? '\n' + args : '') + (body.length ? '\n  ' + body + ';\n' : '') + ('}' + (this.bind ? '.bind(this)' : ''));
+  return begin + argStr + (args.length ? '\n' + args : '')
+  // If the whole body has been compiled to "return _", then it's an empty function.
+  + (body.length && !/^\s*return\s+_;?\s*$/.test(body) ? '\n  ' + body + ';\n' : '') + ('}' + (this.bind ? '.bind(this)' : ''));
 });
 
 /*
@@ -138,7 +189,7 @@ function sanitizeFnMeta(fnList) {
   this.fns.map(function (fn, index) {
 
     // Isolate the array containing the parameter items
-    var args = meta.anon ? fn.preArrow.items : fn.preArrow.args.items;
+    var args = meta.anon ? fn.preArrow : fn.preArrow.args.items;
 
     // Create a list of pattern matches like [["Identifier", "foo"], ...]
     var pattern = JSON.stringify(getPatterns(args));
@@ -170,7 +221,7 @@ function sanitizeFnMeta(fnList) {
     var matchObjs = patterns[pattern];
 
     // Generate an else case to use when we're finished with sub conditions.
-    var elseCase = ' else {\n      return CNS_SYSTEM.noMatch(\'' + (_this.isNamed ? 'def' : 'match') + '\');\n    }';
+    var elseCase = ' else {\n      throw new Error(\'No match found for ' + (_this.isNamed ? 'def' : 'match') + ' statement.\');\n    }';
 
     var subBodies = void 0;
 
@@ -211,17 +262,16 @@ function sanitizeFnMeta(fnList) {
     }
 
     // Spit out the top-level condition based on precompiled information
-    return keyword + ' (args.length === ' + matchObjs[0].args.length + ' && CNS_SYSTEM.match(args, ' + pattern + ')) {\n      ' + compileArgs(pattern) + '\n      ' + subBodies + '\n    }';
+    return keyword + ' (args.length === ' + matchObjs[0].args.length + ' && CNS_.match(args, ' + pattern + ')) {\n      ' + compileArgs(pattern) + '\n      ' + subBodies + '\n    }';
   }).join(' ');
 
   // Add appropriate library functions
   this.shared.lib.add('match');
   this.shared.lib.add('eql'); // necessary to run match
   this.shared.lib.add('args');
-  this.shared.lib.add('noMatch');
 
   // Spit out the top-level function string. Within it, drop in the
   // conditions for different function bodies and add an else case for
   // no match at the end.
-  return 'function ' + prefix + ' {\n    const args = CNS_SYSTEM.args(arguments);\n    ' + compiledFns + ' else {\n      return CNS_SYSTEM.noMatch(\'' + (this.isNamed ? 'def' : 'match') + '\');\n    }\n  }' + (meta.anon && meta.bind ? '.bind(this)' : '');
+  return 'function ' + prefix + ' {\n    const args = CNS_.args(arguments);\n    ' + compiledFns + ' else {\n      throw new Error(\'No match found for ' + (this.isNamed ? 'def' : 'match') + ' statement.\');\n    }\n  }' + (meta.anon && meta.bind ? '.bind(this)' : '');
 });

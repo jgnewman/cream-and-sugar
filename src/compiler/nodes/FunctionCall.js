@@ -12,7 +12,16 @@ compile(nodes.FunctionCallNode, function () {
   // Anything else...
   } else {
     return `${this.fn.compile(true)}(${this.args.items.map(arg => {
-      const out = arg.compile(true);
+      let out;
+      if (arg.type === "Destructure") {
+        if (arg.destrType === 'Keys' && !arg.toDestructure.length) {
+          out = '{}';
+        } else {
+          return die(this, 'Can not pass a destructuring expression to a function call.');
+        }
+      } else {
+        out = arg.compile(true);  
+      }
       out === '_' && die(this, '"_" can not be used as a member of an argument list.');
       return out;
     }).join(', ')})`;

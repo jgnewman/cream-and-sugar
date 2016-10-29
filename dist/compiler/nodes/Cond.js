@@ -13,6 +13,5 @@ var _utils = require('../utils');
     var keyword = index === 0 ? 'if' : 'else if';
     return keyword + ' (' + test.compile(true) + ') {\n      ' + (0, _utils.compileBody)(body) + '\n    }';
   }).join(' ');
-  this.shared.lib.add('noMatch');
-  return '(function () {\n    ' + compiled + ' else {\n      return CNS_SYSTEM.noMatch(\'cond\');\n    }\n  }.bind(this)())';
+  return '(function () {\n    ' + compiled + ' else {\n      throw new Error(\'No match found for "when" statement.\');\n    }\n  }.bind(this)())';
 });
