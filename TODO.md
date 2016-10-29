@@ -1,6 +1,1 @@
-- add more pattern match techniques?
-  - to consider: {a, b}, [a, b, {c, d}]
-- make a gulp package
-- make a webpack package
-- is there a way to speed up pattern matching?
 - is there a way to speed up thread generation and maybe reduce thread footprints?
