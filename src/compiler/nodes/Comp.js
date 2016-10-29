@@ -5,26 +5,25 @@ import { compile, nodes } from '../utils';
  */
 compile(nodes.CompNode, function () {
   const action = this.action.compile(true);
-  const params = `(${this.params.items.map(item => item.compile(true)).join(', ')})`;
+  const params = `(${this.params.map(item => item.compile(true)).join(', ')})`;
   const list   = this.list.compile(true);
   const caveat = this.caveat ? this.caveat.compile(true) : null;
   if (!caveat) {
-    return `
-      ${list}.map(function ${params} {
+    return `${list}.map(function ${params} {
         return ${action};
       }.bind(this))
     `.replace(/\s+/g, ' ');
   } else {
     return `
       (function () {
-        const __acc__ = [];
+        const acc_ = [];
         ${list}.forEach(function ${params} {
           if (${caveat}) {
-            __acc__.push(${action});
+            acc_.push(${action});
           }
         }.bind(this));
-        return __acc__;
+        return acc_;
       }.bind(this)())
-    `;
+    `.replace(/^\s+|\s+$/g, '');
   }
 });

@@ -28,66 +28,60 @@ In order to handle concurrent processes, you need a few basic tools, namely...
 In CnS, all processes are spawned from functions. Let's take a look at a basic process module.
 
 ```ruby
-# factorial-process.cns
+# factorial-process.cream
 
 # Create a function we can use to spin up a new process.
-up() ->
+up _ =>
 
   # Create and return a new process from a function.
-  spawn fn ->
+  spawn fn =>
 
     # Define the factorial function so that we can actually calculate them.
-    def
-      factorial 0 -> 1
-      factorial n -> n * factorial n - 1
-    end
+    factorial 0 => 1
+    factorial n => n * factorial n - 1
 
     # When we receive a message, pattern match it to figure out what to do.
     receive match
 
       # If the message is an array beginning with the atom ~factorial, we'll
       # calculate the factorial of num and send it back marked as ~ok.
-      [~factorial, num] -> reply [~ok, factorial num]
+      {{ FACTORIAL, num }} => reply {{ OK, factorial num }}
 
-      # If the message is anything else, send a reply marked as `~err` and
+      # If the message is anything else, send a reply marked as `ERR` and
       # pass along a reason.
-      _ -> reply [~err, 'Unknown command received']
-    end
-  end
-end
+      _ => reply {{ ERR, 'Unknown command received' }}
 
 # Export our process creator function.
-export { up/0 }
+export { up: aritize up, 0 }
 ```
 
 Now that we have a process module, let's take a look at how we might use it within the body of another module.
 
-```ruby
+```coffeescript
 # Import the function that creates a process.
 import { up } from './factorial-process'
 
 # Create the process and grab a reference to it.
-myprocess = up()
+myprocess = up _
 
 # When we receive a message, pattern match it to figure out what to do.
 receive match
 
   # If the message is marked as ~ok, do whatever we need to with it.
-  [~ok, msg] -> console.log('The message was', msg)
+  {{ OK, msg }} => console.log 'The message was', msg
 
   # If the message came with an error, kill the process and throw an error.
-  [~err, errText] ->
+  {{ ERR, errText, }} =>
     kill myprocess
-    throw create(Error, errText)
-  end
-end
+    throw (create Error, errText)
+
 
 # Kick things off by telling the process to calculate a factorial.
-send myprocess, [~factorial, 10]
+send myprocess, {{ FACTORIAL, 10 }}
 ```
 
-Between these two modules we can see all 4 tools in action. Within `factorial-process.cns` we spawn a new process from a function. Within that process, we pattern match against received messages and also define a factorial function. By convention, we expect that each message coming in will be a 2-item array where the first item is an atom denoting what task should be performed. If we get the `~factorial` atom, we'll run the factorial function on the second part of the message and use `reply` to send it back to the parent thread. If we get something we didn't expect we'll send back an error message.
+Between these two modules we can see all 4 tools in action. Within `factorial-process.cream` we spawn a new process from a function. Within that process, we pattern match against received messages and also define a factorial function. By convention, we expect that each message coming in will be a 2-item array where the first item is an atom denoting what task should be performed. If we get the `FACTORIAL` atom, we'll run the factorial function on the second part of the message and use `reply` to send it back to the parent thread. If we get something we didn't expect we'll send back an error message.
 
-Within our main process module, we'll import our process creation function and execute it. Next we'll define what to do when our main process receives messages from other processes and then kick things off by sending a message to our child process. If we get back a message marked as `~ok`, we'll do something else with the second part of the message. If we get a message marked as `~err`, it means something went wrong. We'll kill the process and throw an error.
+Within our main process module, we'll import our process creation function and execute it. Next we'll define what to do when our main process receives messages from other processes and then kick things off by sending a message to our child process. If we get back a message marked as `OK`, we'll do something else with the second part of the message. If we get a message marked as `ERR`, it means something went wrong. We'll kill the process and throw an error.
 
 [<- Back to the overview](overview.md)

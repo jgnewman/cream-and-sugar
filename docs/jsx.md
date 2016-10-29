@@ -24,18 +24,17 @@ function createJSX(id) {
 
 When compiled, each of the nodes in our JSX is converted into a call to `React.createElement`. Here's how you'd write that same function using Cream & Sugar:
 
-```ruby
-createJSX id ->
+```coffeescript
+createJSX id =>
   <div id={id} className="foo">
     <span>"Hello, world!"</span>
   </div>
-end
 ```
 
 What's pretty cool is, CnS is smart and will detect if React exists within your available code. If so, it will convert each JSX node into a call to `React.createElement`. If not, it will convert each JSX node into a call to
-`CNS_SYSTEM.createElement` which will still produce a series of nested DOM nodes.
+`CNS_.createElement` which will still produce a series of nested DOM nodes.
 
-> Protip: `CNS_SYSTEM` is a reserved word in CnS. If you try to use it, the
+> Protip: `CNS_` is a reserved word in CnS. If you try to use it, the
 compiler will complain. It's reserved for built-in functions that are included
 in the compiled code, only if they are needed.
 
@@ -45,9 +44,9 @@ There are a few minor differences between pure JSX and CnS' JSX, however. To lea
 
 CnS' ability to use handle JSX-like syntax is pretty handy because, if you aren't using React, you can still make use of this syntax to dynamically build DOM nodes. For example:
 
-```ruby
-container = dom('#my-container')
-update(container, 'innerHTML', <div>'Hello'</div>)
+```coffeescript
+container = dom '#my-container'
+update 'innerHTML', <div>'Hello'</div>, container
 #=> <div id="my-container"><div>Hello</div></div>
 ```
 
@@ -59,7 +58,7 @@ ones you're using.
 One thing to keep in mind, of course, is that CnS is a functional language and,
 as such, it doesn't modify currently existing values. It can only create new
 ones. So in the previous example, the `#my-container` div was only "updated"
-in the sense that a clone of that node was created and had it's `innerHTML`
+in the sense that a clone of that node was created and had its `innerHTML`
 populated.
 
 There are a couple of other _minor_ differences between CnS' version of JSX
@@ -70,7 +69,8 @@ and the pure React version as well.
 In CnS, you will need to surround any floating text with quotes. Because
 html-like syntax is integrated into the language and is not handled as a
 separate processing step, the compiler will see any floating text as a bunch of
-variable names and get very confused.
+variable names, try to convert them into nested function calls, and get very
+confused.
 
 Another way to explain this is that the language grammar doesn't change
 if you're inside an html node. So, whereas in traditional JSX you would write
@@ -88,6 +88,16 @@ In CnS you would write this:
 <div>
   "This is some floating text."
 </div>
+```
+
+In order to stop the compiler from trying to do this:
+
+```javascript
+React.createElement('div', {}, [
+  This(is(some(floating(text.))))
+])
+
+//=> Error!
 ```
 
 Because a string is still a string, even if you're using html-like code.
@@ -138,14 +148,14 @@ of the html body:
 ```
 
 **Cream & Sugar**
-```javascript
+```coffeescript
 <div>
   'Two plus two is'
-  do fn -> <strong>2 + 2</strong>
+  apply fn => <strong>2 + 2</strong>
 </div>
 ```
 
-Notice that this is what `do` is used for in CnS. It's a function that takes
+Notice that this is what `apply` is used for in CnS. It's a function that takes
 another function as an argument and executes it. Optionally, you can pass in
 a list of arguments in the form of an array as a second argument.
 

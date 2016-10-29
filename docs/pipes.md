@@ -1,6 +1,6 @@
 # Cream & Sugar Scope Piping
 
-Cream & Sugar provides an interesting and somewhat unique little tool that we call scope piping. If you are familiar with the concept of monads in languages like Haskell, it's similar but also easier to grasp. But insead of trying to describe it, let's start by looking at an example. Imagine you had a number that you wanted to perform a couple of operations on in JavaScript. You could write that like this:
+Cream & Sugar provides an interesting and somewhat unique little tool that we call curry piping. If you are familiar with the concept of monads in languages like Haskell, there are some similarities, however **curry pipes are not monads**. But insead of trying to describe a curry pipe, let's start by looking at an example. Imagine you had a number that you wanted to perform a couple of operations on in JavaScript. You could write that like this:
 
 ```javascript
 function add2(x) {
@@ -15,50 +15,33 @@ const result = mlt2(add2(4));
 //=> 12
 ```
 
-In CnS, you can accomplish a similar task with different syntax. Consider the following:
+In CnS, you can accomplish a similar task with curry piping syntax. Consider the following:
 
 ```coffeescript
-add2() -> @ + 2
+add2 x => x + 2
 
-mlt2() -> @ + 2
+mlt2 x => x * 2
 
-result = 4 :: add2 :: mlt2
+result = 4 >>= add2 >>= mlt2
 #=> 12
 ```
 
-In this example, we begin with the value 4. We then pipe it to the `add2` function as its scope. The result of that is then piped to the `mlt2` function as its scope.
+In this example, we begin with the value 4. We then use the `>>=` operator to pipe it to the `add2` function, where it will be passed in as an argument. The result of that is then piped to the `mlt2` function and passed in as an argument.
 
-This concept is especially useful when you need to use CnS with other libraries because you can create transformers that run on the imported data of standard CnS modules written in functional style. In the following example, we'll write a module containing a few functions and then use scope piping to turn our module into a React.js class.
-
-In **AppContainer.cns** we write the functions that should be used to be converted into a React class and export them:
+The reason we call this "curry" piping is because you can use it to implicitly curry functions. Take the following example:
 
 ```coffeescript
-componentDidMount() -> console.log('I mounted!')
+add x, y => x + y
 
-render() -> <div>'Hello, world!'</div>
+mlt x, y => x * y
 
-export { componentDidMount, render }
+result = 4 >>= (add 2) >>= (mlt 2)
+#=> 12
 ```
 
-In **reactify.cns** we write a piping function that will create a React class out of its scope values and export it.
+In this example, it appears as though we are calling both `add 2` and `mlt 2` which, at face value, seem as though they should produce errors because each of these functions is intended to take 2 arguments. However, using them in connection with the `>>=` operator allows us to implicitly curry them. What actually happens upon execution here is that 4 gets passed in to `add` as the last argument. The result of that operation then gets passed into `mlt` as the last argument. The effect would be expressed like this in JavaScript: `mlt(2, add(2, 4))`.
 
-```coffeescript
-import React from 'react'
+If you find this confusing, just remember, all we're doing is taking the first thing and piping it to the next thing as an argument. We can chain as many of these as we need to.
 
-reactify() -> React.createClass(@)
-
-export { reactify }
-```
-
-In **main.cns** we'll import our piping function and then pipe the imported `AppContainer` to it, thus quickly transforming an object full of functions into a React class.
-
-```coffeescript
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { reactify } from './reactify'
-import AppContainer from './AppContainer' :: reactify
-
-ReactDOM.render(<AppContainer />, dom('#app-container'))
-```
 
 [<- Back to the overview](overview.md)

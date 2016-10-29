@@ -6,37 +6,15 @@ import { compileCode } from  '../src/compiler/compiler';
 describe('Exports', () => {
 
   it('should export a single item', () => {
-    const toCompile = 'export {a/1}';
-    const expected = nlToSpace(`CNS_SYSTEM.exp("a", CNS_SYSTEM.aritize(a, 1))`);
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+    const toCompile = 'export aritize a, 1';
+    const expected = nlToSpace(`CNS_.exp(CNS_.aritize(a, 1))`);
+    assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
   it('should export multiple items', () => {
-    const toCompile = 'export {a/1, b/2, c/3}';
-    const expected = nlToSpace(`CNS_SYSTEM.exp("a", CNS_SYSTEM.aritize(a, 1));
-    CNS_SYSTEM.exp("b", CNS_SYSTEM.aritize(b, 2));
-    CNS_SYSTEM.exp("c", CNS_SYSTEM.aritize(c, 3))`);
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
-  });
-
-  it('should export multiple items with mixed arity requirements', () => {
-    const toCompile = 'export {a/1, b, c/3}';
-    const expected = nlToSpace(`CNS_SYSTEM.exp("a", CNS_SYSTEM.aritize(a, 1));
-    CNS_SYSTEM.exp("b", b);
-    CNS_SYSTEM.exp("c", CNS_SYSTEM.aritize(c, 3))`);
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
-  });
-
-  it('should export multiple items when the tuple has new lines everywhere', () => {
-    const toCompile = `export {
-      a/1,
-      b/2,
-      c/3
-    }`;
-    const expected = nlToSpace(`CNS_SYSTEM.exp("a", CNS_SYSTEM.aritize(a, 1));
-    CNS_SYSTEM.exp("b", CNS_SYSTEM.aritize(b, 2));
-    CNS_SYSTEM.exp("c", CNS_SYSTEM.aritize(c, 3))`);
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+    const toCompile = 'export {a:a, b:b, c:c}';
+    const expected = nlToSpace(`CNS_.exp({ a: a, b: b, c: c })`);
+    assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
 });

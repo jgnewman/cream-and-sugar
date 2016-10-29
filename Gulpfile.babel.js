@@ -30,7 +30,7 @@ gulp.task('genparser', next => {
 });
 
 gulp.task('sanitycheck', next => {
-  compile('./test/sanitycheck.cns', null, {log: true, finalize: true});
+  compile('./test/sanitycheck.cream', null, {log: true, finalize: true});
   gutil.log('Sanity check passed. Consider running `gulp test` as well.');
   next();
 });
@@ -43,7 +43,7 @@ gulp.task('test', next => {
 });
 
 gulp.task('private:build-test-irl', next => {
-  compile('./test-irl/src/app.cns', function (err, result) {
+  compile('./test-irl/src/app.cream', function (err, result) {
     if (err) throw err;
     fs.writeFile('./test-irl/.browserifycache.js', result, function (err) {
       if (err) throw err;
@@ -67,7 +67,7 @@ gulp.task('private:serve', () => {
 
 gulp.task('test-irl', () => {
   sequence('private:build-test-irl', 'private:serve', () => {
-    gulp.watch('./test-irl/src/app.cns', () => sequence('private:build-test-irl'));
+    gulp.watch('./test-irl/src/app.cream', () => sequence('private:build-test-irl'));
   });
 });
 

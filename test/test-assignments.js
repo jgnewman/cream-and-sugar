@@ -13,9 +13,9 @@ describe('Assignments', () => {
   it('should compile a cons destructure', () => {
     const toCompile = '[h|t] = [1, 2, 3]';
     const expected = nlToSpace(`
-      var __ref0__ = [1, 2, 3];
-      const h = __ref0__[0];
-      const t = __ref0__.slice(1)
+      var ref0_ = [1, 2, 3];
+      const h = ref0_[0];
+      const t = ref0_.slice(1)
     `);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
@@ -23,9 +23,9 @@ describe('Assignments', () => {
   it('should compile a back cons destructure', () => {
     const toCompile = '[ld||lst] = [1, 2, 3]';
     const expected = nlToSpace(`
-      var __ref0__ = [1, 2, 3];
-      const ld = __ref0__.slice(0, __ref0__.length - 1);
-      const lst = __ref0__[__ref0__.length - 1]
+      var ref0_ = [1, 2, 3];
+      const ld = ref0_.slice(0, ref0_.length - 1);
+      const lst = ref0_[ref0_.length - 1]
     `);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
@@ -33,8 +33,8 @@ describe('Assignments', () => {
   it('should compile a single item tuple destructure', () => {
     const toCompile = '{a} = foo';
     const expected = nlToSpace(`
-      var __ref0__ = foo;
-      const a = __ref0__.a
+      var ref0_ = foo;
+      const a = ref0_.a
     `);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
@@ -42,10 +42,10 @@ describe('Assignments', () => {
   it('should compile a multi item tuple destructure', () => {
     const toCompile = '{a, b, c} = foo';
     const expected = nlToSpace(`
-      var __ref0__ = foo;
-      const a = __ref0__.a;
-      const b = __ref0__.b;
-      const c = __ref0__.c
+      var ref0_ = foo;
+      const a = ref0_.a;
+      const b = ref0_.b;
+      const c = ref0_.c
     `);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
@@ -55,66 +55,54 @@ describe('Assignments', () => {
 
       a, b, c} = foo`;
     const expected = nlToSpace(`
-      var __ref0__ = foo;
-      const a = __ref0__.a;
-      const b = __ref0__.b;
-      const c = __ref0__.c
+      var ref0_ = foo;
+      const a = ref0_.a;
+      const b = ref0_.b;
+      const c = ref0_.c
     `);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
   it('should compile an tuple destructure ending with new lines', () => {
-    const toCompile = `{a, b, c
-
-    } = foo`;
+    const toCompile = `{a, b, c\n\n} = foo`;
     const expected = nlToSpace(`
-      var __ref0__ = foo;
-      const a = __ref0__.a;
-      const b = __ref0__.b;
-      const c = __ref0__.c
+      var ref0_ = foo;
+      const a = ref0_.a;
+      const b = ref0_.b;
+      const c = ref0_.c
     `);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
   it('should compile an tuple destructure beginning and ending with new lines', () => {
-    const toCompile = `{
-
-      a, b, c
-
-    } = foo`;
+    const toCompile = `{\n\na, b, c\n\n} = foo`;
     const expected = nlToSpace(`
-      var __ref0__ = foo;
-      const a = __ref0__.a;
-      const b = __ref0__.b;
-      const c = __ref0__.c
+      var ref0_ = foo;
+      const a = ref0_.a;
+      const b = ref0_.b;
+      const c = ref0_.c
     `);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
   it('should compile a tuple destructure with new lines between items', () => {
-    const toCompile = `{a,
-      b,
-      c} = foo`;
+    const toCompile = `{a,\nb,\nc} = foo`;
     const expected = nlToSpace(`
-      var __ref0__ = foo;
-      const a = __ref0__.a;
-      const b = __ref0__.b;
-      const c = __ref0__.c
+      var ref0_ = foo;
+      const a = ref0_.a;
+      const b = ref0_.b;
+      const c = ref0_.c
     `);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
   it('should compile a tuple destructure with new lines everywhere', () => {
-    const toCompile = `{
-      a,
-      b,
-      c
-    } = foo`;
+    const toCompile = `{\n  a,\n  b,\n  c\n} = foo`;
     const expected = nlToSpace(`
-      var __ref0__ = foo;
-      const a = __ref0__.a;
-      const b = __ref0__.b;
-      const c = __ref0__.c
+      var ref0_ = foo;
+      const a = ref0_.a;
+      const b = ref0_.b;
+      const c = ref0_.c
     `);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });

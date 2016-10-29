@@ -34,26 +34,32 @@ Symbol.for('foo');
 From then on, every time you reference `Symbol.for('foo')`, you'll be referencing the same, unique piece of data. In CnS, you have these too, except we call them "atoms", and all of them are named. To create or reference the `Symbol.for('foo')` in CnS, you need only write the following:
 
 ```javascript
-~foo
+FOO
 ```
+
+The rules for naming atoms are as follows:
+
+- The name must contain at least 2 characters
+- The first character must be a capital letter
+- The name may only contain capital letters and underscores
 
 Armed with this syntax, you can now much more easily stomach using atoms in all the ways JavaScript symbols allow. For example, you can use them as object keys:
 
 ```javascript
 {
-  ~foo: "foo",
-  ~bar: "bar"
+  FOO: "foo",
+  BAR: "bar"
 }
 
-//=> { [Symbol.for('foo')]: "foo", [Symbol.for('bar')]: "bar" }
+//=> { [Symbol.for('FOO')]: "foo", [Symbol.for('BAR')]: "bar" }
 ```
 
 You can also use them in a sort of "Erlang-y" way to label data being passed back and forth between processes:
 
 ```javascript
-[~ok, "Message text here"]
+{{ OK, "Message text here" }}
 
-//=> [ Symbol.for('ok'), "Message text here" ]
+//=> CNS_.tuple([ Symbol.for('OK'), "Message text here" ])
 ```
 
 ## Arrays
@@ -67,19 +73,19 @@ Along those lines, you have a new piece of syntax called "cons" that you can use
 arr = [2, 3, 4]
 
 # Create a NEW array with an extra item "consed" on the front
-[1 | arr]
+1 >> arr
 
 #=> [1, 2, 3, 4]
 ```
 
-You also have the option of doing a "back cons" that will create a new array with an extra item appended to the back. It looks a lot like the "cons" form, just with two pipes instead of one.
+You also have the option of doing a "back cons" that will create a new array with an extra item appended to the back. It looks a lot like the "cons" form, just backward.
 
 ```ruby
 # Create an array
 arr = [1, 2, 3]
 
 # Create a NEW array with an extra item added to the back
-[arr || 4]
+arr << 4
 
 #=> [1, 2, 3, 4]
 ```
@@ -90,8 +96,34 @@ CnS also gives you a few extra native functions for working with arrays, includi
 - `tail` which creates a new list containing all items of an original list except the first one,
 - `lead` which creates a new list containing all items of an original list except the last one,
 - `last` which retrieves the last item in a list.
+- `get`  which retrieves an item by position in a list.
+- `update` which creates a new list where the value of one of the items has been updated.
+- `remove` which creates a new list where one of the items has been removed.
 
 Check out [Built-In Functions](bifs.md) for more info on these.
+
+## Tuples
+
+Perhaps most exciting is CnS' brand new list type, the tuple. A tuple is essentially a special kind of array with a special syntax.
+
+```javascript
+tuple = {{ foo, bar }}
+```
+
+Tuples are designed to imbue meaning to the placement of each item in the list. As such, tuples can not be empty and they can not be updated to change the amount of items they contain. You will most often use tuples when you want to label items. For example, an http library might want to return server responses in the form of tuples...
+
+```javascript
+{{ OK, 200, "This is the data" }}
+```
+
+In this case, the first item in the tuple is an atom telling us that the request succeeded. The second item is a status code. The third item is the response message. We might use this data as follows:
+
+```coffeescript
+mylib.post '/api/mydata', fn response =>
+  caseof (get 0, response)
+    OK  -> doSomethingWith (get 2, response)
+    ERR -> doSomethingElseWith (get 2, response)
+```
 
 ## Assessing Types
 

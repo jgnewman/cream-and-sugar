@@ -11,10 +11,9 @@ compile(nodes.CondNode, function () {
       ${compileBody(body)}
     }`;
   }).join(' ');
-  this.shared.lib.add('noMatch');
   return `(function () {
     ${compiled} else {
-      return CNS_SYSTEM.noMatch('cond');
+      throw new Error('No match found for "when" statement.');
     }
   }.bind(this)())`;
 });

@@ -1,4 +1,4 @@
-import CNS_SYSTEM from './SYSTEM';
+import CNS_ from './SYSTEM';
 
 function prepend(str, withStr) {
   return withStr + '\n' + str;
@@ -20,17 +20,17 @@ export default function finalize(tree) {
   const lib = [...tree.shared.lib];
   const libPieces = [];
   lib.forEach(name => {
-    libPieces.push(`CNS_SYSTEM.${name} = CNS_SYSTEM.${name} || ${stringify(CNS_SYSTEM[name])}`);
+    libPieces.push(`CNS_.${name} = CNS_.${name} || ${stringify(CNS_[name])}`);
   });
   tree.shared.output = prepend(tree.shared.output, libPieces.length ? libPieces.join(';\n') + ';\n' : '\n');
   tree.shared.output = prepend(tree.shared.output, '//**END LIBRARY**//');
   tree.shared.output = prepend(tree.shared.output, `
-    if      (typeof global !== "undefined") { global.CNS_SYSTEM = CNS_SYSTEM }
-    else if (typeof window !== "undefined") { window.CNS_SYSTEM = CNS_SYSTEM }
-    else if (typeof self   !== "undefined") { self.CNS_SYSTEM = CNS_SYSTEM   }
-    else { this.CNS_SYSTEM = CNS_SYSTEM }\n
+    if      (typeof global !== "undefined") { global.CNS_ = CNS_ }
+    else if (typeof window !== "undefined") { window.CNS_ = CNS_ }
+    else if (typeof self   !== "undefined") { self.CNS_ = CNS_   }
+    else { this.CNS_ = CNS_ }\n
   `);
-  tree.shared.output = prepend(tree.shared.output, 'var CNS_SYSTEM = typeof CNS_SYSTEM !== "undefined" ? CNS_SYSTEM : {};');
+  tree.shared.output = prepend(tree.shared.output, 'var CNS_ = typeof CNS_ !== "undefined" ? CNS_ : {};');
   tree.shared.output = tree.shared.output.replace(/(\}|\n)\s*\;\s*$/, '$1');
   return tree;
 }

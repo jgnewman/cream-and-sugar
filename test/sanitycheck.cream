@@ -1,0 +1,134 @@
+
+[1, 2, 3]
+[
+  1, 2, 3
+]
+[
+  1,
+  2,
+  3
+]
+[
+1,
+2,
+3
+]
+[
+
+  1, 2, 3]
+[1, 2, 3
+
+]
+[
+  (foo bar),
+  2 + 2,
+  3,
+  foo.bar,
+  [4, 5, 6],
+  {a: foo, b: bar}
+]
+
+x = foo
+{ x, y } = foo
+[x|y] = foo
+[x||y] = foo
+{ keyx: x, keyy: y } = foo
+[ x, y ] = foo
+
+ATOM
+
+'string'
+"string"
+`string`
+
+/regext/gim
+
+true
+false
+null
+undefined
+
+{{ x, y, z }}
+
+1 >> [2, 3, 4]
+[1, 2, 3] << 4
+
+# This is a comment
+
+foo _
+foo x
+foo x, y
+foo x, bar y
+@foo.bar.baz quux
+
+for x, y in list do x + y
+for x, y in list do x + y onlyif x % 2 == 0
+
+when
+  something -> dosomething _
+  true      -> doesomethingelse _
+
+if x == y then dosomething _
+if x == y then dosomething _ else dosomethingelse _
+
+try
+  something _
+catch err
+  somethingelse err
+
+incase dosomething _ throws err do somethingelse err
+
+caseof foo
+  'hello' -> dosomething _
+  'goodbye' -> somethingelse _
+  default -> thirdthing _
+
+<div className={foo} dataSomething="bar">
+  'hello'
+  <span></span>
+</div>
+
+import x from y
+import { x, y } from z
+import [ x, y ] from z
+import { xkey: x, ykey: y } from z
+import {{ x, y }} from z
+
+export aritize foo, 1
+
+export {
+  foo: foo,
+  bar: bar, # random comment here
+  BAZ: baz
+}
+
+2 + 2
+2 - 2
+2 * 2
+2 / 2
+2 % 2
+
+!foo
+
+foo >>= bar >>= baz x
+
+# Create a function we can use to spin up a new process.
+up _ =>
+
+  # Create and return a new process from a function.
+  spawn fn =>
+
+    # When we receive a message, pattern match it to figure out what to do.
+    receive match
+
+      # If the message is an array beginning with the atom ~factorial, we'll
+      # calculate the factorial of num and send it back marked as ~ok.
+      {{ FACTORIAL, num }} => reply {{ OK, factorial num }}
+
+      # If the message is anything else, send a reply marked as `ERR` and
+      # pass along a reason.
+      _ => reply {{ ERR, 'Unknown command received' }}
+
+    # Define the factorial function so that we can actually calculate them.
+    factorial 0 => 1
+    factorial n => n * factorial n - 1

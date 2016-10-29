@@ -8,11 +8,77 @@
 %%
 
 /* Comments */
-"###"(.|\r|\n)*?"###"                return "NEWLINE";
-// \#.*($|\r\n|\r|\n)                   return "COMMENT"
-\#.*($|\r\n|\r|\n)                   return "NEWLINE";
+((\r\n|\r|\n)+[ \t]*)?\#\#\#(.|\r|\n)*?\#\#\#  %{ this.unput('\n'); %}
 
-\s*(\r\n|\r|\n)+                     return "NEWLINE";
+(\r\n|\r|\n)+[ \t]*\#.*($|\r\n|\r|\n)          %{ this.unput('\n'); %}
+
+\#.*($|\r\n|\r|\n)                   return 'NEWLINE'; /* return NEWLINE for lines that end with comments */
+
+\[\s*                                return "[";
+"]"                                  return "]";
+
+\{\{\s*                              return "{{";
+"}}"                                 return "}}";
+
+\{\s*                                return "{";
+"}"                                  return "}";
+
+">>="                                return ">>=";
+"<<"                                 return "<<";
+">>"                                 return ">>";
+
+\<\/[^\>]+\>                         return "CLOSER";
+\<\/\s*                              return "</";
+\<\s*                                return "<";
+"/>"                                 return "/>";
+">"                                  return ">";
+
+(\r\n|\r|\n)+[ \t]+(\r\n|\r|\n)      %{
+                                       this.unput(yytext.replace(/^(\r\n|\r|\n)+[ \t]+/, ''));
+                                     %}
+
+(\r\n|\r|\n)+[ \t]*                  %{
+                                       // Track a global indent count.
+                                       this.indentCount = this.indentCount || [0];
+                                       this.forceDedent = this.forceDedent || 0;
+
+                                       if (this.forceDedent) {
+                                         this.forceDedent -= 1;
+                                         this.unput(yytext);
+                                         return 'DEDENT';
+                                       }
+
+                                       var indentation = yytext.replace(/^(\r\n|\r|\n)+/, '').length;
+
+                                       // Return an indent when the white space is greater than
+                                       // our current indent count. We also unshift a new indent
+                                       // count on to the indent stack.
+                                       if (indentation > this.indentCount[0]) {
+                                         this.indentCount.unshift(indentation);
+                                         return 'INDENT';
+                                       }
+
+                                       // If and for as long as indentation is less than our
+                                       // current indent count, add a dedent to our dedent
+                                       // stack and shift an indent count off of the
+                                       // indent stack.
+                                       var dedents = [];
+
+                                       while (indentation < this.indentCount[0]) {
+                                         this.indentCount.shift();
+                                         dedents.push('DEDENT');
+                                       }
+
+                                       if (dedents.length) {
+                                         this.forceDedent = dedents.length - 1;
+                                         this.unput(yytext);
+                                         return 'DEDENT';
+                                       }
+
+                                       // If there is no indentation, return a
+                                       // newline.
+                                       return 'NEWLINE';
+                                     %}
 
 \s+                                  /* skip other whitespace */
 
@@ -22,35 +88,37 @@
 "match"                              return "MATCH";
 "end"                                return "END";
 "args"                               return "ARGS";
-"if"                                 return "QUALOPERATOR";
-"unless"                             return "QUALOPERATOR";
+"if"                                 return "IF";
 "incase"                             return "INCASE";
 "throws"                             return "THROWS";
 "else"                               return "ELSE";
-"no"                                 return "NO";
+"do"                                 return "DO";
 "cond"                               return "COND";
 "for"                                return "FOR";
 "in"                                 return "IN";
+"then"                               return "THEN";
 "when"                               return "WHEN";
+"where"                              return "WHERE";
 "try"                                return "TRY";
 "catch"                              return "CATCH";
 "import"                             return "IMPORT";
 "export"                             return "EXPORT";
 "from"                               return "FROM";
+"onlyif"                             return "ONLYIF";
 
-\<\/[^\>]+\>                         return "CLOSER";
-"<"                                  return "<";
-">"                                  return ">";
-"/>"                                 return "/>";
-"</"                                 return "</";
+and|or|lte|gte|lt|gt                 return "LOGIC";
+isnt|is|\=\=|\!\=                    return "LOGIC";
 
-and|or|isnt|is|lte|gte|lt|gt         return "LOGIC";
-dv|rm                                return "LOGIC";
+true|false|null|undefined|NaN        return "SPECIALVAL";
 
-true|false|null|undefined            return "SPECIALVAL";
+(\@)?[a-zA-Z\_\$][a-zA-Z0-9\_\$]*((\s*\.\s*)?[a-zA-Z0-9\_\$]+)*   %{
+                                                                    if (/^[A-Z][A-Z_]+$/.test(yytext)) {
+                                                                      return 'ATOM';
+                                                                    } else {
+                                                                      return 'IDENTIFIER';
+                                                                    }
+                                                                  %}
 
-\~[a-zA-Z\_\$][a-zA-Z0-9\_\$]*       return "ATOM";
-\@?[a-zA-Z\_\$][a-zA-Z0-9\_\$]*      return "IDENTIFIER";
 (\-)?[0-9]+(\.[0-9]+)?(e\-?[0-9]+)?  return "NUMBER";
 \/[^\/\s]+\/[gim]*                   return "REGEXP";
 \"([^\"]|\\[\"])*\"                  return "STRING";       /* " fix syntax highlighting */
@@ -65,18 +133,14 @@ true|false|null|undefined            return "SPECIALVAL";
 "=>"                                 return "=>";
 "="                                  return "=";
 "."                                  return ".";
-"/"                                  return "/";
 "||"                                 return "||";
 
-\+|\-|\*                             return "OPERATOR";
+\+|\-|\*|\/|\%                       return "OPERATOR";
 
 "("                                  return "(";
 ")"                                  return ")";
-"["                                  return "[";
-"]"                                  return "]";
-"{"                                  return "{";
-"}"                                  return "}";
 "|"                                  return "|";
+"!"                                  return "!";
 
 
 <<EOF>>                              return "EOF";
@@ -112,116 +176,49 @@ ProgramBody
   ;
 
 ProgramElement
-  // : Comment
   : SourceElement
   | NewLine
-  | "(" SourceElement ")" { $$ = new WrapNode($2, createSourceLocation(null, @1, @3)); }
+  | Export
   ;
 
 SourceElement
-  : Lookup
+  : Wrap
   | Str
+  | Regexp
   | Atom
   | Special
   | Num
-  | Operation
-  | Logic
-  | Assignment
+  | Lookup
+  | Opposite
   | Cons
   | BackCons
-  | Opposite
+  | Operation
+  | Logic
   | Arr
+  | Tuple
   | Obj
+  | Html
   | Comp
-  | FunctionCall
   | Qualifier
+  | Pipe
+  | Import
+  | Assignment
+  | FunctionCall
   | Cond
   | Caseof
+  | TryCatch
   | Fun
   | Polymorph
-  | TryCatch
-  | Import
-  | Export
-  | Html
-  | Regexp
-  | Pipe
   ;
 
-CommonElement
-  : SourceElement
-  | "(" SourceElement ")" { $$ = new WrapNode($2, createSourceLocation(null, @1, @3)); }
-  ;
-
-Importable
-  : SourceElement
-  | Tuple
-  ;
-
-Import
-  : IMPORT Importable FROM Str
+Wrap
+  : "(" SourceElement ")"
     {
-      $$ = new ImportNode($2, $4, createSourceLocation(null, @1, @4));
+      $$ = new WrapNode($2, createSourceLocation(null, @1, @3));
     }
-  | IMPORT Importable FROM Identifier
+  | "(" SourceElement NewLines ")"
     {
-      $$ = new ImportNode($2, $4, createSourceLocation(null, @1, @4));
-    }
-  | IMPORT Identifier FROM Identifier
-    {
-      $$ = new ImportNode($2, $4, createSourceLocation(null, @1, @4));
-    }
-  | IMPORT Identifier FROM Str
-    {
-      $$ = new ImportNode($2, $4, createSourceLocation(null, @1, @4));
-    }
-  | IMPORT Str
-    {
-      $$ = new ImportNode($2, null, createSourceLocation(null, @1, @2));
-    }
-  | IMPORT Identifier
-    {
-      $$ = new ImportNode($2, null, createSourceLocation(null, @1, @2));
-    }
-  ;
-
-ExportItem
-  : Identifier "/" Num { $$ = { name: $1, arity: $3 }; }
-  | Identifier         { $$ = { name: $1, arity: '*'}; }
-  ;
-
-ExportItems
-  : ExportItems "," ExportItem          { $$ = $1.concat($3); }
-  | ExportItem                          { $$ = [$1]; }
-  | ExportItem "," NewLines ExportItems { $$ = [$1].concat($4) }
-  | ExportItems NewLines                { $$ = $1; }
-  | NewLines ExportItems                { $$ = $2; }
-  ;
-
-Export
-  : EXPORT "{" ExportItems "}"
-    {
-      $$ = new ExportNode($3, false, createSourceLocation(null, @1, @4));
-    }
-  ;
-
-// Export
-//   : EXPORT Tuple
-//     {
-//       $$ = new ExportNode($2, false, createSourceLocation(null, @1, @2));
-//     }
-//   ;
-
-// Comment
-//   : COMMENT
-//     {
-//       $$ = new CommentNode($1, createSourceLocation(null, @1, @1));
-//     }
-//   ;
-
-Regexp
-  : REGEXP
-    {
-      $$ = new RegexpNode($1, createSourceLocation(null, @1, @1));
+      $$ = new WrapNode($2, createSourceLocation(null, @1, @4));
     }
   ;
 
@@ -232,13 +229,6 @@ NewLine
     }
   ;
 
-Identifier
-  : IDENTIFIER
-    {
-      $$ = new IdentifierNode($1, createSourceLocation(null, @1, @1));
-    }
-  ;
-
 Str
   : STRING
     {
@@ -246,10 +236,24 @@ Str
     }
   ;
 
+Regexp
+  : REGEXP
+    {
+      $$ = new RegexpNode($1, createSourceLocation(null, @1, @1));
+    }
+  ;
+
 Atom
   : ATOM
     {
-      $$ = new AtomNode($1.slice(1), createSourceLocation(null, @1, @1));
+      $$ = new AtomNode($1, createSourceLocation(null, @1, @1));
+    }
+  ;
+
+Identifier
+  : IDENTIFIER
+    {
+      $$ = new IdentifierNode($1, createSourceLocation(null, @1, @1));
     }
   ;
 
@@ -268,15 +272,11 @@ Num
   ;
 
 Lookup
-  : Lookup "." Identifier
+  : Lookup "." SourceElement
     {
       $$ = new LookupNode($1, $3, createSourceLocation(null, @1, @3));
     }
-  | CommonElement "." Identifier
-    {
-      $$ = new LookupNode($1, $3, createSourceLocation(null, @1, @3));
-    }
-  | SourceElement "." Identifier
+  | SourceElement "." SourceElement
     {
       $$ = new LookupNode($1, $3, createSourceLocation(null, @1, @3));
     }
@@ -286,112 +286,191 @@ Lookup
     }
   ;
 
-Operation
-  : CommonElement OPERATOR CommonElement
+Opposite
+  : "!" SourceElement
     {
-      $$ = new OperationNode($2, $1, $3, createSourceLocation(null, @1, @3));
-    }
-  | SourceElement OPERATOR SourceElement
-    {
-      $$ = new OperationNode($2, $1, $3, createSourceLocation(null, @1, @3));
-    }
-  | SourceElement OPERATOR CommonElement
-    {
-      $$ = new OperationNode($2, $1, $3, createSourceLocation(null, @1, @3));
-    }
-  | CommonElement OPERATOR SourceElement
-    {
-      $$ = new OperationNode($2, $1, $3, createSourceLocation(null, @1, @3));
+      $$ = new OppositeNode($2, createSourceLocation(null, @1, @2));
     }
   ;
 
-Pipe
-  : CommonElement "::" CommonElement
+Cons
+  : SourceElement ">>" SourceElement
     {
-      $$ = new PipeNode($1, [$3], createSourceLocation(null, @1, @3));
+      $$ = new ConsNode($1, $3, createSourceLocation(null, @1, @3));
     }
-  | Pipe "::" CommonElement
+  ;
+
+BackCons
+  : SourceElement "<<" SourceElement
     {
-      $1.chain = [$3].concat($1.chain);
-      $$ = $1;
+      $$ = new BackConsNode($3, $1, createSourceLocation(null, @1, @3));
     }
-  | SourceElement "::" CommonElement
+  ;
+
+Operation
+  : SourceElement OPERATOR SourceElement
     {
-      $$ = new PipeNode($1, [$3], createSourceLocation(null, @1, @3));
-    }
-  | Pipe "::" SourceElement
-    {
-      $1.chain = [$3].concat($1.chain);
-      $$ = $1;
+      $$ = new OperationNode($2, $1, $3, createSourceLocation(null, @1, @3));
     }
   ;
 
 Logic
-  : CommonElement LOGIC CommonElement
+  : SourceElement LOGIC SourceElement
     {
       $$ = new LogicNode($2, $1, $3, createSourceLocation(null, @1, @3));
     }
-  | SourceElement LOGIC SourceElement
+  ;
+
+ListSeparator
+  : "," NewLine INDENT
+  | "," NewLine
+  | "," INDENT
+  | ","
+  ;
+
+ListItems
+  : ListItems ListSeparator SourceElement
     {
-      $$ = new LogicNode($2, $1, $3, createSourceLocation(null, @1, @3));
+      $$ = $1.concat($3);
     }
-  | SourceElement LOGIC CommonElement
+  | ListItems NewLine
     {
-      $$ = new LogicNode($2, $1, $3, createSourceLocation(null, @1, @3));
+      $$ = $1;
     }
-  | CommonElement LOGIC SourceElement
+  | ListItems DEDENT
     {
-      $$ = new LogicNode($2, $1, $3, createSourceLocation(null, @1, @3));
+      $$ = $1;
+    }
+  | SourceElement
+    {
+      $$ = [$1];
+    }
+  | /* empty */
+    {
+      $$ = [];
+    }
+  ;
+
+Arr
+  : "[" ListItems "]"
+    {
+      $$ = new ArrNode($2, createSourceLocation(null, @1, @3));
     }
   ;
 
 Tuple
-  : "{" ListItems "}"
+  : "{{" ListItems "}}"
     {
       $$ = new TupleNode($2, createSourceLocation(null, @1, @3));
     }
-  | "{" ListSet "}"
+  ;
+
+KVPair
+  : SourceElement ":" SourceElement
     {
-      $$ = new TupleNode($2, createSourceLocation(null, @1, @3));
-    }
-  | "{" ListSet NewLines "}"
-    {
-      $$ = new TupleNode($2, createSourceLocation(null, @1, @4));
+      $$ = {
+        left: $1,
+        right: $3
+      };
     }
   ;
 
-// BEGIN HTML STUFF
-
-Attributes
-  : AttrItems          { $$ = $1; }
-  | NewLines AttrItems { $$ = $2; }
-  | AttrItems NewLines { $$ = $1; }
+KVPairs
+  : KVPairs ListSeparator KVPair
+    {
+      $$ = $1.concat($3);
+    }
+  | KVPairs NewLine
+    {
+      $$ = $1;
+    }
+  | KVPairs DEDENT
+    {
+      $$ = $1;
+    }
+  | KVPair
+    {
+      $$ = [$1];
+    }
+  | /* empty */
+    {
+      $$ = [];
+    }
   ;
 
-AttrItems
-  : Attribute AttrItems          { $$ = [$1].concat($2); }
-  | Attribute NewLines AttrItems { $$ = [$1].concat($3); }
-  | Attribute                    { $$ = [$1]; }
-  | /* empty */                  { $$ = []; }
+Obj
+  : "{" KVPairs "}"
+    {
+      $$ = new ObjNode($2, createSourceLocation(null, @1, @3));
+    }
   ;
 
 Attribute
-  : Identifier "=" Str   { $$ = [$1, $3] }
-  | Identifier "=" Tuple { $$ = [$1, $3] }
+  : Identifier "=" Str
+    {
+      $$ = [$1, $3];
+    }
+  | Identifier "=" "{" SourceElement "}"
+    {
+      $$ = [$1, new TupleNode([$4], createSourceLocation(null, @3, @5))];
+    }
   ;
 
-HtmlSet
-  : HtmlItems          { $$ = $1; }
-  | NewLines HtmlItems { $$ = $2; }
-  | HtmlItems NewLines { $$ = $1; }
+AttrSeparator
+  : NewLine INDENT
+  | NewLine
+  | INDENT
+  | /* empty */ {}
+  ;
+
+Attributes
+  : Attributes AttrSeparator Attribute
+    {
+      $$ = $1.concat([$3]);
+    }
+  | Attributes NewLine
+    {
+      $$ = $1;
+    }
+  | Attributes DEDENT
+    {
+      $$ = $1;
+    }
+  | Attribute
+    {
+      $$ = [$1];
+    }
+  | /* empty */
+    {
+      $$ = [];
+    }
   ;
 
 HtmlItems
-  : CommonElement HtmlItems          { $$ = [$1].concat($2); }
-  | CommonElement NewLines HtmlItems { $$ = [$1].concat($3); }
-  | CommonElement                    { $$ = [$1]; }
-  | CommonElement NewLines           { $$ = [$1]; }
-  | /* empty */                      { $$ = []; }
+  : HtmlItems SourceElement
+    {
+      $$ = $1.concat($2);
+    }
+  | HtmlItems NewLine
+    {
+      $$ = $1;
+    }
+  | HtmlItems DEDENT
+    {
+      $$ = $1;
+    }
+  | INDENT
+    {
+      $$ = [];
+    }
+  | SourceElement
+    {
+      $$ = [$1];
+    }
+  | /* empty */
+    {
+      $$ = [];
+    }
   ;
 
 Html
@@ -407,7 +486,7 @@ Html
     {
       $$ = new HtmlNode(false, $2, [], [], $4, createSourceLocation(null, @1, @4));
     }
-  | "<" Identifier ">" HtmlSet CLOSER
+  | "<" Identifier ">" HtmlItems CLOSER
     {
       $$ = new HtmlNode(false, $2, [], $4, $5, createSourceLocation(null, @1, @5));
     }
@@ -415,327 +494,361 @@ Html
     {
       $$ = new HtmlNode(false, $2, $3, [], $5, createSourceLocation(null, @1, @5));
     }
-  | "<" Identifier Attributes ">" HtmlSet CLOSER
+  | "<" Identifier Attributes ">" HtmlItems CLOSER
     {
       $$ = new HtmlNode(false, $2, $3, $5, $6, createSourceLocation(null, @1, @6));
     }
   ;
 
-// END HTML STUFF
-
-Assignment
-  : Identifier "=" CommonElement
-    {
-      $$ = new AssignmentNode($1, $3, createSourceLocation(null, @1, @3));
-    }
-  | Tuple "=" CommonElement
-    {
-      $$ = new AssignmentNode($1, $3, createSourceLocation(null, @1, @3));
-    }
-  | Cons "=" CommonElement
-    {
-      $$ = new AssignmentNode($1, $3, createSourceLocation(null, @1, @3));
-    }
-  | BackCons "=" CommonElement
-    {
-      $$ = new AssignmentNode($1, $3, createSourceLocation(null, @1, @3));
-    }
-  ;
-
-Cons
-  : "[" CommonElement "|" CommonElement "]"
-    {
-      $$ = new ConsNode($2, $4, createSourceLocation(null, @1, @5));
-    }
-  ;
-
-BackCons
-  : "[" CommonElement "||" CommonElement "]"
-    {
-      $$ = new BackConsNode($4, $2, createSourceLocation(null, @1, @5));
-    }
-  ;
-
-Opposite
-  : NO CommonElement
-    {
-      $$ = new OppositeNode($2, createSourceLocation(null, @1, @2));
-    }
-  ;
-
-NewLines
-  : NewLine NewLines { /* empty */ }
-  | NewLine          { /* empty */ }
-  | /* empty */      { /* empty */ }
-  ;
-
-ListSet
-  : ListItems          { $$ = $1; }
-  | NewLines ListItems { $$ = $2; }
-  | ListItems NewLines { $$ = $1; }
-  ;
-
-ListItems
-  : CommonElement "," ListItems          { $$ = [$1].concat($3); }
-  | CommonElement "," NewLines ListItems { $$ = [$1].concat($4); }
-  | CommonElement                        { $$ = [$1]; }
-  | /* empty */                          { $$ = []; }
-  ;
-
-List
-  : ListItems
-    {
-      $$ = new ListNode($1, false, createSourceLocation(null, @1, @1));
-    }
-  | "(" ListItems ")"
-    {
-      $$ = new ListNode($2, true, createSourceLocation(null, @1, @3));
-    }
-  | "(" ListSet ")"
-    {
-      $$ = new ListNode($2, true, createSourceLocation(null, @1, @3));
-    }
-  | "(" ListSet NewLines ")"
-    {
-      $$ = new ListNode($2, true, createSourceLocation(null, @1, @4));
-    }
-  ;
-
-Arr
-  : "[" ListSet "]"
-    {
-      $$ = new ArrNode($2, createSourceLocation(null, @1, @3));
-    }
-  | "[" ListSet NewLines "]"
-    {
-      $$ = new ArrNode($2, createSourceLocation(null, @1, @4));
-    }
-  ;
-
-KeyVal
-  : Identifier ":" CommonElement { $$ = {left: $1, right: $3}; }
-  | Str ":" CommonElement { $$ = {left: $1, right: $3}; }
-  | Num ":" CommonElement { $$ = {left: $1, right: $3}; }
-  | Atom ":" CommonElement { $$ = {left: $1, right: $3}; }
-  ;
-
-ObjPair
-  : KeyVal     { $$ = $1; }
-  | KeyVal "," { $$ = $1; }
-  ;
-
-ObjPairs
-  : ObjPair ObjPairs          { $$ = [$1].concat($2); }
-  | ObjPair NewLines ObjPairs { $$ = [$1].concat($3); }
-  | ObjPair                   { $$ = [$1]; }
-  | ObjPair NewLines          { $$ = [$1]; }
-  ;
-
-ObjSet
-  : ObjPairs          { $$ = $1; }
-  | NewLines ObjPairs { $$ = $2; }
-  | ObjPairs NewLines { $$ = $1; }
-  ;
-
-Obj
-  : "{" "}"
-    {
-      $$ = new ObjNode([], createSourceLocation(null, @1, @2));
-    }
-  | "{" ObjSet "}"
-    {
-      $$ = new ObjNode($2, createSourceLocation(null, @1, @3));
-    }
-  ;
-
-FunctionCall
-  : Lookup "(" SourceElement ")"
-    {
-      $$ = new FunctionCallNode($1, {items:[$3]}, createSourceLocation(null, @1, @4));
-    }
-  | Lookup "(" ")"
-    {
-      $$ = new FunctionCallNode($1, {items:[]}, createSourceLocation(null, @1, @3));
-    }
-  | Lookup List
-    {
-      $$ = new FunctionCallNode($1, $2, createSourceLocation(null, @1, @2));
-    }
-  ;
-
 Comp
-  : FunctionCall FOR List IN CommonElement
+  : FOR ListItems IN SourceElement DO SourceElement
     {
-      $$ = new CompNode($1, $3, $5, null, createSourceLocation(null, @1, @5));
+      $$ = new CompNode($6, $2, $4, null, createSourceLocation(null, @1, @6));
     }
-  | Operation FOR List IN CommonElement
+  | FOR ListItems IN SourceElement DO SourceElement ONLYIF SourceElement
     {
-      $$ = new CompNode($1, $3, $5, null, createSourceLocation(null, @1, @5));
-    }
-  | FunctionCall FOR List IN CommonElement WHEN CommonElement
-    {
-      $$ = new CompNode($1, $3, $5, $7, createSourceLocation(null, @1, @7));
-    }
-  | Operation FOR List IN CommonElement WHEN CommonElement
-    {
-      $$ = new CompNode($1, $3, $5, $7, createSourceLocation(null, @1, @7));
+      $$ = new CompNode($6, $2, $4, $8, createSourceLocation(null, @1, @8));
     }
   ;
 
 Qualifier
-  : FunctionCall QUALOPERATOR CommonElement
+  : IF SourceElement THEN SourceElement
     {
-      $$ = new QualifierNode($1, $3, null, $2, createSourceLocation(null, @1, @3));
+      $$ = new QualifierNode($4, $2, null, "if", createSourceLocation(null, @1, @4));
     }
-  | Operation QUALOPERATOR CommonElement
+  | IF SourceElement THEN SourceElement ELSE SourceElement
     {
-      $$ = new QualifierNode($1, $3, null, $2, createSourceLocation(null, @1, @3));
-    }
-  | FunctionCall QUALOPERATOR CommonElement ELSE CommonElement
-    {
-      $$ = new QualifierNode($1, $3, $5, $2, createSourceLocation(null, @1, @5));
-    }
-  | Operation QUALOPERATOR CommonElement ELSE CommonElement
-    {
-      $$ = new QualifierNode($1, $3, $5, $2, createSourceLocation(null, @1, @5));
+      $$ = new QualifierNode($4, $2, $6, "if", createSourceLocation(null, @1, @6));
     }
   ;
 
-Conditional
-  : CommonElement "->" CommonElement     { $$ = {test: $1, body: [$3]}; }
-  | CommonElement "->" CommonElement END { $$ = {test: $1, body: [$3]}; }
-  | CommonElement "->" ProgramBody END   { $$ = {test: $1, body: $3}; }
+Pipe
+  : Pipe ">>=" SourceElement
+    {
+      $1.chain = [$3].concat($1.chain);
+      $$ = $1;
+    }
+  | SourceElement ">>=" SourceElement
+    {
+      $$ = new PipeNode($1, [$3], createSourceLocation(null, @1, @3));
+    }
   ;
 
-Conditionals
-  : Conditional Conditionals          { $$ = [$1].concat($2); }
-  | Conditional NewLines Conditionals { $$ = [$1].concat($3); }
-  | Conditional                       { $$ = [$1]; }
-  | Conditional NewLines              { $$ = [$1]; }
+Export
+  : EXPORT SourceElement
+    {
+      $$ = new ExportNode($2, false, createSourceLocation(null, @1, @2));
+    }
   ;
 
-ConditionalSet
-  : Conditionals          { $$ = $1; }
-  | NewLines Conditionals { $$ = $2; }
-  | Conditionals NewLines { $$ = $1; }
+Destr
+  : Lookup
+    {
+      $$ = new DestructureNode($1, 'Lookup', createSourceLocation(null, @1, @1));
+    }
+  | Str
+    {
+      $$ = new DestructureNode($1, 'String', createSourceLocation(null, @1, @1));
+    }
+  | Arr
+    {
+      $$ = new DestructureNode($1, 'Array', createSourceLocation(null, @1, @1));
+    }
+  | Obj
+    {
+      $$ = new DestructureNode($1, 'Object', createSourceLocation(null, @1, @1));
+    }
+  | "{" ListItems "}"
+    {
+      $$ = new DestructureNode($2, 'Keys', createSourceLocation(null, @1, @1));
+    }
+  | Tuple
+    {
+      $$ = new DestructureNode($1, 'Tuple', createSourceLocation(null, @1, @1));
+    }
+  | "[" Identifier "|" Identifier "]"
+    {
+      $$ = new DestructureNode([$2, $4], 'HeadTail', createSourceLocation(null, @1, @5));
+    }
+  | "[" Identifier "||" Identifier "]"
+    {
+      $$ = new DestructureNode([$2, $4], 'LeadLast', createSourceLocation(null, @1, @5));
+    }
+  ;
+
+Import
+  : IMPORT Destr
+    {
+      $$ = new ImportNode($2, null, createSourceLocation(null, @1, @2));
+    }
+  | IMPORT Destr FROM SourceElement
+    {
+      $$ = new ImportNode($2, $4, createSourceLocation(null, @1, @4));
+    }
+  ;
+
+NewLines
+  : NewLines NewLine
+  | NewLine
+  | /* empty */ {}
+  ;
+
+Assignable
+  : SourceElement
+    {
+      $$ = $1;
+    }
+  | NewLines INDENT SourceElement DEDENT
+    {
+      $$ = $3;
+    }
+  ;
+
+Assignment
+  : SourceElement "=" Assignable
+    {
+      $$ = new AssignmentNode($1, $3, createSourceLocation(null, @1, @3));
+    }
+  | "{" ListItems "}" "=" Assignable
+    {
+      $$ = new AssignmentNode({
+        type: 'Keys',
+        items: $2
+      }, $5, createSourceLocation(null, @1, @5));
+    }
+  | "[" Identifier "|" Identifier "]" "=" Assignable
+    {
+      $$ = new AssignmentNode({
+        type: 'HeadTail',
+        items: [$2, $4]
+      }, $7, createSourceLocation(null, @1, @7));
+    }
+  | "[" Identifier "||" Identifier "]" "=" Assignable
+    {
+      $$ = new AssignmentNode({
+        type: 'LeadLast',
+        items: [$2, $4]
+      }, $7, createSourceLocation(null, @1, @7));
+    }
+  ;
+
+ArgSeparator
+  : "," NewLine
+  | ","
+  ;
+
+Args
+  : Args ArgSeparator SourceElement
+    {
+      $$ = $1.concat($3);
+    }
+  | Args NewLine
+    {
+      $$ = $1;
+    }
+  | SourceElement
+    {
+      $$ = [$1];
+    }
+  ;
+
+LineArg
+ : SourceElement
+ | "{" ListItems "}"
+   {
+     $$ = new DestructureNode($2, 'Keys', createSourceLocation(null, @1, @1));
+   }
+ | "[" Identifier "|" Identifier "]"
+   {
+     $$ = new DestructureNode([$2, $4], 'HeadTail', createSourceLocation(null, @1, @5));
+   }
+ | "[" Identifier "||" Identifier "]"
+   {
+     $$ = new DestructureNode([$2, $4], 'LeadLast', createSourceLocation(null, @1, @5));
+   }
+ ;
+
+LineArgs
+  : LineArgs "," LineArg
+    {
+      $$ = $1.concat($3);
+    }
+  | LineArg
+    {
+      $$ = [$1];
+    }
+  ;
+
+FunctionCall
+  : Lookup LineArgs
+    {
+      $$ = new FunctionCallNode($1, {items:$2}, createSourceLocation(null, @1, @2));
+    }
+  ;
+
+Block
+  : Block NewLine SourceElement
+    {
+      $$ = $1.concat($3);
+    }
+  | Block NewLine
+    {
+      $$ = $1;
+    }
+  | NewLine
+    {
+      $$ = [];
+    }
+  | SourceElement
+    {
+      $$ = [$1];
+    }
+  ;
+
+Condition
+  : SourceElement "->" SourceElement
+    {
+      $$ = { test: $1, body: [$3] };
+    }
+  | SourceElement NewLines INDENT Block DEDENT
+    {
+      $$ = { test: $1, body: $4 };
+    }
+  ;
+
+Conditions
+  : Conditions Condition
+    {
+      $$ = $1.concat($2);
+    }
+  | Conditions NewLine
+    {
+      $$ = $1;
+    }
+  | Condition
+    {
+      $$ = [$1];
+    }
   ;
 
 Cond
-  : COND ConditionalSet END
+  : WHEN INDENT Conditions DEDENT
     {
-      $$ = new CondNode($2, createSourceLocation(null, @1, @3));
+      $$ = new CondNode($3, createSourceLocation(null, @1, @4));
     }
   ;
 
 Caseof
-  : CASEOF CommonElement ":" ConditionalSet END
+  : CASEOF SourceElement INDENT Conditions DEDENT
     {
       $$ = new CaseofNode($2, $4, createSourceLocation(null, @1, @5));
     }
   ;
 
-Arrow
-  : "->"
-  | "=>"
-  ;
-
-FnBody
-  : CommonElement     { $$ = [$1]; }
-  | CommonElement END { $$ = [$1]; }
-  | ProgramBody END   { $$ = $1; }
-  ;
-
-Fun
-  : FunctionCall Arrow FnBody
+Catch
+  : NewLines CATCH
     {
-      $$ = new FunNode($1, $3, $2 !==  '->', null, createSourceLocation(null, @1, @3));
+      $$ = $2;
     }
-  | FN List Arrow FnBody
-    {
-      $$ = new FunNode($2, $4, $3 !==  '->', null, createSourceLocation(null, @1, @4));
-    }
-  ;
-
-Match
-  : List Arrow FnBody
-    {
-      $$ = new FunNode($1, $3, $2 !==  '->', null, createSourceLocation(null, @1, @3));
-    }
-  | List WHEN CommonElement Arrow FnBody
-    {
-      $$ = new FunNode($1, $5, $4 !==  '->', $3, createSourceLocation(null, @1, @5));
-    }
-  ;
-
-Matches
-  : Match Matches          { $$ = [$1].concat($2); }
-  | Match NewLines Matches { $$ = [$1].concat($3); }
-  | Match                  { $$ = [$1]; }
-  | Match NewLines         { $$ = [$1]; }
-  ;
-
-MatchSet
-  : Matches          { $$ = $1; }
-  | NewLines Matches { $$ = $2; }
-  | Matches NewLines { $$ = $1; }
-  ;
-
-PolyFn
-  :  FunctionCall Arrow FnBody
-    {
-      $$ = new FunNode($1, $3, $2 !==  '->', null, createSourceLocation(null, @1, @3));
-    }
-  | FunctionCall WHEN CommonElement Arrow FnBody
-    {
-      $$ = new FunNode($1, $5, $4 !==  '->', $3, createSourceLocation(null, @1, @5));
-    }
-  | FN List Arrow FnBody
-    {
-      $$ = new FunNode($2, $4, $3 !==  '->', null, createSourceLocation(null, @1, @4));
-    }
-  ;
-
-PolyFns
-  : PolyFn PolyFns          { $$ = [$1].concat($2); }
-  | PolyFn NewLines PolyFns { $$ = [$1].concat($3); }
-  | PolyFn                  { $$ = [$1]; }
-  | PolyFn NewLines         { $$ = [$1]; }
-  ;
-
-FunctionSet
-  : PolyFns          { $$ = $1; }
-  | NewLines PolyFns { $$ = $2; }
-  | PolyFns NewLines { $$ = $1; }
-  ;
-
-Polymorph
-  : DEF FunctionSet END
-    {
-      $$ = new PolymorphNode($2, true, createSourceLocation(null, @1, @3));
-    }
-  | MATCH MatchSet END
-    {
-      $$ = new PolymorphNode($2, false, createSourceLocation(null, @1, @3));
-    }
-  ;
-
-BlockBody
-  : CommonElement { $$ = [$1]; }
-  | ProgramBody   { $$ = $1; }
   ;
 
 TryCatch
-  : TRY BlockBody CATCH Identifier ":" BlockBody END
+  : TRY INDENT Block DEDENT Catch Identifier INDENT Block DEDENT
     {
-      $$ = new TryCatchNode($2, $4, $6, createSourceLocation(null, @1, @7));
+      $$ = new TryCatchNode($3, $6, $8, createSourceLocation(null, @1, @9));
     }
-  | FunctionCall INCASE CommonElement THROWS Identifier
+  | INCASE SourceElement THROWS Identifier DO SourceElement
     {
-      $$ = new TryCatchNode([$3], $5, [$1], createSourceLocation(null, @1, @5));
+      $$ = new TryCatchNode([$2], $4, [$6], createSourceLocation(null, @1, @6));
     }
-  | Operation INCASE CommonElement THROWS Identifier
+  ;
+
+Rocket
+  : "=>"
     {
-      $$ = new TryCatchNode([$3], $5, [$1], createSourceLocation(null, @1, @5));
+      $$ = false;
+    }
+  | "::" "=>"
+    {
+      $$ = true;
+    }
+  ;
+
+FnBody
+  : SourceElement
+    {
+      $$ = [$1];
+    }
+  | INDENT Block DEDENT
+    {
+      $$ = $2;
+    }
+  ;
+
+Params
+  : "(" LineArgs ")"
+    {
+      $$ = $2;
+    }
+  | LineArgs
+    {
+      $$ = $1;
+    }
+  | INDENT Args DEDENT
+    {
+      $$ = $2;
+    }
+  ;
+
+Fun
+  : FunctionCall Rocket FnBody
+    {
+      $$ = new FunNode($1, $3, $2, null, createSourceLocation(null, @1, @3));
+    }
+  | FunctionCall WHERE SourceElement Rocket FnBody
+    {
+      $$ = new FunNode($1, $5, $4, $3, createSourceLocation(null, @1, @5));
+    }
+  | FN Params Rocket FnBody
+    {
+      $$ = new FunNode($2, $4, $3, null, createSourceLocation(null, @1, @4));
+    }
+  | FN Rocket FnBody
+    {
+      $$ = new FunNode([], $3, $2, null, createSourceLocation(null, @1, @3));
+    }
+  ;
+
+MatchFn
+  : Params Rocket FnBody
+    {
+      $$ = new FunNode($1, $3, $2, null, createSourceLocation(null, @1, @3));
+    }
+  | Params WHERE SourceElement Rocket FnBody
+    {
+      $$ = new FunNode($1, $5, $4, $3, createSourceLocation(null, @1, @5));
+    }
+  ;
+
+MatchFns
+  : MatchFns NewLines MatchFn
+    {
+      $$ = $1.concat($3);
+    }
+  | MatchFn
+    {
+      $$ = [$1];
+    }
+  | NewLine
+    {
+      $$ = [];
+    }
+  ;
+
+Polymorph
+  : MATCH INDENT MatchFns DEDENT
+    {
+      $$ = new PolymorphNode($3, false, createSourceLocation(null, @1, @4));
     }
   ;
 
@@ -818,7 +931,7 @@ function StringNode(text, loc) {
 }
 
 function AtomNode(text, loc) {
-  this.src = '~' + text;
+  this.src = text;
   this.type = 'Atom';
   this.text = text;
   this.loc = loc;
@@ -850,7 +963,7 @@ function LookupNode(left, right, loc) {
 }
 
 function TupleNode(body, loc) {
-  this.src = "{" + body.map(function (item) { return item.src; }).join(', ') + "}";
+  this.src = "{{" + body.map(function (item) { return item.src; }).join(', ') + "}}";
   this.type = 'Tuple';
   this.length = body.length;
   this.items = body;
@@ -1052,6 +1165,20 @@ function WrapNode(item, loc) {
   this.shared = shared;
 }
 
+function DestructureNode(item, destrType, loc) {
+  this.type = 'Destructure';
+  this.destrType = destrType;
+  this.toDestructure = item;
+  this.loc = loc;
+  this.shared = shared;
+}
+
+function Functionizer (node) {
+  this.node = node;
+  this.shared = node.shared;
+  this.loc = node.loc;
+}
+
 /* Expose the Node Constructors */
 var n = parser.nodes = {};
 
@@ -1089,3 +1216,5 @@ n.ExportNode = ExportNode;
 n.HtmlNode = HtmlNode;
 n.PipeNode = PipeNode;
 n.WrapNode = WrapNode;
+n.DestructureNode = DestructureNode;
+n.Functionizer = Functionizer;

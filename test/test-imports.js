@@ -8,56 +8,54 @@ describe('Imports', () => {
   it('should import a module with no assignment', () => {
     const toCompile = `import './myfile'`;
     const expected = nlToSpace(`require('./myfile')`);
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+    assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
   it('should import a single item from a module', () => {
     const toCompile = `import a from './myfile'`;
     const expected = nlToSpace(`const a = require('./myfile')`);
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+    assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
   it('should import multiple items from a module', () => {
     const toCompile = `import { a, b, c } from './myfile'`;
     const expected = nlToSpace(`
-      var __ref0__ = require('./myfile');
-      const a = __ref0__.a;
-      const b = __ref0__.b;
-      const c = __ref0__.c
+      var ref0_ = require('./myfile');
+      const a = ref0_.a;
+      const b = ref0_.b;
+      const c = ref0_.c
     `);
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+    assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
   it('should handle various imports using strings, identifiers, and tuples', () => {
-    const toCompile = `
-      import x from y
-      import x from 'y'
-      import { x } from y
-      import { x } from 'y'
-      import { a, b, c } from y
-      import { a, b, c } from 'y'
-      import y
-      import 'y'
-    `;
+    const toCompile = 'import x from y\n'
+                    + 'import x from "y"\n'
+                    + 'import { x } from y\n'
+                    + 'import { x } from "y"\n'
+                    + 'import { a, b, c } from y\n'
+                    + 'import { a, b, c } from "y"\n'
+                    + 'import y\n'
+                    + 'import "y"\n';
     const expected = nlToSpace(`
       const x = require(y);
-      const x = require('y');
-      var __ref0__ = require(y);
-      const x = __ref0__.x;
-      var __ref1__ = require('y');
-      const x = __ref1__.x;
-      var __ref2__ = require(y);
-      const a = __ref2__.a;
-      const b = __ref2__.b;
-      const c = __ref2__.c;
-      var __ref3__ = require('y');
-      const a = __ref3__.a;
-      const b = __ref3__.b;
-      const c = __ref3__.c;
+      const x = require("y");
+      var ref0_ = require(y);
+      const x = ref0_.x;
+      var ref1_ = require("y");
+      const x = ref1_.x;
+      var ref2_ = require(y);
+      const a = ref2_.a;
+      const b = ref2_.b;
+      const c = ref2_.c;
+      var ref3_ = require("y");
+      const a = ref3_.a;
+      const b = ref3_.b;
+      const c = ref3_.c;
       require(y);
-      require('y');
+      require("y");
     `);
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+    assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
 });

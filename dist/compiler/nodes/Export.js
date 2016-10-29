@@ -11,17 +11,14 @@ var _utils = require('../utils');
 
   // Traditional Export
   // Experimenting with this to see if it helps us import modules in separate threads.
-  // You can only export a tuple. No `as`.
-  // You can not do a `default` export.
+  // Options:
+  //
+  //   export {{ factorial, schmactorial }}
+  //   export { factorial: factorial, schmactorial: schmactorial }
+  //   export [ factorial, schmactorial ]
+  //   export {{ factorial, schmactorial }} >>= nameFilter >>= toObject
+
+  var toExport = this.toExport.compile(true);
   this.shared.lib.add('exp');
-  this.shared.lib.add('aritize');
-  return '' + this.toExport.map(function (item) {
-    var compiled = item.name.compile(true);
-    if (item.arity === '*') {
-      return 'CNS_SYSTEM.exp("' + compiled + '", ' + compiled + ')';
-    } else {
-      var aritize = 'CNS_SYSTEM.aritize(' + compiled + ', ' + item.arity.compile(true) + ')';
-      return 'CNS_SYSTEM.exp("' + compiled + '", ' + aritize + ')';
-    }
-  }).join(';\n');
+  return 'CNS_.exp(' + toExport + ')';
 });

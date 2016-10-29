@@ -1,114 +1,124 @@
-const CNS_SYSTEM = {
+const CNS_ = {
 
-  // CNS_SYSTEM.qualify(x === 4, function () { return doSomething() })
+  tuple: function (arr) {
+    if (!arr.length) throw new Error('Tuples can not be empty.');
+    Object.defineProperty
+      ? Object.defineProperty(arr, 'CNS_isTuple_', {enumerable: false, configurable: false, writable: false, value: CNS_})
+      : (arr.CNS_isTuple_ = CNS_);
+    return arr;
+  },
+
+  // CNS_.qualify(x === 4, function () { return doSomething() })
   qualify: function (condition, callback, elseCase) {
     return condition ? callback() : elseCase ? elseCase() : undefined;
   },
 
-  // CNS_SYSTEM.noMatch('cond')
-  noMatch: function (type) {
-    throw new Error('No match found for ' + type + ' statement.');
-  },
-
-  // CNS_SYSTEM.eql([1, 2, 3], [1, 2, 3]) -> true
+  // CNS_.eql([1, 2, 3], [1, 2, 3]) -> true
   eql: function (a, b) {
-    if (a === CNS_SYSTEM || b === CNS_SYSTEM) return true; // <- Hack to force a match
+    if (a === CNS_ || b === CNS_) return true; // <- Hack to force a match
     if (a === b || (typeof a === 'number' && typeof b === 'number' && isNaN(a) && isNaN(b))) return true;
     if (typeof a !== typeof b) return false;
     if (typeof a === 'object') {
       if (Array.isArray(a)) return a.every(function(item, index) { return this.eql(item, b[index]) }.bind(this));
       const ks = Object.keys, ak = ks(a), bk = ks(b);
-      if (!this.eql(ak, bk)) return false;
+      if (!CNS_.eql(ak, bk)) return false;
       return ak.every(function (key) { return this.eql(a[key], b[key]) }.bind(this));
     }
     return false;
   },
 
-  // CNS_SYSTEM.pipe(value).to(fnName, addtlArg).to(fnName, addtlArg)()
-  pipe: function (val) {
-    const layers = [], to = function (name) {
-      const args = Array.prototype.slice.call(arguments, 1), exec = function () {
-        var ctxt = val;
-        layers.forEach(function (layer) { ctxt = layer[0].apply(ctxt, layer[1]) });
-        return ctxt;
-      };
-      layers.push([name, args]) && (exec.to = to);
-      return exec;
-    };
-    return to.to = to;
-  },
-
-  // CNS_SYSTEM.match(args, [['Identifier', 'x']])
+  // CNS_.match(args, [['Identifier', 'x']])
   match: function (args, pattern) {
-    return args.every(function (arg, index) {
-      if (!pattern[index]) return false;
-      var matchType = pattern[index][0];
-      var matchVal  = pattern[index][1];
-      switch (matchType) {
-        case 'Identifier': return true;
-        case 'Atom': return Symbol.for(matchVal.slice(1)) === arg;
-        case 'Number': return typeof arg === 'number' && arg === parseFloat(matchVal);
-        case 'String': return arg === matchVal;
-        case 'Cons': case 'BackCons': return Array.isArray(arg);
-        case 'Arr':
-          if (Array.isArray(arg)) {
-            const eqlTestStr = matchVal.replace(/^\[|\s+|\]$/g, '');
-            const eqlTest = !eqlTestStr.length ? [] : eqlTestStr.split(',').map(function (each) {
-              if (each === 'null') return null;
-              if (each === 'undefined') return undefined;
-              if (each === 'NaN') return NaN;
-              if (each === 'true') return true;
-              if (each === 'false') return false;
-              if (each[0] === '~') return Symbol.for(each.slice(1));
-              return /^[\$_A-z][\$_A-z0-9]*$/.test(each) ? CNS_SYSTEM : JSON.parse(each);
-            });
-            return this.eql(arg, eqlTest);
-          }
-          return false;
-        case 'Special':
-          if ((matchVal === 'null' && arg === null) ||
-              (matchVal === 'undefined' && arg === undefined) ||
-              (matchVal === 'true' && arg === true) ||
-              (matchVal === 'false' && arg === false) ||
-              (matchVal === 'NaN') && isNaN(arg)) return true;
-          return false;
-        case 'Tuple': throw new Error("Can't currently match against tuple forms.");
-        case 'Object': throw new Error("Can't currently match against object forms.");
-        default: return false;
+    const NUMTEST    = /^(\-)?[0-9]+(\.[0-9]+)?(e\-?[0-9]+)?$/;
+    const ATOMTEST   = /^[\$_A-z][\$_A-z0-9]*$/;
+    const SYMTEST    = /^Symbol\.for\(/;
+    const SYMREPLACE = /^Symbol\.for\((\'|\")|(\'|\")\)$/g;
+    function convertSpecial(special) {
+      switch (special) {
+        case 'null': return null; case 'undefined': return undefined;
+        case 'true': return true; case 'false': return false; default: return special;
       }
-    }.bind(this));
+    }
+    function arrMismatch(matchType, arg) {
+      switch (matchType) {
+        case 'Tuple': return arg.CNS_isTuple_ !== CNS_;
+        case 'Arr': return arg.CNS_isTuple_ === CNS_;
+      }
+    }
+    function testArrParam(arg, arrParam, position) {
+      if (arrParam === '_') return true; // Yes, if it's the catch all.
+      if (arrParam === 'NaN') return isNaN(arg[position]); // Yes, if they're both NaN.
+      if ((converted = convertSpecial(arrParam)) !== arrParam) return arg[position] === converted; // Yes, if it's a special and the specials match.
+      if (SYMTEST.test(arrParam)) return arg[position] === Symbol.for(arrParam.replace(SYMREPLACE, '')); // Yes, if it's a symbol and symbols match.
+      return ATOMTEST.test(arrParam) ? true : CNS_.eql(arg[position], JSON.parse(arrParam)); // Yes, for identifiers, recursive equality check for anything else.
+    }
+    return args.every(function (arg, index) {
+      if (!pattern[index]) return false; // No match if the arity's wrong.
+      var matchType = pattern[index][0]; // For example "Tuple"
+      var matchVal  = pattern[index][1]; // For example ["x","y"]
+      var converted;
+      switch(matchType) {
+        case 'Identifier': return true; // An identifier is a variable assignment so we allow it.
+        case 'Atom': return arg === Symbol.for(matchVal); // Match if it's the same atom.
+        case 'String': return arg === matchVal; // Match if it's the same string.
+        case 'Number': return NUMTEST.test(arg) && arg === parseFloat(matchVal); // Match if the arg is a number and the numbers are equal.
+        case 'Special': return matchVal === 'NaN' ? isNaN(arg) : arg === convertSpecial(matchVal); // Match if the special values are equal.
+        case 'HeadTail':
+        case 'LeadLast':
+          return Array.isArray(arg); // Match any array because we're just doing array destructuring.
+        case 'Arr':
+        case 'Tuple':
+          // No match if it's not an array, we've mismatched arrays/tuples, or if we have the wrong amount of items.
+          if (!Array.isArray(arg) || arrMismatch(matchType, arg) || arg.length !== matchVal.length) return false;
+          // Match if all of the subobjects match.
+          return matchVal.every(function (arrParam, position) {
+            return testArrParam(arg, arrParam, position);
+          });
+        case 'Keys':
+        case 'Obj':
+          // Similar to the arr/tuple condition except here we don't care if the amount of keys matches our pattern length.
+          if (typeof arg !== 'object' || arg.constructor !== Object) return false; // No match if the arg isn't an object.
+          if (matchType === 'Keys') return true; // Match if the arg is an object and we're just destructuring keys.
+          return matchVal.every(function (pair) {
+            const kv = pair.split(':');
+            if (SYMTEST.test(kv[0])) (kv[0] = Symbol.for(kv[0].replace(SYMREPLACE, '')));
+            return testArrParam(arg, kv[1].trim(), typeof kv[0] === 'string' ?  kv[0].trim() : kv[0]);
+          });
+        default: throw new Error('Can not pattern match against type ' + matchType); // No match if we don't have a matchable type.
+      }
+    });
   },
 
-  // CNS_SYSTEM.args(arguments) -> [...arguments]
+  // CNS_.args(arguments) -> [...arguments]
   args: function (args) {
     const out = [];
     Array.prototype.push.apply(out, args);
     return out;
   },
 
-  // CNS_SYSTEM.elem(0, [1, 2, 3, 4]) -> 1
-  elem: function (item, collection) {
+  // CNS_.get(0, [1, 2, 3, 4]) -> 1
+  get: function (item, collection) {
     return collection[item];
   },
 
-  // CNS_SYSTEM.throw(create(Error))
+  // CNS_.throw(create(Error))
   throw: function (err) {
     throw err;
   },
 
-  // CNS_SYSTEM.create(ClassName, arg1, arg2) -> ClassName { ... }
+  // CNS_.create(ClassName, arg1, arg2) -> ClassName { ... }
   create: function(cls) {
     return new (Function.prototype.bind.apply(cls, arguments));
   },
 
-  // CNS_SYSTEM.typeof('hello') -> 'string'
+  // CNS_.type('hello') -> 'string'
   type: function (val) {
     const type = typeof val;
     switch (type) {
       case 'symbol': return 'atom';
       case 'number': return isNaN(val) ? 'nan' : type;
       case 'object': return val === null ? 'null' :
-                              Array.isArray(val) ? 'array' :
+                              Array.isArray(val) ? (val.CNS_isTuple_ === CNS_ ? 'tuple' : 'array') :
                                 val instanceof Date ? 'date' :
                                   val instanceof RegExp ? 'regexp':
                                     (typeof HTMLElement !== 'undefined' && val instanceof HTMLElement) ? 'htmlelement' :
@@ -121,54 +131,58 @@ const CNS_SYSTEM = {
     }
   },
 
-  // CNS_SYSTEM.instanceof([], Object) -> true
+  // CNS_.instanceof([], Object) -> true
   instanceof: function (val, type) {
     return val instanceof type;
   },
 
-  // CNS_SYSTEM.head([1, 2, 3]) -> 1
+  // CNS_.head([1, 2, 3]) -> 1
   head: function (list) {
     return list[0];
   },
 
-  // CNS_SYSTEM.tail([1, 2, 3]) -> [2, 3]
+  // CNS_.tail([1, 2, 3]) -> [2, 3]
   tail: function (list) {
     return list.slice(1);
   },
 
-  // CNS_SYSTEM.exp('myFn', function () { ... })
-  exp: "(function () {" +
-    "var exp = (typeof module === 'undefined' || !module.exports) ? this : module.exports;" +
-    "return function (name, val) {" +
-      "exp[name] = val;" +
-    "};" +
-  "}())",
+  // CNS_.exp(someValue)
+  exp: function (val) {
+    typeof module === 'undefined'
+      ? typeof console !== 'undefined' &&
+        console.warn('Warning: You are attempting to export module values in a non-modular environment.')
+      : module.exports = val;
+  },
 
-  // CNS_SYSTEM.random([1, 2, 3, 4]) -> 3
+
+  // CNS_.random([1, 2, 3, 4]) -> 3
   random: function (list) {
     return list[Math.floor(Math.random()*list.length)];
   },
 
-  // CNS_SYSTEM.lead([1, 2, 3]) -> [1, 2]
+  // CNS_.lead([1, 2, 3]) -> [1, 2]
   lead: function (list) {
     return list.slice(0, list.length - 1);
   },
 
-  // CNS_SYSTEM.last([1, 2, 3]) -> 3
+  // CNS_.last([1, 2, 3]) -> 3
   last: function (list) {
     return list[list.length - 1];
   },
 
-  // CNS_SYSTEM.do(function () { ... }, [1, 2, 3])
-  do: function (fn) {
+  // CNS_.apply(function () { ... }, [1, 2, 3])
+  apply: function (fn) {
     var args = Array.prototype.slice.call(arguments, 1);
     return args.length ? fn.apply(null, args) : fn();
   },
 
-  // CNS_SYSTEM.update('name', 'john', {name: 'bill'}) -> {name: 'john'}
-  // CNS_SYSTEM.update(1, 'x', ['a', 'b', 'c']) -> ['a', 'x', 'c']
+  // CNS_.update('name', 'john', {name: 'bill'}) -> {name: 'john'}
+  // CNS_.update(1, 'x', ['a', 'b', 'c']) -> ['a', 'x', 'c']
   update: function (keyOrIndex, val, collection) {
     if (Array.isArray(collection)) {
+      if (collection.CNS_isTuple_ === CNS_ && collection.indexOf(keyorIndex) === -1) {
+        throw new Error('Can not add extra items to tuples.');
+      }
       const newSlice = collection.slice();
       newSlice[keyOrIndex] = val;
       return newSlice;
@@ -183,10 +197,11 @@ const CNS_SYSTEM = {
     }
   },
 
-  // CNS_SYSTEM.remove(1, ['a', 'b', 'c']) -> ['a', 'b']
-  // CNS_SYSTEM.remove('name', {name: 'john', age: 33}) -> {age: 33}
+  // CNS_.remove(1, ['a', 'b', 'c']) -> ['a', 'b']
+  // CNS_.remove('name', {name: 'john', age: 33}) -> {age: 33}
   remove: function (keyOrIndex, collection) {
     if (Array.isArray(collection)) {
+      if (collection.CNS_isTuple_ === CNS_) throw new Error('Can not remove items from tuples.');
       const splicer = collection.slice();
       splicer.splice(keyOrIndex, 1);
       return splicer;
@@ -202,7 +217,7 @@ const CNS_SYSTEM = {
     }
   },
 
-  // CNS_SYSTEM.createElement('div', {className: 'foo'}, [CNS_SYSTEM.createElement(...)])
+  // CNS_.createElement('div', {className: 'foo'}, [CNS_.createElement(...)])
   createElement: function (type, attrs, body) {
     var react;
     const a = attrs || {}, b = body || [];
@@ -221,7 +236,7 @@ const CNS_SYSTEM = {
     return elem;
   },
 
-  // CNS_SYSTEM.aritize(fun, 2);
+  // CNS_.aritize(fun, 2);
   aritize: function (fun, arity) {
     return function () {
       if (arguments.length === arity) {
@@ -262,35 +277,53 @@ const CNS_SYSTEM = {
        } else if (obj === true || obj === false) {
          return obj;
        } else if (Array.isArray(obj)) {
-         return '[' + obj.map(function (item) { return CNS_SYSTEM.msgs.stringify(item) }).join(', ') + ']';
+         return '[' + obj.map(function (item) { return CNS_.msgs.stringify(item) }).join(', ') + ']';
        } else {
-         return '{' + Object.keys(obj).map(function (key) { return key + ':' + CNS_SYSTEM.msgs.stringify(obj[key]) }).join(',\n') + '}';
+         return '{' + Object.keys(obj).map(function (key) { return key + ':' + CNS_.msgs.stringify(obj[key]) }).join(',\n') + '}';
        }
      },
 
      symbolize: function (data, reSymbolize) {
+       // If we need to stringify a symbol, give it a special syntax and return it.
        if (!reSymbolize && typeof data === 'symbol') return '__' + data.toString() + '__';
+       // If we need to turn a string into a symbol, generate a symbol and return it.
        if (reSymbolize && typeof data === 'string' && /^__Symbol\(.+\)__$/.test(data)) {
          return Symbol.for(data.replace(/^__Symbol\(|\)__$/g, ''));
        }
+       // If this is an array, map over it and see if we need to symbolize any data in it.
+       // Return the new array.
        if (Array.isArray(data)) {
-         return data.map(function (item) { return CNS_SYSTEM.msgs.symbolize(item, reSymbolize) });
-       } else if (typeof data === 'object' && data !== null) {
-         var out = {};
-         Object.keys(data).forEach(function (key) { out[key] = CNS_SYSTEM.msgs.symbolize(data[key], reSymbolize) });
+         var out = [];
+         data.forEach(function (item) { out.push(CNS_.msgs.symbolize(item, reSymbolize)) });
+         if (!reSymbolize && data.CNS_isTuple_ === CNS_) (out = { CNS_tuple_: out });
          return out;
+       // If this is an object, check to see if it's supposed to be a tuple.
+       } else if (typeof data === 'object' && data !== null) {
+         // If it's supposed to be a tuple, take care of recursively building a new
+         // array and then turn it into a tuple and return it.
+         if (reSymbolize && data.CNS_tuple_) {
+           var out = CNS_.msgs.symbolize(data.CNS_tuple_, true);
+           return CNS_.tuple(out);
+         // If it's actually an object, build a new object, symbolizing all the values.
+         // We don't try to symbolize object keys because the purpose of a symbol as an object
+         // key is to not have it be enumerable.
+         } else {
+           var out = {};
+           Object.keys(data).forEach(function (key) { out[key] = CNS_.msgs.symbolize(data[key], reSymbolize) });
+           return out;
+         }
        }
        return data;
      },
 
      onMsg: function (msg) {
-       CNS_SYSTEM.msgs.isBrowser() && (msg = msg.data);
-       const m = CNS_SYSTEM.msgs.symbolize(msg, true);
-       CNS_SYSTEM.msgs.queue.push(m);
-       if (!CNS_SYSTEM.msgs.isWaiting) {
-         CNS_SYSTEM.msgs.isWaiting = true;
+       CNS_.msgs.isBrowser() && (msg = msg.data);
+       const m = CNS_.msgs.symbolize(msg, true);
+       CNS_.msgs.queue.push(m);
+       if (!CNS_.msgs.isWaiting) {
+         CNS_.msgs.isWaiting = true;
          setTimeout(function () {
-           CNS_SYSTEM.msgs.runQueue();
+           CNS_.msgs.runQueue();
          }, 0);
        }
      },
@@ -307,11 +340,11 @@ const CNS_SYSTEM = {
 
      Thread: function(fnBody) {
        const isBrowser = typeof navigator !== 'undefined';
-       const body = 'const CNS_SYSTEM = ' + CNS_SYSTEM.msgs.stringify(CNS_SYSTEM) + ';\n' +
-                    'CNS_SYSTEM.msgs.isChild = true;\n' +
-                    'CNS_SYSTEM.msgs.handlers = [];\n' +
-                    (isBrowser ? 'this.onmessage = CNS_SYSTEM.msgs.onMsg;\n'
-                               : 'process.on("message", CNS_SYSTEM.msgs.onMsg);\n') +
+       const body = 'const CNS_ = ' + CNS_.msgs.stringify(CNS_) + ';\n' +
+                    'CNS_.msgs.isChild = true;\n' +
+                    'CNS_.msgs.handlers = [];\n' +
+                    (isBrowser ? 'this.onmessage = CNS_.msgs.onMsg;\n'
+                               : 'process.on("message", CNS_.msgs.onMsg);\n') +
                     'var arguments = [];\n' +
                     fnBody;
        this.isBrowser  = isBrowser;
@@ -324,8 +357,8 @@ const CNS_SYSTEM = {
                            execArgv: ['-e', body]
                          })
                        ;
-       isBrowser ? (this.thread.onmessage = CNS_SYSTEM.msgs.onMsg)
-                 : this.thread.on('message', CNS_SYSTEM.msgs.onMsg);
+       isBrowser ? (this.thread.onmessage = CNS_.msgs.onMsg)
+                 : this.thread.on('message', CNS_.msgs.onMsg);
        !isBrowser && this.thread.on('exit', function () { console.log('process exited') })
        return this;
      }
@@ -333,19 +366,17 @@ const CNS_SYSTEM = {
 
    // Create a new process exclusively from a function body.
    // Example:
-   // createProcess ->
-   //   spawn fn ->
+   // createProcess _ =>
+   //   spawn fn =>
    //     ...process body...
-   //   end
-   // end
-   // export { createProcess/0 }
+   // export { createProcess: aritize createProcess 0 }
    spawn: function (fn) {
-    return new CNS_SYSTEM.msgs.Thread('(' + fn.toString() + '())');
+    return new CNS_.msgs.Thread('(' + fn.toString() + '())');
    },
 
    // Specifies what to do when a message comes in
    receive: function (fn) {
-     CNS_SYSTEM.msgs.handlers.push(fn);
+     CNS_.msgs.handlers.push(fn);
    },
 
    // Kills a process
@@ -355,14 +386,14 @@ const CNS_SYSTEM = {
 
    // Should be like send(msg)
    reply: function (msg) {
-     const m = CNS_SYSTEM.msgs.symbolize(msg, false);
-     CNS_SYSTEM.msgs.isBrowser() ? postMessage(m) : process.send(m) ;
+     const m = CNS_.msgs.symbolize(msg, false);
+     CNS_.msgs.isBrowser() ? postMessage(m) : process.send(m) ;
    },
 
    // Should be like send(thread, msg)
    send: function (thread, msg) {
-     const m = CNS_SYSTEM.msgs.symbolize(msg, false);
-     CNS_SYSTEM.msgs.isBrowser() ? thread.thread.postMessage(m) : thread.thread.send(m);
+     const m = CNS_.msgs.symbolize(msg, false);
+     CNS_.msgs.isBrowser() ? thread.thread.postMessage(m) : thread.thread.send(m);
    }
 
    /********************************
@@ -374,5 +405,5 @@ const CNS_SYSTEM = {
 
 
 
-// export default CNS_SYSTEM;
-module.exports = CNS_SYSTEM;
+// export default CNS_;
+module.exports = CNS_;

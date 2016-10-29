@@ -6,25 +6,33 @@ var _utils = require('../utils');
  * Drop in identifiers.
  */
 (0, _utils.compile)(_utils.nodes.IdentifierNode, function () {
+  var _this = this;
+
+  if (this.text === '@') return 'this';
+
   var base = this.text.replace(/^\@/, '');
+  var clean = base.split('.').map(function (piece) {
 
-  // Disallow identifiers that look like __this__
-  if (/^__/.test(base) && /__$/.test(base)) {
-    (0, _utils.die)(this, this.text + ' matches the pattern __IDENTIFIER__ which is reserved for system variables.');
+    // Disallow identifiers that look like this_
+    if (/[^_]_$/.test(piece)) {
+      (0, _utils.die)(_this, _this.text + ' matches the pattern IDENTIFIER_ which is reserved for system variables.');
 
-    // Disallow reserved words
-  } else if ((0, _utils.getReservedWords)().indexOf(base) > -1) {
-    (0, _utils.die)(this, this.text + ' is a reserved word.');
+      // Disallow reserved words
+    } else if ((0, _utils.getReservedWords)().indexOf(piece) > -1) {
+      (0, _utils.die)(_this, _this.text + ' is a reserved word or contains a reserved word as a property name.');
 
-    // Translate system library functions
-  } else if ((0, _utils.getExposedFns)().indexOf(base) > -1) {
-    if ((0, _utils.getMsgPassingFns)().indexOf(base) > -1) {
-      this.shared.lib.add('msgs');
+      // Translate system library functions
+    } else if ((0, _utils.getExposedFns)().indexOf(piece) > -1) {
+      if ((0, _utils.getMsgPassingFns)().indexOf(piece) > -1) {
+        _this.shared.lib.add('msgs');
+        _this.shared.lib.add('tuple');
+      }
+      _this.shared.lib.add(_this.text);
+      return 'CNS_.' + _this.text;
+    } else {
+      return piece;
     }
-    this.shared.lib.add(this.text);
-    return 'CNS_SYSTEM.' + this.text;
-  }
+  });
 
-  // Otherwise, just make sure to replace @ with "this"
-  return this.text.replace(/^\@/, 'this.').replace(/\.$/, ''); // Strip trailing dots in case of "@" -> "this."
+  return '' + (this.text[0] === '@' ? 'this.' : '') + clean.join('.');
 });

@@ -5,25 +5,12 @@ import { compileCode } from  '../src/compiler/compiler';
 describe('Try/Catch', () => {
 
   it('should compile a try/catch statement', () => {
-    const toCompile = `try dostuff() catch err: doOtherStuff() end`;
-    const expected = nlToSpace(`(function () {
-      try {
-        return dostuff();
-      } catch (err) {
-        return doOtherStuff();
-      }
-    }.bind(this)())`);
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
-  });
-
-  it('should compile a try/catch statement with complex function bodies', () => {
-    const toCompile = `try
-      dostuff()
-      doMoreStuff()
-    catch err:
-      doOtherStuff()
-      doMoreOtherStuff()
-    end`;
+    const toCompile = 'try\n'
+                    + '  dostuff _\n'
+                    + '  doMoreStuff _\n'
+                    + 'catch err\n'
+                    + '  doOtherStuff _\n'
+                    + '  doMoreOtherStuff _\n';
     const expected = nlToSpace(`(function () {
       try {
         dostuff();
@@ -32,12 +19,12 @@ describe('Try/Catch', () => {
         doOtherStuff();
         return doMoreOtherStuff();
       }
-    }.bind(this)())`);
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+    }.bind(this)());`);
+    assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
   it('should compile a try/catch shortcut', () => {
-    const toCompile = `handle(err) incase something() throws err`;
+    const toCompile = `incase something _ throws err do handle err`;
     const expected = nlToSpace(`(function () {
       try {
         return something();
@@ -45,11 +32,11 @@ describe('Try/Catch', () => {
         return handle(err);
       }
     }.bind(this)())`);
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+    assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
   it('should compile a try/catch shortcut with an operation', () => {
-    const toCompile = `handle(err) incase 2 + 2 throws err`;
+    const toCompile = `incase 2 + 2 throws err do handle err`;
     const expected = nlToSpace(`(function () {
       try {
         return 2 + 2;
@@ -57,11 +44,11 @@ describe('Try/Catch', () => {
         return handle(err);
       }
     }.bind(this)())`);
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+    assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
   it('should compile a try/catch shortcut without parens', () => {
-    const toCompile = `handle err incase something x throws err`;
+    const toCompile = `incase something x throws err do handle err`;
     const expected = nlToSpace(`(function () {
       try {
         return something(x);
@@ -69,7 +56,7 @@ describe('Try/Catch', () => {
         return handle(err);
       }
     }.bind(this)())`);
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+    assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
 });

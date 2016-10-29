@@ -1,4 +1,14 @@
-import { compile, nodes, compileBody } from '../utils';
+import { compile, nodes, compileBody, die } from '../utils';
+
+/*
+ * Possible destructuring forms
+ * - Arr
+ * - Tuple
+ * - Obj
+ * - Keys (Destructure)
+ * - HeadTail (Destrcuture)
+ * - LeadLast (Destructure)
+ */
 
 /**
  * Removes quotes from the beginning of a string if the value we get
@@ -19,12 +29,24 @@ function handleStrings(type, src) {
  *
  * @param  {Array} args  A list of parameter nodes.
  *
- * @return {Array}       [["Arr", "[]"], ["Identifier", "foo"], ["Cons", "[h|t]"]]
+ * @return {Array}       [["Arr", []], ["Identifier", "foo"], ["HeadTail", ["h","t"]]]
  */
 function getPatterns(args) {
   return args.map(arg => {
     const realArg = arg.type === 'Wrap' ? arg.item : arg ;
-    return [realArg.type, handleStrings(realArg.type, realArg.src)];
+    switch (realArg.type) {
+      case 'Destructure':
+        return [realArg.destrType, realArg.toDestructure.map(item => handleStrings(item.type, item.compile(true)))];
+      case 'Obj':
+        const pairs = realArg.pairs.map(pair => `${pair.left.compile(true)}:${pair.right.compile(true)}`);
+        return [realArg.type, pairs];
+      case 'Arr':
+      case 'Tuple':
+        return [realArg.type, realArg.items.map(item => handleStrings(item.type, item.compile(true)))];
+      case 'String':
+        return die(realArg, 'Can not pattern match against strings');
+      default: return [realArg.type, handleStrings(realArg.type, realArg.src)];
+    }
   });
 }
 
@@ -40,28 +62,44 @@ function getPatterns(args) {
 function compileArgs(patterns) {
   const acc = [];
   const patts = typeof patterns === 'string' ? JSON.parse(patterns) : patterns;
+  const identRegex = /^[\$_A-z][\$_A-z0-9]*$/;
+  const atomRegex = /^[A-Z][A-Z_]+$/;
   patts.forEach((pattern, index) => {
     switch (pattern[0]) {
       case 'Identifier':
         pattern[1] !== '_' && acc.push(`const ${pattern[1]} = args[${index}];`);
         break;
-      case 'Cons':
-        const headMatch = pattern[1].match(/^\[(.+)\|/)[1];
-        const tailMatch = pattern[1].match(/\|([^\]]+)\]/)[1];
+      case 'Keys':
+        const keyList = pattern[1];
+        keyList.forEach(key => key !== '_' && acc.push(`const ${key} = args[${index}].${key};`));
+        break;
+      case 'HeadTail':
+        const htList = pattern[1];
+        const headMatch = htList[0];
+        const tailMatch = htList[1];
         headMatch !== '_' && acc.push(`const ${headMatch} = args[${index}][0];`);
         tailMatch !== '_' && acc.push(`const ${tailMatch} = args[${index}].slice(1);`);
         break;
-      case 'BackCons':
-        const leadMatch = pattern[1].match(/^\[(.+)\|\|/)[1];
-        const lastMatch = pattern[1].match(/\|\|([^\]]+)\]/)[1];
+      case 'LeadLast':
+        const llList = pattern[1];
+        const leadMatch = llList[0];
+        const lastMatch = llList[1];
         leadMatch !== '_' && acc.push(`const ${leadMatch} = args[${index}].slice(0, args[${index}].length - 1);`);
         lastMatch !== '_' && acc.push(`const ${lastMatch} = args[${index}][args[${index}].length - 1];`);
         break;
+      case 'Obj':
+        const pairList = pattern[1];
+        pairList.forEach(pair => {
+          const kv = pair.split(':');
+          kv[1] !== '_' && acc.push(`const ${kv[1]} = args[${index}].${kv[0]};`);
+        });
+        break;
       case 'Arr':
+      case 'Tuple':
         // This will come back to haunt us if the user tries to match against a string with a comma or space in it.
-        const items = pattern[1].replace(/^\[|\s+|\]$/g, '').split(',');
+        const items = pattern[1];
         items.forEach((item, i) => {
-          if (item && item !== '_' && /^[\$_A-z][\$_A-z0-9]*$/.test(item)) {
+          if (item && item !== '_' && !atomRegex.test(item) && identRegex.test(item)) {
             acc.push(`const ${item} = args[${index}][${i}];`);
           }
         });
@@ -105,16 +143,19 @@ function sanitizeFnMeta(fnList) {
  * Handle format of basic functions.
  */
 compile(nodes.FunNode, function () {
-  const preFn  = this.preArrow.type === 'FunctionCall';
-  const args   = compileArgs(getPatterns(preFn ? this.preArrow.args.items : this.preArrow.items));
-  const prefix = preFn ? `${this.preArrow.fn.compile(true)} ()` : `()`;
-  const argStr = !args.length ? '' : '\nconst args = CNS_SYSTEM.args(arguments);';
-  const body   = compileBody(this.body);
+  const preFn   = this.preArrow.type === 'FunctionCall';
+  const args    = compileArgs(getPatterns(preFn ? this.preArrow.args.items : this.preArrow));
+  const fnName  = preFn ? this.preArrow.fn.compile(true) : '';
+  const prefix  = preFn ? `${fnName} ()` : `()`;
+  const argStr  = !args.length ? '' : '\nconst args = CNS_.args(arguments);';
+  const body    = compileBody(this.body);
+  const begin   = fnName && this.bind ? `const ${fnName} = function () {` : `function ${prefix} {`;
   args.length && this.shared.lib.add('args');
-  return `function ${prefix} {`
+  return begin
          +  argStr
          +  (args.length ? '\n' + args : '')
-         +  (body.length ? '\n  ' + body + ';\n' : '')
+            // If the whole body has been compiled to "return _", then it's an empty function.
+         +  (body.length && !/^\s*return\s+_;?\s*$/.test(body) ? '\n  ' + body + ';\n' : '')
          +  `}${this.bind ? '.bind(this)' : ''}`;
 });
 
@@ -139,7 +180,7 @@ compile(nodes.PolymorphNode, function () {
   this.fns.map((fn, index) => {
 
     // Isolate the array containing the parameter items
-    const args = meta.anon ? fn.preArrow.items : fn.preArrow.args.items;
+    const args = meta.anon ? fn.preArrow : fn.preArrow.args.items;
 
     // Create a list of pattern matches like [["Identifier", "foo"], ...]
     const pattern = JSON.stringify(getPatterns(args));
@@ -172,7 +213,7 @@ compile(nodes.PolymorphNode, function () {
 
     // Generate an else case to use when we're finished with sub conditions.
     const elseCase = ` else {
-      return CNS_SYSTEM.noMatch('${this.isNamed ? 'def' : 'match'}');
+      throw new Error('No match found for ${this.isNamed ? 'def' : 'match'} statement.');
     }`;
 
     let subBodies;
@@ -214,7 +255,7 @@ compile(nodes.PolymorphNode, function () {
     }
 
     // Spit out the top-level condition based on precompiled information
-    return `${keyword} (args.length === ${matchObjs[0].args.length} && CNS_SYSTEM.match(args, ${pattern})) {
+    return `${keyword} (args.length === ${matchObjs[0].args.length} && CNS_.match(args, ${pattern})) {
       ${compileArgs(pattern)}
       ${subBodies}
     }`;
@@ -224,15 +265,14 @@ compile(nodes.PolymorphNode, function () {
   this.shared.lib.add('match');
   this.shared.lib.add('eql'); // necessary to run match
   this.shared.lib.add('args');
-  this.shared.lib.add('noMatch');
 
   // Spit out the top-level function string. Within it, drop in the
   // conditions for different function bodies and add an else case for
   // no match at the end.
   return `function ${prefix} {
-    const args = CNS_SYSTEM.args(arguments);
+    const args = CNS_.args(arguments);
     ${compiledFns} else {
-      return CNS_SYSTEM.noMatch('${this.isNamed ? 'def' : 'match'}');
+      throw new Error('No match found for ${this.isNamed ? 'def' : 'match'} statement.');
     }
   }${meta.anon && meta.bind ? '.bind(this)' : ''}`;
 });

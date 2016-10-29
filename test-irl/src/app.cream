@@ -1,0 +1,29 @@
+import React from 'react'
+import ReactDOM from 'react-dom'
+
+
+# Iterate over a list of functions to generate a React class.
+reactify fnList             => reactify fnList, {}
+reactify [], accum          => React.createClass accum
+reactify [ hd | tl ], accum => reactify tl, (update hd.name, hd, accum)
+
+
+# A function for calculating factorials
+factorial 0 => 1
+factorial n => n * factorial n - 1
+
+
+# A function for rendering the view
+render _ =>
+  { calc } = @props
+  <h1>
+    `Hello, friends. The factorial of ${calc} is ${factorial calc}`
+  </h1>
+
+
+# Create a React class from our functions
+Title = reactify [factorial, render]
+
+
+# Render the react class in the dom
+ReactDOM.render <Title calc={5} />, (dom '#app')

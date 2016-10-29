@@ -5,7 +5,7 @@ import { compileCode } from  '../src/compiler/compiler';
 describe('Array Comprehensions', () => {
 
   it('should compile a basic array comprehension', () => {
-    const toCompile = 'eat food for food in foods';
+    const toCompile = 'for food in foods do eat food';
     const expected = nlToSpace(`foods.map(function (food) {
       return eat(food);
     }.bind(this))`);
@@ -13,7 +13,7 @@ describe('Array Comprehensions', () => {
   });
 
   it('should compile a basic array comprehension using 2 parameters', () => {
-    const toCompile = 'eat food, index for food, index in foods';
+    const toCompile = 'for food, index in foods do eat food, index';
     const expected = nlToSpace(`foods.map(function (food, index) {
       return eat(food, index);
     }.bind(this))`);
@@ -21,15 +21,15 @@ describe('Array Comprehensions', () => {
   });
 
   it('should compile an array comprehension with a qualifier', () => {
-    const toCompile = 'eat food, index for food, index in foods when index is 0';
+    const toCompile = 'for food, index in foods do eat food, index onlyif index is 0';
     const expected = nlToSpace(`(function () {
-      const __acc__ = [];
+      const acc_ = [];
       foods.forEach(function (food, index) {
         if (index === 0) {
-          __acc__.push(eat(food, index));
+          acc_.push(eat(food, index));
         }
       }.bind(this));
-      return __acc__;
+      return acc_;
     }.bind(this)())`);
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });

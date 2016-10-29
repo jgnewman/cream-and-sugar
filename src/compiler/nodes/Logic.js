@@ -5,8 +5,16 @@ import { compile, nodes } from '../utils';
  */
 compile(nodes.LogicNode, function () {
   const operatorMap = {
-    and: '&&', or: '||', is: '===', isnt: '!==',
-    lt: '<', gt: '>', lte: '<=', gte: '>=', dv: '/', rm: '%'
+    and: '&&',
+    or: '||',
+    lt: '<',
+    gt: '>',
+    lte: '<=',
+    gte: '>=',
+    is: '===',
+    isnt: '!==',
+    "==": '===',
+    "!=": '!=='
   };
   return `${this.left.compile(true)} ${operatorMap[this.operator]} ${this.right.compile(true)}`;
 });

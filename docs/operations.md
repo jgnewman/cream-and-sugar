@@ -8,16 +8,16 @@ Let's start with basic math:
 - Subtraction is performed with the `-` operator: `a - b`
 - Multiplication is performed with the `*` operator: `a * b`
 - Basic division is performed in two ways –
-  - To get a rounded float, use the `dv` operator: `3 dv 2` (1.5)
-  - To get the a remainder, use the `rm` operator: `3 rm 2` (1)
+  - To get a rounded float, use the `/` operator: `3 / 2` (1.5)
+  - To get the a remainder, use the `%` operator: `3 % 2` (1)
 
 You will also use infix operators to perform comparisons:
 
 - Equality is tested in two ways –
-  - For strict equal comparison, use the `is` operator: `a is b`
-  - For strict unequal comparison, use the `isnt` operator: `a isnt b`
+  - For strict equal comparison, use the `is` or `==` operators: `a is b`, `a == b`
+  - For strict unequal comparison, use the `isnt` or `!=` operators: `a isnt b`, `a != b`
 
-Note that CnS does not allow type coercive comparisons (in other words, no `!=` or `==`).
+Note that CnS does not allow type coercive comparisons, equality checks are translated to JavaScript's `===` operator, while inequality checks are translated to `!==`.
 
 - For a "<" comparison, use the `lt` operator: `a lt b`
 - For a ">" comparison, use the `gt` operator: `a gt b`
@@ -28,5 +28,12 @@ CnS also includes friendly, readable operators for basic logic:
 
 - The `and` operator returns true if both operands are truthy: `a and b`
 - The `or` operator returns true if either operand is truthy: `a or b`
+
+Note that `&&` and `||` are not logic operators in CnS.
+
+Two other infix operators worthy of note are the cons and back cons operators.
+
+- To add an item to the front of an array, use the `>>` operator: `1 >> [2, 3, 4]`
+- To add an item to the back of an array, use the `<<` operator: `[1, 2, 3] << 4`
 
 [<- Back to the overview](overview.md)
