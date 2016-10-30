@@ -1,1 +1,6 @@
+- Add new lib functions:
+  - [x] tupleToObject
+  - [x] tupleToArray
+  - [x] arrayToTuple
+- Fix a bug where Math.random was compiling to Math.CNS_.random
 - is there a way to speed up thread generation and maybe reduce thread footprints?

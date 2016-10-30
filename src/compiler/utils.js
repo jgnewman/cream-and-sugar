@@ -152,7 +152,8 @@ function getExposedFns() {
     'apply', 'elem', 'throw', 'create', 'type', 'instanceof',
     'head', 'tail', 'random', 'lead', 'last', 'update',
     'remove', 'eql', 'dom', 'domArray', 'spawn',
-    'receive', 'kill', 'reply', 'send', 'aritize'
+    'receive', 'kill', 'reply', 'send', 'aritize', 'tupleToObject',
+    'tupleToArray', 'arrayToTuple'
   ];
 }
 

@@ -149,4 +149,24 @@ describe('SYSTEM Library', () => {
     assert.throws(function () { fn(1, 2, 3) });
   });
 
+  it('should convert tuples to objects', () => {
+    assert.deepEqual(CNS_.tupleToObject(CNS_.tuple(['a', 'b'])), {0: 'a', 1: 'b'});
+    assert.throws(function () { CNS_.tupleToObject(['a', 'b']) });
+    assert.deepEqual(CNS_.tupleToObject(CNS_.tuple(['a', 'b']), function (item) { return item }), {a: 'a', b: 'b'});
+  });
+
+  it('should convert tuples to arrays', () => {
+    const converted = CNS_.tupleToArray(CNS_.tuple(['a', 'b']));
+    assert.deepEqual(converted, ['a', 'b']);
+    assert.equal(converted.CNS_isTuple_, undefined);
+    assert.throws(function () { CNS_.tupleToArray(['a', 'b']) });
+  });
+
+  it('should convert arrays to tuples', () => {
+    const converted = CNS_.arrayToTuple(['a', 'b']);
+    assert.deepEqual(converted, CNS_.tuple(['a', 'b']));
+    assert.equal(converted.CNS_isTuple_, CNS_);
+    assert.throws(function () { CNS_.arrayToTuple(CNS_.tuple(['a', 'b'])) });
+  });
+
 });
