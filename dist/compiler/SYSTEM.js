@@ -8,6 +8,26 @@ const CNS_ = {
     return arr;
   },
 
+  // CNS_.listToObject([fun1, fun2], function (fun) { return fun.name }) -> {fun1: fun1, fun2: fun2}
+  tupleToObject: function (list, fn) {
+    const obj = {};
+    if (list.CNS_isTuple_ !== CNS_) throw new Error('Argument provided is not a tuple');
+    list.forEach(function (item, index) { obj[fn ? fn(item, index) : index] = item });
+    return obj;
+  },
+
+  // CNS_.tupleToArray({{ a, b }}) -> [ a, b ]
+  tupleToArray: function (tuple) {
+    if (tuple.CNS_isTuple_ !== CNS_) throw new Error('Argument provided is not a tuple');
+    return tuple.slice();
+  },
+
+  // CNS_.arrayToTuple([1, 2]) -> {{ 1, 2 }}
+  arrayToTuple: function (arr) {
+    if (arr.CNS_isTuple_ === CNS_ || !Array.isArray(arr)) throw new Error('Argument provided is not an array');
+    return CNS_.tuple(arr.slice());
+  },
+
   // CNS_.qualify(x === 4, function () { return doSomething() })
   qualify: function (condition, callback, elseCase) {
     return condition ? callback() : elseCase ? elseCase() : undefined;

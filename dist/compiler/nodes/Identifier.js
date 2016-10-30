@@ -11,23 +11,24 @@ var _utils = require('../utils');
   if (this.text === '@') return 'this';
 
   var base = this.text.replace(/^\@/, '');
-  var clean = base.split('.').map(function (piece) {
+  var clean = base.split('.').map(function (piece, pieceIndex) {
 
     // Disallow identifiers that look like this_
     if (/[^_]_$/.test(piece)) {
       (0, _utils.die)(_this, _this.text + ' matches the pattern IDENTIFIER_ which is reserved for system variables.');
 
       // Disallow reserved words
-    } else if ((0, _utils.getReservedWords)().indexOf(piece) > -1) {
+    } else if (pieceIndex === 0 && (0, _utils.getReservedWords)().indexOf(piece) > -1) {
       (0, _utils.die)(_this, _this.text + ' is a reserved word or contains a reserved word as a property name.');
 
       // Translate system library functions
-    } else if ((0, _utils.getExposedFns)().indexOf(piece) > -1) {
+    } else if (pieceIndex === 0 && (0, _utils.getExposedFns)().indexOf(piece) > -1) {
       if ((0, _utils.getMsgPassingFns)().indexOf(piece) > -1) {
         _this.shared.lib.add('msgs');
         _this.shared.lib.add('tuple');
       }
       _this.shared.lib.add(_this.text);
+      if (_this.text === 'arrayToTuple') _this.shared.lib.add('tuple');
       return 'CNS_.' + _this.text;
     } else {
       return piece;
