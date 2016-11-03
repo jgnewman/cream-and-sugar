@@ -11,7 +11,6 @@ compile(nodes.QualifierNode, function () {
   const elseCase = !this.elseCase ? '' : `, function () {
     return ${this.elseCase.compile(true)};
   }.bind(this)`;
-  this.shared.lib.add('qualify');
   return `CNS_.qualify(${condition}, function () {
     return ${this.action.compile(true)};
   }.bind(this)${elseCase})`.replace(/\s+/g, ' ');

@@ -27,3 +27,13 @@ Title = reactify [factorial, render]
 
 # Render the react class in the dom
 ReactDOM.render <Title calc={5} />, (dom '#app')
+
+# Test worker threads
+process = spawn fn =>
+  receive match
+    msg => reply `I got ${msg}`
+
+receive match
+  msg => console.log msg
+
+send process, 'THIS IS AN OFFICIAL MESSAGE'

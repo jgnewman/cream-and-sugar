@@ -1,4 +1,5 @@
 import { compileCode } from '../src/compiler/compiler';
+import CNS_ from 'cns-lib';
 import colors from 'colors/safe';
 import readline from 'readline';
 
@@ -40,6 +41,7 @@ export default function go() {
     // Reference the correct require function
     const ctx = global;
     ctx.require = module.require;
+    ctx.CNS_ = CNS_;
 
     // Create a readline interface
     const rl = readline.createInterface({
@@ -83,7 +85,7 @@ export default function go() {
 
           // Try to compile the code, reset the buffer, and prompt again.
           try {
-            const compiled = compileCode(buffer, null, {finalize: true});
+            const compiled = compileCode(buffer, null, {finalize: true}).replace(/^\s*var\s+CNS_\s+=[^\;]+;/, '');
             const evalled = eval.call(ctx, compiled);
 
             if (!/\/\/\*\*END LIBRARY\*\*\/\/\s*$/.test(compiled)) {

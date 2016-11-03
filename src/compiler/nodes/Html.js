@@ -21,7 +21,6 @@ compile(nodes.HtmlNode, function () {
   const body  = this.body ? compileBody(this.body, ',') : '';
   const close = !this.selfClosing ? this.closeTag.replace(/^\<\/\s*|\s*\>$/g, '') : null;
   const attrs = compileAttrs(this.attrs);
-  this.shared.lib.add('createElement');
   if (!this.selfClosing && close !== name.replace(/[\'\"\`]/g, '')) {
     die(this, `Closing tag "${close}" does not match opening tag ${name}.`);
   }

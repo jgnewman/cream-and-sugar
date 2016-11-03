@@ -150,7 +150,6 @@ compile(nodes.FunNode, function () {
   const argStr  = !args.length ? '' : '\nconst args = CNS_.args(arguments);';
   const body    = compileBody(this.body);
   const begin   = fnName && this.bind ? `const ${fnName} = function () {` : `function ${prefix} {`;
-  args.length && this.shared.lib.add('args');
   return begin
          +  argStr
          +  (args.length ? '\n' + args : '')
@@ -260,11 +259,6 @@ compile(nodes.PolymorphNode, function () {
       ${subBodies}
     }`;
   }).join(' ');
-
-  // Add appropriate library functions
-  this.shared.lib.add('match');
-  this.shared.lib.add('eql'); // necessary to run match
-  this.shared.lib.add('args');
 
   // Spit out the top-level function string. Within it, drop in the
   // conditions for different function bodies and add an else case for

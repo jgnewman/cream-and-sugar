@@ -17,6 +17,8 @@ compile(nodes.ExportNode, function () {
   //   export {{ factorial, schmactorial }} >>= nameFilter >>= toObject
 
   const toExport = this.toExport.compile(true);
-  this.shared.lib.add('exp');
-  return `CNS_.exp(${toExport})`;
+  return "typeof module === 'undefined'\n"
+      +  "  ? typeof console !== 'undefined' &&\n"
+      +  "    console.warn('Warning: You are attempting to export module values in a non-modular environment.')\n"
+      +  `  : module.exports = ${toExport}`;
 });

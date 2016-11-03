@@ -166,15 +166,6 @@ const CNS_ = {
     return list.slice(1);
   },
 
-  // CNS_.exp(someValue)
-  exp: function (val) {
-    typeof module === 'undefined'
-      ? typeof console !== 'undefined' &&
-        console.warn('Warning: You are attempting to export module values in a non-modular environment.')
-      : module.exports = val;
-  },
-
-
   // CNS_.random([1, 2, 3, 4]) -> 3
   random: function (list) {
     return list[Math.floor(Math.random()*list.length)];

@@ -136,3 +136,5 @@ up _ =>
 setInterval (fn =>
   send process, (Math.round (Math.random _) * 20)
 ), 1000
+
+export foo

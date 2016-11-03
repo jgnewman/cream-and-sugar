@@ -1,5 +1,5 @@
 import assert from 'assert';
-import CNS_ from '../src/compiler/SYSTEM';
+import CNS_ from 'cns-lib';
 import { compileCode } from  '../src/compiler/compiler';
 
 

@@ -19,12 +19,6 @@ compile(nodes.IdentifierNode, function () {
 
     // Translate system library functions
     } else if (pieceIndex === 0 && getExposedFns().indexOf(piece) > -1) {
-      if (getMsgPassingFns().indexOf(piece) > -1) {
-        this.shared.lib.add('msgs');
-        this.shared.lib.add('tuple');
-      }
-      this.shared.lib.add(this.text);
-      if (this.text === 'arrayToTuple') this.shared.lib.add('tuple');
       return `CNS_.${this.text}`;
 
     } else {

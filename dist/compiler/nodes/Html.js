@@ -22,7 +22,6 @@ function compileAttrs(attrs) {
   var body = this.body ? (0, _utils.compileBody)(this.body, ',') : '';
   var close = !this.selfClosing ? this.closeTag.replace(/^\<\/\s*|\s*\>$/g, '') : null;
   var attrs = compileAttrs(this.attrs);
-  this.shared.lib.add('createElement');
   if (!this.selfClosing && close !== name.replace(/[\'\"\`]/g, '')) {
     (0, _utils.die)(this, 'Closing tag "' + close + '" does not match opening tag ' + name + '.');
   }

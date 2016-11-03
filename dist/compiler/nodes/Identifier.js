@@ -23,12 +23,6 @@ var _utils = require('../utils');
 
       // Translate system library functions
     } else if (pieceIndex === 0 && (0, _utils.getExposedFns)().indexOf(piece) > -1) {
-      if ((0, _utils.getMsgPassingFns)().indexOf(piece) > -1) {
-        _this.shared.lib.add('msgs');
-        _this.shared.lib.add('tuple');
-      }
-      _this.shared.lib.add(_this.text);
-      if (_this.text === 'arrayToTuple') _this.shared.lib.add('tuple');
       return 'CNS_.' + _this.text;
     } else {
       return piece;
