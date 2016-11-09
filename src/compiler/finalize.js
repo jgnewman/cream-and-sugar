@@ -17,12 +17,6 @@ function stringify(val) {
 }
 
 export default function finalize(tree) {
-  // const lib = [...tree.shared.lib];
-  // const libPieces = [];
-  // lib.forEach(name => {
-  //   libPieces.push(`CNS_.${name} = CNS_.${name} || ${stringify(CNS_[name])}`);
-  // });
-  // tree.shared.output = prepend(tree.shared.output, libPieces.length ? libPieces.join(';\n') + ';\n' : '\n');
   tree.shared.output = prepend(tree.shared.output, '//**END LIBRARY**//');
   tree.shared.output = prepend(tree.shared.output, 'var CNS_ = require("cns-lib");\n');
   tree.shared.output = tree.shared.output.replace(/(\}|\n)\s*\;\s*$/, '$1');

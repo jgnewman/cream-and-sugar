@@ -1,8 +1,0 @@
-- Add new lib functions:
-  - [x] tupleToObject
-  - [x] tupleToArray
-  - [x] arrayToTuple
-  - [x] get exports out of SYSTEM lib so we can handle lib better
-  - [x] choose a way to keep code smaller by not writing lib into every file
-- Fix a bug where Math.random was compiling to Math.CNS_.random
-- is there a way to speed up thread generation and maybe reduce thread footprints?

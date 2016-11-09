@@ -34,6 +34,15 @@ iterate [h|t], accum => iterate t, accum << h
 export aritize iterate, 1
 ```
 
+### `arrayToTuple arr`
+
+- `arr {Array}`: Any array.
+
+Creates a new tuple from items in an array.
+
+```coffeescript
+arrayToTuple [ 1, 2, 3 ] #=> {{ 1, 2, 3 }}
+```
 
 ### `create klass [, ...constructorArgs]`
 
@@ -47,6 +56,28 @@ create Date  #=> Fri Sep 09 2016 17:00:43 GMT-0400 (EDT)
 
 create Error, "This is error text." #=> Error: This is error text(…)
 ```
+
+### `debug message`
+
+- `message {String}`: A message to log to the console.
+
+A shortcut for JavaScript's `console.debug(message)`. Attempts to default to `console.log` if `console.debug` does not exist. If the `console` object does not exists, fails silently.
+
+```coffeescript
+debug 'Something was weird' #=> undefined
+```
+
+
+### `die message`
+
+- `message {String}`: An error message.
+
+A shortcut for JavaScript's `throw new Error(message)`.
+
+```coffeescript
+die 'This app is not working' #=> undefined
+```
+
 
 ### `dom selector`
 
@@ -174,6 +205,17 @@ lead [1] #=> []
 lead [] #=> []
 ```
 
+### `log message`
+
+- `message {String}`: A message to log to the console.
+
+A shortcut for JavaScript's `console.log(message)`. If the `console` object does not exists, fails silently.
+
+```coffeescript
+log 'This app is great!' #=> undefined
+```
+
+
 ### `random array`
 
 - `array {Array}`: An array.
@@ -185,6 +227,18 @@ random [1, 2, 3] #=> 2
 
 random [1, 2, 3] #=> 1
 ```
+
+### `range from, through`
+
+- `from {Number}`: Any whole number.
+- `through {Number}`: Any whole number.
+
+Creates an array containing a range of numbers from `from` through `through`.
+
+```coffeescript
+range 1, 10 #=> [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+```
+
 
 ### `receive fun`
 
@@ -272,6 +326,30 @@ Throws an error.
 throw (create Error, 'This is an error message')
 ```
 
+### `tupleToArray tuple`
+
+- `tuple {Tuple}`: Any tuple.
+
+Creates a new array from items in a tuple.
+
+```coffeescript
+tupleToArray {{ 1, 2, 3 }} #=> [1, 2, 3]
+```
+
+### `tupleToObject tuple, fun`
+
+- `tuple {Tuple}`: Any tuple.
+- `fun {Function}`: Optional. An iterator function taking `item` and `index`.
+
+Creates an object from a tuple where `fun` is used to determine how to construct
+key names for each item in the tuple. If `fun` is not provided, indices will
+be used as object keys.
+
+```coffeescript
+tupleToObject {{ function1, function2 }}, fn item => item.name
+#=> {'function1': function1, 'function2': function2}
+```
+
 ### `type data`
 
 - `data {Any}`: Any data type.
@@ -320,6 +398,16 @@ Creates a shallow clone of `collection` wherein the value for `key` has been upd
 update 'foo', 'Billy', {foo: 'bar', baz: 'quux'} #=> {foo: 'Billy', baz: 'quux'}
 
 remove 1, 'd', ['a', 'b', 'c'] #=> ['a', 'd', 'c']
+```
+
+### `warn message`
+
+- `message {String}`: A message to log to the console.
+
+A shortcut for JavaScript's `console.warn(message)`. Attempts to default to `console.log` if `console.warn` does not exist. If the `console` object does not exists, fails silently.
+
+```coffeescript
+warn 'Something was weird' #=> undefined
 ```
 
 

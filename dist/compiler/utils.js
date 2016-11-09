@@ -157,7 +157,7 @@ function compileBody(body, delim) {
 
 // Official list of exposed system functions
 function getExposedFns() {
-  return ['apply', 'elem', 'throw', 'create', 'type', 'instanceof', 'head', 'tail', 'random', 'lead', 'last', 'update', 'remove', 'eql', 'dom', 'domArray', 'spawn', 'receive', 'kill', 'reply', 'send', 'aritize', 'tupleToObject', 'tupleToArray', 'arrayToTuple'];
+  return ['apply', 'elem', 'throw', 'create', 'type', 'instanceof', 'head', 'tail', 'random', 'lead', 'last', 'update', 'remove', 'eql', 'dom', 'domArray', 'spawn', 'receive', 'kill', 'reply', 'send', 'aritize', 'tupleToObject', 'tupleToArray', 'arrayToTuple', 'log', 'warn', 'debug', 'die', 'range'];
 }
 
 function getMsgPassingFns() {

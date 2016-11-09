@@ -10,7 +10,6 @@ var _utils = require('../utils');
 (0, _utils.compile)(_utils.nodes.ProgramNode, function () {
   var newBody = (0, _utils.groupPolymorphs)(this.body);
   this.shared.output = '';
-  this.shared.lib = new Set();
   this.shared.insertSemis = true; // Turn this off when we're going to manually handle it
   this.shared.refs = -1;
   newBody.forEach(function (node) {

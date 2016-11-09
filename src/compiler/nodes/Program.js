@@ -8,7 +8,6 @@ import { compile, nodes, groupPolymorphs } from '../utils';
 compile(nodes.ProgramNode, function () {
   const newBody = groupPolymorphs(this.body);
   this.shared.output = '';
-  this.shared.lib = new Set();
   this.shared.insertSemis = true; // Turn this off when we're going to manually handle it
   this.shared.refs = -1;
   newBody.forEach(node => {
