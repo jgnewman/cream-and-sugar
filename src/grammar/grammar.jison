@@ -84,16 +84,12 @@
 
 "fn"                                 return "FN";
 "caseof"                             return "CASEOF";
-"def"                                return "DEF";
 "match"                              return "MATCH";
-"end"                                return "END";
-"args"                               return "ARGS";
 "if"                                 return "IF";
 "incase"                             return "INCASE";
 "throws"                             return "THROWS";
 "else"                               return "ELSE";
 "do"                                 return "DO";
-"cond"                               return "COND";
 "for"                                return "FOR";
 "in"                                 return "IN";
 "then"                               return "THEN";

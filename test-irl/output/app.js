@@ -186,8 +186,67 @@ process.umask = function() { return 0; };
 (function (process){
 const CNS_ = {
 
+  config: {
+    use: {
+      react: true
+    }
+  },
+
+  getConfig: function (key) {
+    const pieces = key.split('.');
+    var obj = CNS_.config;
+    pieces.every(function (item) {
+      obj = obj[item];
+      return obj !== undefined;
+    });
+    return obj;
+  },
+
+  lang: function (key, val) {
+    const pieces = key.split('.');
+    var obj = CNS_.config;
+    pieces.forEach(function (item, index) {
+      const isLast = index === pieces.length - 1;
+      if (isLast) {
+        obj[item] = val;
+      } else {
+        obj[item] = obj[item] || {};
+        obj = obj[item];
+      }
+    });
+  },
+
+  die: function (msg) {
+    throw new Error(msg);
+  },
+
+  range: function (from, through) {
+    const out = [];
+    for (var i = from; i <= through; i += 1) out.push(i);
+    return out;
+  },
+
+  log: function () {
+    return typeof console !== 'undefined' && typeof console.log === 'function'
+      ? console.log.apply(console, arguments)
+      : undefined;
+  },
+
+  warn: function () {
+    return typeof console !== 'undefined' && typeof console.warn === 'function'
+      ? console.warn.apply(console, arguments)
+      : CNS_.log.apply(null, arguments);
+  },
+
+  debug: function () {
+    return typeof console !== 'undefined' && typeof console.debug === 'function'
+      ? console.debug.apply(console, arguments)
+      : CNS_.log.apply(null, arguments);
+  },
+
+  // CNS_.tuple([1, 2, 3]) -> {{1, 2, 3}}
   tuple: function (arr) {
-    if (!arr.length) throw new Error('Tuples can not be empty.');
+    if (!arr.length) CNS_.die('Tuples can not be empty.');
     Object.defineProperty
       ? Object.defineProperty(arr, 'CNS_isTuple_', {enumerable: false, configurable: false, writable: false, value: CNS_})
       : (arr.CNS_isTuple_ = CNS_);
@@ -197,20 +256,20 @@ const CNS_ = {
   // CNS_.listToObject([fun1, fun2], function (fun) { return fun.name }) -> {fun1: fun1, fun2: fun2}
   tupleToObject: function (list, fn) {
     const obj = {};
-    if (list.CNS_isTuple_ !== CNS_) throw new Error('Argument provided is not a tuple');
+    if (list.CNS_isTuple_ !== CNS_) CNS_.die('Argument provided is not a tuple');
     list.forEach(function (item, index) { obj[fn ? fn(item, index) : index] = item });
     return obj;
   },
 
   // CNS_.tupleToArray({{ a, b }}) -> [ a, b ]
   tupleToArray: function (tuple) {
-    if (tuple.CNS_isTuple_ !== CNS_) throw new Error('Argument provided is not a tuple');
+    if (tuple.CNS_isTuple_ !== CNS_) CNS_.die('Argument provided is not a tuple');
     return tuple.slice();
   },
 
   // CNS_.arrayToTuple([1, 2]) -> {{ 1, 2 }}
   arrayToTuple: function (arr) {
-    if (arr.CNS_isTuple_ === CNS_ || !Array.isArray(arr)) throw new Error('Argument provided is not an array');
+    if (arr.CNS_isTuple_ === CNS_ || !Array.isArray(arr)) CNS_.die('Argument provided is not an array');
     return CNS_.tuple(arr.slice());
   },
 
@@ -225,10 +284,10 @@ const CNS_ = {
     if (a === b || (typeof a === 'number' && typeof b === 'number' && isNaN(a) && isNaN(b))) return true;
     if (typeof a !== typeof b) return false;
     if (typeof a === 'object') {
-      if (Array.isArray(a)) return a.every(function(item, index) { return this.eql(item, b[index]) }.bind(this));
+      if (Array.isArray(a)) return a.every(function(item, index) { return CNS_.eql(item, b[index]) }.bind(this));
       const ks = Object.keys, ak = ks(a), bk = ks(b);
       if (!CNS_.eql(ak, bk)) return false;
-      return ak.every(function (key) { return this.eql(a[key], b[key]) }.bind(this));
+      return ak.every(function (key) { return CNS_.eql(a[key], b[key]) }.bind(this));
     }
     return false;
   },
@@ -290,7 +349,7 @@ const CNS_ = {
             if (SYMTEST.test(kv[0])) (kv[0] = Symbol.for(kv[0].replace(SYMREPLACE, '')));
             return testArrParam(arg, kv[1].trim(), typeof kv[0] === 'string' ?  kv[0].trim() : kv[0]);
           });
-        default: throw new Error('Can not pattern match against type ' + matchType); // No match if we don't have a matchable type.
+        default: CNS_.die('Can not pattern match against type ' + matchType); // No match if we don't have a matchable type.
       }
     });
   },
@@ -378,7 +437,7 @@ const CNS_ = {
   update: function (keyOrIndex, val, collection) {
     if (Array.isArray(collection)) {
       if (collection.CNS_isTuple_ === CNS_ && collection.indexOf(keyorIndex) === -1) {
-        throw new Error('Can not add extra items to tuples.');
+        CNS_.die('Can not add extra items to tuples.');
       }
       const newSlice = collection.slice();
       newSlice[keyOrIndex] = val;
@@ -398,7 +457,7 @@ const CNS_ = {
   // CNS_.remove('name', {name: 'john', age: 33}) -> {age: 33}
   remove: function (keyOrIndex, collection) {
     if (Array.isArray(collection)) {
-      if (collection.CNS_isTuple_ === CNS_) throw new Error('Can not remove items from tuples.');
+      if (collection.CNS_isTuple_ === CNS_) CNS_.die('Can not remove items from tuples.');
       const splicer = collection.slice();
       splicer.splice(keyOrIndex, 1);
       return splicer;
@@ -422,8 +481,8 @@ const CNS_ = {
     if (!react && typeof require !== 'undefined') {
       try { react = require('react') } catch (_) { react = null }
     }
-    if (react) return react.createElement(type, a, b);
-    if (typeof document === 'undefined') throw new Error('No HTML document is available.');
+    if (react && CNS_.getConfig('use.react')) return react.createElement(type, a, b);
+    if (typeof document === 'undefined') CNS_.die('No HTML document is available.');
     const elem = document.createElement(type);
     Object.keys(a).forEach(function (key) {
       const cleanKey = key === 'className' ? 'class' : key.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
@@ -439,7 +498,7 @@ const CNS_ = {
       if (arguments.length === arity) {
         return fun.apply(undefined, arguments);
       } else {
-        throw new Error('Function ' + (fun.name || '') + ' called with wrong arity. Expected ' + arity + ' got ' + arguments.length + '.');
+        CNS_.die('Function ' + (fun.name || '') + ' called with wrong arity. Expected ' + arity + ' got ' + arguments.length + '.');
       }
     };
   },
@@ -466,7 +525,8 @@ const CNS_ = {
 
      // Should only be used on objects that you know for sure only contain
      // functions, objects, and arrays, deeply nested.
-     stringify: function (obj) {
+     // Top signifies we are stringifying at the top level (true/false)
+     stringify: function (obj, top) {
        if (typeof obj === 'function') {
          return obj.toString();
        } else if (typeof obj === 'string') {
@@ -474,9 +534,12 @@ const CNS_ = {
        } else if (obj === true || obj === false) {
          return obj;
        } else if (Array.isArray(obj)) {
-         return '[' + obj.map(function (item) { return CNS_.msgs.stringify(item) }).join(', ') + ']';
+         return '[' + obj.map(function (item) { return CNS_.msgs.stringify(item, false) }).join(', ') + ']';
        } else {
-         return '{' + Object.keys(obj).map(function (key) { return key + ':' + CNS_.msgs.stringify(obj[key]) }).join(',\n') + '}';
+         return '{' + Object.keys(obj).map(function (key) {
+           if (top && key === 'config') return key + ':' + JSON.stringify({use:{react:true}});
+           return key + ':' + CNS_.msgs.stringify(obj[key], false);
+         }).join(',\n') + '}';
        }
      },
 
@@ -537,7 +600,7 @@ const CNS_ = {
 
      Thread: function(fnBody) {
        const isBrowser = typeof navigator !== 'undefined';
-       const body = 'const CNS_ = ' + CNS_.msgs.stringify(CNS_) + ';\n' +
+       const body = 'const CNS_ = ' + CNS_.msgs.stringify(CNS_, true) + ';\n' +
                     'CNS_.msgs.isChild = true;\n' +
                     'CNS_.msgs.handlers = [];\n' +
                     (isBrowser ? 'this.onmessage = CNS_.msgs.onMsg;\n'
@@ -21205,7 +21268,7 @@ const tl = args[0].slice(1);
 const accum = args[1];
       return reactify(tl, CNS_.update(hd.name, hd, accum));
     } else {
-      throw new Error('No match found for def statement.');
+      throw new Error('No match found for functional pattern match statement.');
     }
   };
 
@@ -21219,7 +21282,7 @@ function factorial () {
       const n = args[0];
       return n * factorial(n - 1);
     } else {
-      throw new Error('No match found for def statement.');
+      throw new Error('No match found for functional pattern match statement.');
     }
   };
 

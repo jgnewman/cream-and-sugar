@@ -177,6 +177,28 @@ process = spawn fn => console.log "I'm alive!"
 kill process
 ```
 
+### `lang key, value`
+
+- `key {String}`: Any string.
+- `value {Any}`: Any value.
+
+Sets thread-level configuration options for the language. For example, `lang 'use.react', false` will prevent trying to use React when compiling JSX-like syntax.
+
+Note that these are runtime configuration options. They are not hoisted and may be used anywhere within your code. Each thread in your application will also have access to its own set of configuration options so setting an option within a child process will not affect code running in the host thread.
+
+Returns `undefined`.
+
+#### Current Config Options
+
+`use.react` - {Boolean} Defaults to true. Determines whether C&S will try to use React.js when compiling JSX-like syntax.
+
+This list is expected to be expanded.
+
+```ruby
+lang 'use.react', false #=> undefined
+```
+
+
 ### `last list`
 
 - `list {Array|Tuple|String}`: A list type.

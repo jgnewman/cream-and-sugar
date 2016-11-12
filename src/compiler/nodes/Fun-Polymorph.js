@@ -212,7 +212,7 @@ compile(nodes.PolymorphNode, function () {
 
     // Generate an else case to use when we're finished with sub conditions.
     const elseCase = ` else {
-      throw new Error('No match found for ${this.isNamed ? 'def' : 'match'} statement.');
+      throw new Error('No match found for ${this.isNamed ? 'functional pattern match' : 'match'} statement.');
     }`;
 
     let subBodies;
@@ -266,7 +266,7 @@ compile(nodes.PolymorphNode, function () {
   return `function ${prefix} {
     const args = CNS_.args(arguments);
     ${compiledFns} else {
-      throw new Error('No match found for ${this.isNamed ? 'def' : 'match'} statement.');
+      throw new Error('No match found for ${this.isNamed ? 'functional pattern match' : 'match'} statement.');
     }
   }${meta.anon && meta.bind ? '.bind(this)' : ''}`;
 });

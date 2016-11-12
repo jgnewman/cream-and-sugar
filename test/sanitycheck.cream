@@ -138,3 +138,5 @@ setInterval (fn =>
 ), 1000
 
 export foo
+
+lang 'use.react', false

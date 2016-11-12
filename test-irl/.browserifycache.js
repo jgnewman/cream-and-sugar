@@ -20,7 +20,7 @@ const tl = args[0].slice(1);
 const accum = args[1];
       return reactify(tl, CNS_.update(hd.name, hd, accum));
     } else {
-      throw new Error('No match found for def statement.');
+      throw new Error('No match found for functional pattern match statement.');
     }
   };
 
@@ -34,7 +34,7 @@ function factorial () {
       const n = args[0];
       return n * factorial(n - 1);
     } else {
-      throw new Error('No match found for def statement.');
+      throw new Error('No match found for functional pattern match statement.');
     }
   };
 

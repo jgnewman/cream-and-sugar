@@ -13,7 +13,7 @@ var _utils = require('../utils');
   var base = this.text.replace(/^\@/, '');
   var clean = base.split('.').map(function (piece, pieceIndex) {
 
-    // Disallow identifiers that look like this_
+    // Disallow identifiers that look like "this_"
     if (/[^_]_$/.test(piece)) {
       (0, _utils.die)(_this, _this.text + ' matches the pattern IDENTIFIER_ which is reserved for system variables.');
 

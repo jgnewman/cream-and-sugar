@@ -220,7 +220,7 @@ function sanitizeFnMeta(fnList) {
     var matchObjs = patterns[pattern];
 
     // Generate an else case to use when we're finished with sub conditions.
-    var elseCase = ' else {\n      throw new Error(\'No match found for ' + (_this.isNamed ? 'def' : 'match') + ' statement.\');\n    }';
+    var elseCase = ' else {\n      throw new Error(\'No match found for ' + (_this.isNamed ? 'functional pattern match' : 'match') + ' statement.\');\n    }';
 
     var subBodies = void 0;
 
@@ -267,5 +267,5 @@ function sanitizeFnMeta(fnList) {
   // Spit out the top-level function string. Within it, drop in the
   // conditions for different function bodies and add an else case for
   // no match at the end.
-  return 'function ' + prefix + ' {\n    const args = CNS_.args(arguments);\n    ' + compiledFns + ' else {\n      throw new Error(\'No match found for ' + (this.isNamed ? 'def' : 'match') + ' statement.\');\n    }\n  }' + (meta.anon && meta.bind ? '.bind(this)' : '');
+  return 'function ' + prefix + ' {\n    const args = CNS_.args(arguments);\n    ' + compiledFns + ' else {\n      throw new Error(\'No match found for ' + (this.isNamed ? 'functional pattern match' : 'match') + ' statement.\');\n    }\n  }' + (meta.anon && meta.bind ? '.bind(this)' : '');
 });

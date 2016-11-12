@@ -26,7 +26,7 @@ describe('Polymorphic Function Definitions', () => {
         const n = args[0];
         return n * factorial(n - 1);
       } else {
-        throw new Error('No match found for def statement.');
+        throw new Error('No match found for functional pattern match statement.');
       }
     };`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
@@ -43,7 +43,7 @@ describe('Polymorphic Function Definitions', () => {
         const n = args[0];
         return n * factorial(n - 1);
       } else {
-        throw new Error('No match found for def statement.');
+        throw new Error('No match found for functional pattern match statement.');
       }
     };`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
@@ -76,7 +76,7 @@ describe('Polymorphic Function Definitions', () => {
         doStuff();
         return doMoreStuff();
       } else {
-        throw new Error('No match found for def statement.');
+        throw new Error('No match found for functional pattern match statement.');
       }
     };`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
@@ -98,7 +98,7 @@ describe('Polymorphic Function Definitions', () => {
           return n * factorial(n - 1);
         }
       } else {
-        throw new Error('No match found for def statement.');
+        throw new Error('No match found for functional pattern match statement.');
       }
     };`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
@@ -120,7 +120,7 @@ describe('Polymorphic Function Definitions', () => {
           return n * factorial(n - 1);
         }
       } else {
-        throw new Error('No match found for def statement.');
+        throw new Error('No match found for functional pattern match statement.');
       }
     };`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
@@ -163,7 +163,7 @@ describe('Polymorphic Function Definitions', () => {
             const n = args[0];
             return n * factorial(n - 1);
           } else {
-            throw new Error('No match found for def statement.');
+            throw new Error('No match found for functional pattern match statement.');
           }
         };
       });

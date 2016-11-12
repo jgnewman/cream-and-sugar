@@ -9,7 +9,7 @@ compile(nodes.IdentifierNode, function () {
   const base = this.text.replace(/^\@/, '');
   const clean = base.split('.').map((piece, pieceIndex) => {
 
-    // Disallow identifiers that look like this_
+    // Disallow identifiers that look like "this_"
     if (/[^_]_$/.test(piece)) {
       die(this, `${this.text} matches the pattern IDENTIFIER_ which is reserved for system variables.`);
 
