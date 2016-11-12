@@ -1,4 +1,4 @@
-# Cream & Sugar Scope Piping
+# Cream & Sugar Curry Piping
 
 Cream & Sugar provides an interesting and somewhat unique little tool that we call curry piping. If you are familiar with the concept of monads in languages like Haskell, there are some similarities, however **curry pipes are not monads**. But insead of trying to describe a curry pipe, let's start by looking at an example. Imagine you had a number that you wanted to perform a couple of operations on in JavaScript. You could write that like this:
 

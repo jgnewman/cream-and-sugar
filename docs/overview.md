@@ -19,7 +19,7 @@ If this sounds interesting to you, read on. Here are all the docs we've got at t
 - [Iteration](iteration.md)
 - [JSX Syntax](jsx.md)
 - [Error Handling](errors.md)
-- [Scope Piping](pipes.md)
+- [Curry Piping](pipes.md)
 - [Processes](processes.md)
 - [Built-In Functions](bifs.md)
 - [An Example React App](sample.md)
