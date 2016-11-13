@@ -37,9 +37,7 @@ describe('Objects', () => {
   });
 
   it('should compile an object with new lines between items', () => {
-    const toCompile = `{a:1,
-      b:2,
-      c:3}`;
+    const toCompile = "{a:1,\n  b:2,\n  c:3}";
     assert.equal(shrink(compileCode(toCompile)), '{a:1,b:2,c:3}');
   });
 

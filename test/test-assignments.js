@@ -50,7 +50,7 @@ describe('Assignments', () => {
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
-  it('should compile an tuple destructure beginning with new lines', () => {
+  it('should compile a tuple destructure beginning with new lines', () => {
     const toCompile = `{
 
       a, b, c} = foo`;
@@ -63,7 +63,7 @@ describe('Assignments', () => {
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
-  it('should compile an tuple destructure ending with new lines', () => {
+  it('should compile a tuple destructure ending with new lines', () => {
     const toCompile = `{a, b, c\n\n} = foo`;
     const expected = nlToSpace(`
       var ref0_ = foo;
@@ -74,7 +74,7 @@ describe('Assignments', () => {
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
-  it('should compile an tuple destructure beginning and ending with new lines', () => {
+  it('should compile a tuple destructure beginning and ending with new lines', () => {
     const toCompile = `{\n\na, b, c\n\n} = foo`;
     const expected = nlToSpace(`
       var ref0_ = foo;

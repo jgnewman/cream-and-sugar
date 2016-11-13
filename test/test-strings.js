@@ -24,10 +24,8 @@ describe('Strings', () => {
   });
 
   it('should allow multiline backtick strings', () => {
-    const toCompile = `\`
-      hello
-    \``;
-    assert.equal(toCompile, compileCode(toCompile));
+    const toCompile = "`\n  hello\n`";
+    assert.equal(compileCode(toCompile), toCompile);
   });
 
 });
