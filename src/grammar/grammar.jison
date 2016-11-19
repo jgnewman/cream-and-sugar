@@ -102,10 +102,21 @@
 "from"                               return "FROM";
 "onlyif"                             return "ONLYIF";
 
-and|or|lte|gte|lt|gt                 return "LOGIC";
-isnt|is|\=\=|\!\=                    return "LOGIC";
+"isnt"                               return "LOGIC";
+"is"                                 return "LOGIC";
+"and"                                return "LOGIC";
+"or"                                 return "LOGIC";
+"lte"                                return "LOGIC";
+"gte"                                return "LOGIC";
+"lt"                                 return "LOGIC";
+"gt"                                 return "LOGIC";
+\=\=|\!\=                            return "LOGIC";
 
-true|false|null|undefined|NaN        return "SPECIALVAL";
+"true"                               return "SPECIALVAL";
+"false"                              return "SPECIALVAL";
+"null"                               return "SPECIALVAL";
+"undefined"                          return "SPECIALVAL";
+"NaN"                                return "SPECIALVAL";
 
 (\@)?[a-zA-Z\_\$][a-zA-Z0-9\_\$]*((\s*\.\s*)?[a-zA-Z0-9\_\$]+)*   %{
                                                                     if (/^[A-Z][A-Z_]+$/.test(yytext)) {

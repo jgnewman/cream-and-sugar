@@ -149,7 +149,7 @@ function compileBody(body, delim) {
 // Official list of exposed system functions
 function getExposedFns() {
   return [
-    'apply', 'elem', 'throw', 'create', 'type', 'instanceof',
+    'apply', 'elem', 'throw', 'create', 'dataType', 'instanceof',
     'head', 'tail', 'random', 'lead', 'last', 'update',
     'remove', 'eql', 'dom', 'domArray', 'spawn',
     'receive', 'kill', 'reply', 'send', 'aritize', 'tupleToObject',

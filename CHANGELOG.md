@@ -1,3 +1,23 @@
+0.4.1
+=====
+
+Shipped on 11.19.2016
+
+### Fix
+
+- Fixed `type` bif conflicting with html `type` property.
+- Upgrade to cns-lib 0.3.3 containing a fix for the `key` property in react iterators and a renamed `type` bif.
+- Fixed logic keywords as well as true, false, null, undefined, and NaN conflicting with identifiers in some instances.
+
+### Change
+
+- The `type` bif has been renamed `dataType`.
+
+### Under the Hood
+
+- Small test updates
+
+
 0.4.0
 =====
 

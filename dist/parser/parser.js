@@ -1543,9 +1543,42 @@ var parser = function () {
                         return "LOGIC";
                         break;
                     case 41:
-                        return "SPECIALVAL";
+                        return "LOGIC";
                         break;
                     case 42:
+                        return "LOGIC";
+                        break;
+                    case 43:
+                        return "LOGIC";
+                        break;
+                    case 44:
+                        return "LOGIC";
+                        break;
+                    case 45:
+                        return "LOGIC";
+                        break;
+                    case 46:
+                        return "LOGIC";
+                        break;
+                    case 47:
+                        return "LOGIC";
+                        break;
+                    case 48:
+                        return "SPECIALVAL";
+                        break;
+                    case 49:
+                        return "SPECIALVAL";
+                        break;
+                    case 50:
+                        return "SPECIALVAL";
+                        break;
+                    case 51:
+                        return "SPECIALVAL";
+                        break;
+                    case 52:
+                        return "SPECIALVAL";
+                        break;
+                    case 53:
                         if (/^[A-Z][A-Z_]+$/.test(yy_.yytext)) {
                             return 43;
                         } else {
@@ -1553,70 +1586,70 @@ var parser = function () {
                         }
 
                         break;
-                    case 43:
+                    case 54:
                         return "NUMBER";
                         break;
-                    case 44:
+                    case 55:
                         return "REGEXP";
                         break;
-                    case 45:
+                    case 56:
                         return "STRING"; /* " fix syntax highlighting */
                         break;
-                    case 46:
+                    case 57:
                         return "STRING"; /* ' fix syntax highlighting */
                         break;
-                    case 47:
+                    case 58:
                         return "STRING"; /* ` fix syntax highlighting */
                         break;
-                    case 48:
+                    case 59:
                         return "IDENTIFIER";
                         break;
-                    case 49:
+                    case 60:
                         return ",";
                         break;
-                    case 50:
+                    case 61:
                         return "->";
                         break;
-                    case 51:
+                    case 62:
                         return "::";
                         break;
-                    case 52:
+                    case 63:
                         return ":";
                         break;
-                    case 53:
+                    case 64:
                         return "=>";
                         break;
-                    case 54:
+                    case 65:
                         return "=";
                         break;
-                    case 55:
+                    case 66:
                         return ".";
                         break;
-                    case 56:
+                    case 67:
                         return "||";
                         break;
-                    case 57:
+                    case 68:
                         return "OPERATOR";
                         break;
-                    case 58:
+                    case 69:
                         return "(";
                         break;
-                    case 59:
+                    case 70:
                         return ")";
                         break;
-                    case 60:
+                    case 71:
                         return "|";
                         break;
-                    case 61:
+                    case 72:
                         return "!";
                         break;
-                    case 62:
+                    case 73:
                         return "EOF";
                         break;
                 }
             },
-            rules: [/^(?:((\r\n|\r|\n)+[ \t]*)?###(.|\r|\n)*?###)/, /^(?:(\r\n|\r|\n)+[ \t]*#.*($|\r\n|\r|\n))/, /^(?:#.*($|\r\n|\r|\n))/, /^(?:\[\s*)/, /^(?:\])/, /^(?:\{\{\s*)/, /^(?:\}\})/, /^(?:\{\s*)/, /^(?:\})/, /^(?:>>=)/, /^(?:<<)/, /^(?:>>)/, /^(?:<\/[^\>]+>)/, /^(?:<\/\s*)/, /^(?:<\s*)/, /^(?:\/>)/, /^(?:>)/, /^(?:(\r\n|\r|\n)+[ \t]+(\r\n|\r|\n))/, /^(?:(\r\n|\r|\n)+[ \t]*)/, /^(?:\s+)/, /^(?:fn\b)/, /^(?:caseof\b)/, /^(?:match\b)/, /^(?:if\b)/, /^(?:incase\b)/, /^(?:throws\b)/, /^(?:else\b)/, /^(?:do\b)/, /^(?:for\b)/, /^(?:in\b)/, /^(?:then\b)/, /^(?:when\b)/, /^(?:where\b)/, /^(?:try\b)/, /^(?:catch\b)/, /^(?:import\b)/, /^(?:export\b)/, /^(?:from\b)/, /^(?:onlyif\b)/, /^(?:and|or|lte|gte|lt|gt\b)/, /^(?:isnt|is|==|!=)/, /^(?:true|false|null|undefined|NaN\b)/, /^(?:(@)?[a-zA-Z\_\$][a-zA-Z0-9\_\$]*((\s*\.\s*)?[a-zA-Z0-9\_\$]+)*)/, /^(?:(-)?[0-9]+(\.[0-9]+)?(e-?[0-9]+)?)/, /^(?:\/[^\/\s]+\/[gim]*)/, /^(?:"([^\"]|\\[\"])*")/, /^(?:'([^\']|\\[\'])*')/, /^(?:`([^\`]|\\[\`])*`)/, /^(?:@)/, /^(?:,)/, /^(?:->)/, /^(?:::)/, /^(?::)/, /^(?:=>)/, /^(?:=)/, /^(?:\.)/, /^(?:\|\|)/, /^(?:\+|-|\*|\/|%)/, /^(?:\()/, /^(?:\))/, /^(?:\|)/, /^(?:!)/, /^(?:$)/],
-            conditions: { "INITIAL": { "rules": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62], "inclusive": true } }
+            rules: [/^(?:((\r\n|\r|\n)+[ \t]*)?###(.|\r|\n)*?###)/, /^(?:(\r\n|\r|\n)+[ \t]*#.*($|\r\n|\r|\n))/, /^(?:#.*($|\r\n|\r|\n))/, /^(?:\[\s*)/, /^(?:\])/, /^(?:\{\{\s*)/, /^(?:\}\})/, /^(?:\{\s*)/, /^(?:\})/, /^(?:>>=)/, /^(?:<<)/, /^(?:>>)/, /^(?:<\/[^\>]+>)/, /^(?:<\/\s*)/, /^(?:<\s*)/, /^(?:\/>)/, /^(?:>)/, /^(?:(\r\n|\r|\n)+[ \t]+(\r\n|\r|\n))/, /^(?:(\r\n|\r|\n)+[ \t]*)/, /^(?:\s+)/, /^(?:fn\b)/, /^(?:caseof\b)/, /^(?:match\b)/, /^(?:if\b)/, /^(?:incase\b)/, /^(?:throws\b)/, /^(?:else\b)/, /^(?:do\b)/, /^(?:for\b)/, /^(?:in\b)/, /^(?:then\b)/, /^(?:when\b)/, /^(?:where\b)/, /^(?:try\b)/, /^(?:catch\b)/, /^(?:import\b)/, /^(?:export\b)/, /^(?:from\b)/, /^(?:onlyif\b)/, /^(?:isnt\b)/, /^(?:is\b)/, /^(?:and\b)/, /^(?:or\b)/, /^(?:lte\b)/, /^(?:gte\b)/, /^(?:lt\b)/, /^(?:gt\b)/, /^(?:==|!=)/, /^(?:true\b)/, /^(?:false\b)/, /^(?:null\b)/, /^(?:undefined\b)/, /^(?:NaN\b)/, /^(?:(@)?[a-zA-Z\_\$][a-zA-Z0-9\_\$]*((\s*\.\s*)?[a-zA-Z0-9\_\$]+)*)/, /^(?:(-)?[0-9]+(\.[0-9]+)?(e-?[0-9]+)?)/, /^(?:\/[^\/\s]+\/[gim]*)/, /^(?:"([^\"]|\\[\"])*")/, /^(?:'([^\']|\\[\'])*')/, /^(?:`([^\`]|\\[\`])*`)/, /^(?:@)/, /^(?:,)/, /^(?:->)/, /^(?:::)/, /^(?::)/, /^(?:=>)/, /^(?:=)/, /^(?:\.)/, /^(?:\|\|)/, /^(?:\+|-|\*|\/|%)/, /^(?:\()/, /^(?:\))/, /^(?:\|)/, /^(?:!)/, /^(?:$)/],
+            conditions: { "INITIAL": { "rules": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73], "inclusive": true } }
         };
         return lexer;
     }();

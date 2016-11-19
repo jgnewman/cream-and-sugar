@@ -140,3 +140,5 @@ setInterval (fn =>
 export foo
 
 lang 'use.react', false
+
+<TodoListItem classList={[]} trueble={false} labelText="Taste JavaScript" />

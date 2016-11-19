@@ -1,6 +1,6 @@
 {
   "name": "cream-and-sugar",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A deliciously functional syntax for JavaScript with native support for JSX",
   "keywords": [
     "javascript",
@@ -34,7 +34,7 @@
   "author": "John Newman",
   "license": "MIT",
   "dependencies": {
-    "cns-lib": "^0.3.0"
+    "cns-lib": "^0.3.3"
   },
   "devDependencies": {
     "assert": "^1.4.1",
