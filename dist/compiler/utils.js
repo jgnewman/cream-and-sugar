@@ -157,7 +157,7 @@ function compileBody(body, delim) {
 
 // Official list of exposed system functions
 function getExposedFns() {
-  return ['apply', 'elem', 'throw', 'create', 'dataType', 'instanceof', 'head', 'tail', 'random', 'lead', 'last', 'update', 'remove', 'eql', 'dom', 'domArray', 'spawn', 'receive', 'kill', 'reply', 'send', 'aritize', 'tupleToObject', 'tupleToArray', 'arrayToTuple', 'log', 'warn', 'debug', 'die', 'range', 'lang'];
+  return ['apply', 'get', 'throw', 'create', 'dataType', 'instanceof', 'head', 'tail', 'random', 'lead', 'last', 'update', 'remove', 'eql', 'dom', 'domArray', 'spawn', 'receive', 'kill', 'reply', 'send', 'aritize', 'tupleToObject', 'tupleToArray', 'arrayToTuple', 'log', 'warn', 'debug', 'die', 'range', 'lang'];
 }
 
 function getMsgPassingFns() {
@@ -166,7 +166,7 @@ function getMsgPassingFns() {
 
 // Official list of reserved words
 function getReservedWords() {
-  return ['fn', 'caseof', 'def', 'match', 'end', 'if', 'no', 'cond', 'for', 'in', 'when', 'var', 'const', 'let', 'while', 'switch', 'function', 'with', 'else', 'instanceof', 'super', 'enum', 'break', 'extends', 'catch', 'new', 'class', 'try', 'continue', 'typeof', 'delete', 'return', 'static', 'CNS_'];
+  return ['fn', 'caseof', 'match', 'if', 'for', 'in', 'when', 'var', 'const', 'let', 'while', 'switch', 'function', 'with', 'else', 'instanceof', 'super', 'enum', 'break', 'extends', 'catch', 'new', 'class', 'try', 'continue', 'typeof', 'delete', 'return', 'static', 'CNS_'];
 }
 
 exports.parser = _parser2.default;

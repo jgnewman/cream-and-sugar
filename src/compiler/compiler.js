@@ -15,6 +15,7 @@ import './nodes/Operation';
 import './nodes/Logic';
 import './nodes/Cons';
 import './nodes/Opposite';
+import './nodes/Binder';
 import './nodes/Arr';
 import './nodes/Obj';
 import './nodes/Comp';

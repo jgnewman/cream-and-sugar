@@ -56,4 +56,16 @@ describe('Arrays', () => {
     assert.equal('[foo(bar), 2 + 2, 3, foo.bar, [4, 5, 6], { a: foo, b: bar }]', compileCode(toCompile));
   });
 
+  it('should compile an array with comments inline', () => {
+    const toCompile = '[\n'
+                    + '  # comment\n'
+                    + '  a, b, c,\n'
+                    + '  \n'
+                    + '  # comment\n'
+                    + '  d, e, f,\n'
+                    + '  g, h, i # comment\n'
+                    + ']';
+    assert.equal(compileCode(toCompile), '[a, b, c, d, e, f, g, h, i]',);
+  });
+
 });

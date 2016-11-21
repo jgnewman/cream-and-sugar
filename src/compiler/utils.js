@@ -149,7 +149,7 @@ function compileBody(body, delim) {
 // Official list of exposed system functions
 function getExposedFns() {
   return [
-    'apply', 'elem', 'throw', 'create', 'dataType', 'instanceof',
+    'apply', 'get', 'throw', 'create', 'dataType', 'instanceof',
     'head', 'tail', 'random', 'lead', 'last', 'update',
     'remove', 'eql', 'dom', 'domArray', 'spawn',
     'receive', 'kill', 'reply', 'send', 'aritize', 'tupleToObject',
@@ -167,8 +167,8 @@ function getMsgPassingFns() {
 // Official list of reserved words
 function getReservedWords() {
   return [
-    'fn', 'caseof', 'def', 'match', 'end', 'if', 'no',
-    'cond', 'for', 'in', 'when', 'var', 'const', 'let', 'while',
+    'fn', 'caseof', 'match', 'if',
+    'for', 'in', 'when', 'var', 'const', 'let', 'while',
     'switch', 'function', 'with', 'else', 'instanceof', 'super',
     'enum', 'break', 'extends', 'catch', 'new', 'class',
     'try', 'continue', 'typeof', 'delete', 'return',

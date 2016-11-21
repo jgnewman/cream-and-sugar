@@ -1,3 +1,31 @@
+0.5.0
+=====
+
+Shipped on 11.21.2016
+
+### Fix
+
+- Upgrade to cns-lib 0.4.1 containing...
+  - a fix that allows `update` to be called on function objects;
+  - a fix for `lead` and `tail` where they weren't outputting tuples when called on tuples.
+- Fix a bug where you couldn't call functions like `(foo 'bar') 'baz'`.
+- Fix a parsing bug having to do with indentation in nested objects and arrays.
+- Fix a bug where the `get` bif was undefined.
+- Fix a bug where comments inside collections would sometimes trigger parse errors. **Note:** You are still not allowed to put block comments inside collections.
+- Fix a bug where the `!` operator was being applied to an entire phrase after it rather than just the first term.
+- Remove certain words showing as reserved: `def, end, cond, no`
+
+### Feature
+
+- You can now pattern match against strings.
+- New syntax `:: fnName` will create a new function bound to the current context.
+- "JSX-like" syntax now accepts parens as well as brackets, for example:  `<elem attr=(ident) />`.
+
+### Under the Hood
+
+- Add new tests
+
+
 0.4.1
 =====
 

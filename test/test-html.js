@@ -16,6 +16,10 @@ describe('Html', () => {
     assert.equal('CNS_.createElement("br", {id: 2 + 2}, [])', compileCode('<br id={2 + 2}/>'));
   });
 
+  it('should allow for parentheses instead of brackets', () => {
+    assert.equal('CNS_.createElement("br", {id: 2 + 2}, [])', compileCode('<br id=(2 + 2)/>'));
+  });
+
   it('should compile an empty html node with attributes', () => {
     const toCompile = `<div className="foo bar"></div>`;
     const expected = `CNS_.createElement("div", {className: "foo bar"}, [])`;

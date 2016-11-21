@@ -29,5 +29,10 @@ var _utils = require('../utils');
     }
   });
 
-  return '' + (this.text[0] === '@' ? 'this.' : '') + clean.join('.');
+  // Use @ lookups if we have them
+  if (this.text[0] === '@') {
+    return 'this.' + clean.join('.');
+  } else {
+    return clean.join('.');
+  }
 });

@@ -27,6 +27,8 @@ function parseArgs() {
   return out;
 }
 
+// If the file name to compile came in through the command line,
+// compile it and write it out.
 if (args.i) {
   compile(args.i, function (err, result) {
     if (err) {
@@ -44,6 +46,8 @@ if (args.i) {
   }, {finalize: true}); // Adds in library code and such
 }
 
+// Otherwise, export our compile functions so this can be required
+// by other modules.
 module.exports = {
   compile: compile,
   compileCode: compileCode

@@ -27,6 +27,16 @@
   [4, 5, 6],
   {a: foo, b: bar}
 ]
+[
+  # Line 1 stuff
+  a, b, c,
+
+  # Line 2 stuff
+  d, e, f,
+
+  # Line 3 stuff
+  g, h, i
+]
 
 x = foo
 { x, y } = foo
@@ -36,6 +46,10 @@ x = foo
 [ x, y ] = foo
 
 ATOM
+
+###
+Random comment here
+###
 
 'string'
 "string"
@@ -118,6 +132,10 @@ up _ =>
   # Create and return a new process from a function.
   spawn fn =>
 
+    ###
+    Random comment here
+    ###
+
     # When we receive a message, pattern match it to figure out what to do.
     receive match
 
@@ -141,4 +159,25 @@ export foo
 
 lang 'use.react', false
 
-<TodoListItem classList={[]} trueble={false} labelText="Taste JavaScript" />
+<Elem trueble=(true) isChecked={foo is checked}/>
+
+(foo 'bar') baz 'quux'
+
+initialState = {
+  items: [
+    { complete: true, value: 'Taste JavaScript' },
+    { complete: false, value: 'Buy a unicorn' }
+  ]
+}
+
+###
+comment
+###
+foo 'bar' => 1
+foo baz   => 2
+
+::boundFn.x
+
+!foo
+!foo and bar or baz
+!foo bar

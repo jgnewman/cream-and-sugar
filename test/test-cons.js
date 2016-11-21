@@ -5,12 +5,12 @@ describe('Cons', () => {
 
   it('should compile a cons form into a function call', () => {
     const toCompile = 'hd >> tl';
-    assert.equal("[hd].concat(tl)", compileCode(toCompile));
+    assert.equal(compileCode(toCompile), "[hd].concat(tl)");
   });
 
   it('should compile a back cons form into a function call', () => {
     const toCompile = 'ld << lst';
-    assert.equal("ld.concat([lst])", compileCode(toCompile));
+    assert.equal(compileCode(toCompile), "ld.concat([lst])");
   });
 
 });

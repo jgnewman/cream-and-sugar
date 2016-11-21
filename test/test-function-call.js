@@ -37,4 +37,9 @@ describe('Function Calls', () => {
     })`), nlToSpace(compileCode(toCompile)));
   });
 
+  it('should compile a call where the initiator is a wrap', () => {
+    const toCompile = '(foo bar) baz';
+    assert.equal('foo(bar)(baz)', compileCode(toCompile));
+  });
+
 });

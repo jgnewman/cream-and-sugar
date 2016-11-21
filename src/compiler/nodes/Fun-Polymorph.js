@@ -29,7 +29,7 @@ function handleStrings(type, src) {
  *
  * @param  {Array} args  A list of parameter nodes.
  *
- * @return {Array}       [["Arr", []], ["Identifier", "foo"], ["HeadTail", ["h","t"]]]
+ * @return {Array}       [ ["Arr", []], ["Identifier", "foo"], ["HeadTail", ["h","t"]] ]
  */
 function getPatterns(args) {
   return args.map(arg => {
@@ -44,7 +44,10 @@ function getPatterns(args) {
       case 'Tuple':
         return [realArg.type, realArg.items.map(item => handleStrings(item.type, item.compile(true)))];
       case 'String':
-        return die(realArg, 'Can not pattern match against strings');
+        // In a previous pattern match paradigm we felt that matching against strings
+        // would be problematic. However I'm not sure that's true anymore. Let's test it
+        // for a while and see how it goes.
+        // return die(realArg, 'Can not pattern match against strings');
       default: return [realArg.type, handleStrings(realArg.type, realArg.src)];
     }
   });

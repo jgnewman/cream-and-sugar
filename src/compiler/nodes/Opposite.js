@@ -1,8 +1,8 @@
 import { compile, nodes } from '../utils';
 
 /*
- * Turn the cons operation into a function call.
+ * Compile the ! operator.
  */
 compile(nodes.OppositeNode, function () {
-  return `!(${this.value.compile(true)})`;
+  return `!${this.value.compile(true)}`;
 });

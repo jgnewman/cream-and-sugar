@@ -13,7 +13,7 @@ describe('Anonymous Functions', () => {
   });
 
   it('should compile an anonymous function with implicit binding', () => {
-    const toCompile = `fn :: => eat food`;
+    const toCompile = `fn ::=> eat food`;
     const expected = nlToSpace(`function () {
       return eat(food);
     }.bind(this)`);

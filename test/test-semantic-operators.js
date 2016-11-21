@@ -55,7 +55,7 @@ describe('Semantic Operators', () => {
 
   it('should compile a complex statement', () => {
     const toCompile = `! a and b or (c is (d lt e)) gte (f / g) % h`;
-    const expected = nlToSpace(`!(a && b || (c === (d < e)) >= (f / g) % h)`);
+    const expected = nlToSpace(`!a && b || (c === (d < e)) >= (f / g) % h`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 

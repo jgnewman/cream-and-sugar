@@ -44,6 +44,8 @@ require('./nodes/Cons');
 
 require('./nodes/Opposite');
 
+require('./nodes/Binder');
+
 require('./nodes/Arr');
 
 require('./nodes/Obj');

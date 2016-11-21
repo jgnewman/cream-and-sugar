@@ -8,11 +8,18 @@
 %%
 
 /* Comments */
-((\r\n|\r|\n)+[ \t]*)?\#\#\#(.|\r|\n)*?\#\#\#  %{ this.unput('\n'); %}
+((\r\n|\r|\n)+[ \t]*)?\#\#\#(.|\r|\n)*?\#\#\#  %{
+                                                 this.unput('\n');
+                                               %}
 
-(\r\n|\r|\n)+[ \t]*\#.*($|\r\n|\r|\n)          %{ this.unput('\n'); %}
+(\r\n|\r|\n)+[ \t]*\#.*($|\r\n|\r|\n)          %{
+                                                 this.unput('\n');
+                                               %}
 
-\#.*($|\r\n|\r|\n)                   return 'NEWLINE'; /* return NEWLINE for lines that end with comments */
+\#.*($|\r\n|\r|\n)                   %{
+                                        if (/[\[\{]\s+/.test(this.pastInput())) return;
+                                        return 'NEWLINE';
+                                     %} /* return NEWLINE for lines that end with comments */
 
 \[\s*                                return "[";
 "]"                                  return "]";
@@ -118,13 +125,13 @@
 "undefined"                          return "SPECIALVAL";
 "NaN"                                return "SPECIALVAL";
 
-(\@)?[a-zA-Z\_\$][a-zA-Z0-9\_\$]*((\s*\.\s*)?[a-zA-Z0-9\_\$]+)*   %{
-                                                                    if (/^[A-Z][A-Z_]+$/.test(yytext)) {
-                                                                      return 'ATOM';
-                                                                    } else {
-                                                                      return 'IDENTIFIER';
-                                                                    }
-                                                                  %}
+(\@|)?[a-zA-Z\_\$][a-zA-Z0-9\_\$]*((\s*\.\s*)?[a-zA-Z0-9\_\$]+)*   %{
+                                                                     if (/^[A-Z][A-Z_]+$/.test(yytext)) {
+                                                                       return 'ATOM';
+                                                                     } else {
+                                                                       return 'IDENTIFIER';
+                                                                     }
+                                                                   %}
 
 (\-)?[0-9]+(\.[0-9]+)?(e\-?[0-9]+)?  return "NUMBER";
 \/[^\/\s]+\/[gim]*                   return "REGEXP";
@@ -135,6 +142,7 @@
 "@"                                  return "IDENTIFIER";
 ","                                  return ",";
 "->"                                 return "->";
+"::=>"                               return "::=>";
 "::"                                 return "::";
 ":"                                  return ":";
 "=>"                                 return "=>";
@@ -197,6 +205,7 @@ SourceElement
   | Num
   | Lookup
   | Opposite
+  | Binder
   | Cons
   | BackCons
   | Operation
@@ -300,6 +309,13 @@ Opposite
     }
   ;
 
+Binder
+  : "::" SourceElement
+    {
+      $$ = new BinderNode($2, createSourceLocation(null, @1, @2));
+    }
+  ;
+
 Cons
   : SourceElement ">>" SourceElement
     {
@@ -345,6 +361,10 @@ ListItems
       $$ = $1;
     }
   | ListItems DEDENT
+    {
+      $$ = $1;
+    }
+  | ListItems INDENT
     {
       $$ = $1;
     }
@@ -395,6 +415,10 @@ KVPairs
     {
       $$ = $1;
     }
+  | KVPairs INDENT
+    {
+      $$ = $1;
+    }
   | KVPair
     {
       $$ = [$1];
@@ -416,6 +440,10 @@ Attribute
   : Identifier "=" Str
     {
       $$ = [$1, $3];
+    }
+  | Identifier "=" "(" SourceElement ")"
+    {
+      $$ = [$1, new TupleNode([$4], createSourceLocation(null, @3, @5))];
     }
   | Identifier "=" "{" SourceElement "}"
     {
@@ -691,6 +719,10 @@ FunctionCall
     {
       $$ = new FunctionCallNode($1, {items:$2}, createSourceLocation(null, @1, @2));
     }
+  | Wrap LineArgs
+    {
+      $$ = new FunctionCallNode($1.item, {items:$2}, createSourceLocation(null, @1, @2));
+    }
   ;
 
 Block
@@ -775,7 +807,7 @@ Rocket
     {
       $$ = false;
     }
-  | "::" "=>"
+  | "::=>"
     {
       $$ = true;
     }
@@ -1029,6 +1061,13 @@ function OppositeNode(value, loc) {
   this.shared = shared;
 }
 
+function BinderNode(value, loc) {
+  this.type = 'Binder';
+  this.value = value;
+  this.loc = loc;
+  this.shared = shared;
+}
+
 function ListNode(items, isWrapped, loc) {
   this.src = '(' + items.map(function (item) { return item.src }).join(', ') + ')';
   this.type = 'List';
@@ -1207,6 +1246,7 @@ n.AssignmentNode = AssignmentNode;
 n.ConsNode = ConsNode;
 n.BackConsNode = BackConsNode;
 n.OppositeNode = OppositeNode;
+n.BinderNode = BinderNode;
 n.ListNode = ListNode;
 n.ArrNode = ArrNode;
 n.ObjNode = ObjNode;
