@@ -1,24 +1,9 @@
-
-[1, 2, 3]
-[
-  1, 2, 3
-]
-[
-  1,
-  2,
-  3
-]
-[
-1,
-2,
-3
-]
 [
 
-  1, 2, 3]
-[1, 2, 3
 
-]
+16,
+17,
+18]
 [
   (foo bar),
   2 + 2,
@@ -36,6 +21,15 @@
 
   # Line 3 stuff
   g, h, i
+]
+
+[
+  # comment
+  a, b, c,
+
+  # comment
+  d, e, f,
+  g, h, i # comment
 ]
 
 x = foo
@@ -82,20 +76,20 @@ when
   something -> dosomething _
   true      -> doesomethingelse _
 
-if x == y then dosomething _
-if x == y then dosomething _ else dosomethingelse _
+if x == y do dosomething _
+if x == y do dosomething _ else dosomethingelse _
 
 try
   something _
-catch err
+default err
   somethingelse err
 
 incase dosomething _ throws err do somethingelse err
 
 caseof foo
-  'hello' -> dosomething _
+  'hello'   -> dosomething _
   'goodbye' -> somethingelse _
-  default -> thirdthing _
+  default   -> thirdthing _
 
 <div className={foo} dataSomething="bar">
   'hello'
@@ -181,3 +175,24 @@ foo baz   => 2
 !foo
 !foo and bar or baz
 !foo bar
+
+chain
+  dothing fn => promise _
+  then    fn => promise _
+  then    fn => promise _
+
+chain
+  jQuery '#item'
+  addClass 'foo'
+  insertBefore '.something'
+
+~chain
+
+~when.foo.bar
+
+parentContext = {
+  factory: (fn =>
+    getParent = ::@
+    fn => getParent _
+  )
+}

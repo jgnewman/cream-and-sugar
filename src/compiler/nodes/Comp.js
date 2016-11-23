@@ -12,7 +12,8 @@ compile(nodes.CompNode, function () {
     return `${list}.map(function ${params} {
         return ${action};
       }.bind(this))
-    `.replace(/\s+/g, ' ');
+    `.replace(/\s+$/, '')
+     .replace(/\s+/g, ' ');
   } else {
     return `
       (function () {

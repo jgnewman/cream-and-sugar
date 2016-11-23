@@ -5,39 +5,38 @@ import { compileCode } from  '../src/compiler/compiler';
 describe('Html', () => {
 
   it('should compile a basic, self-closing html node', () => {
-    assert.equal('CNS_.createElement("br", {}, [])', compileCode('<br/>'));
+    assert.equal(compileCode('<br/>').trim(), 'CNS_.createElement("br", {}, []);');
   });
 
   it('should compile a self-closing html node with a string attribute', () => {
-    assert.equal('CNS_.createElement("br", {id: "foo"}, [])', compileCode('<br id="foo"/>'));
+    assert.equal(compileCode('<br id="foo"/>').trim(), 'CNS_.createElement("br", {id: "foo"}, []);');
   });
 
   it('should compile a self-closing html node with a code attribute', () => {
-    assert.equal('CNS_.createElement("br", {id: 2 + 2}, [])', compileCode('<br id={2 + 2}/>'));
+    assert.equal(compileCode('<br id={2 + 2}/>').trim(), 'CNS_.createElement("br", {id: 2 + 2}, []);');
   });
 
   it('should allow for parentheses instead of brackets', () => {
-    assert.equal('CNS_.createElement("br", {id: 2 + 2}, [])', compileCode('<br id=(2 + 2)/>'));
+    assert.equal(compileCode('<br id=(2 + 2)/>').trim(), 'CNS_.createElement("br", {id: 2 + 2}, []);');
   });
 
   it('should compile an empty html node with attributes', () => {
     const toCompile = `<div className="foo bar"></div>`;
-    const expected = `CNS_.createElement("div", {className: "foo bar"}, [])`;
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+    const expected = `CNS_.createElement("div", {className: "foo bar"}, []);`;
+    assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
   it('should compile an empty html node with attributes on new lines', () => {
-    const toCompile = `<div
-      className="foo bar"
-      dataBaz={quux}></div>`;
-    const expected = `CNS_.createElement("div", {className: "foo bar", dataBaz: quux}, [])`;
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+    const toCompile = `<div\n  className="foo bar"\n  dataBaz={quux}\n></div>`;
+    const expected = `CNS_.createElement("div", {className: "foo bar", dataBaz: quux}, []);`;
+    assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
   it('should compile an html node with children', () => {
     const toCompile = '<div\n'
                     + '  className="foo bar"\n'
-                    + '  dataBaz={ quux }>\n'
+                    + '  dataBaz={ quux }\n'
+                    + '>\n'
                     + '  <ul>\n'
                     + '    <li className="foo"></li>\n'
                     + '    <li className={ bar baz }></li>\n'
@@ -48,8 +47,8 @@ describe('Html', () => {
         CNS_.createElement("li", {className: "foo"}, []),
         CNS_.createElement("li", {className: bar(baz)}, [])
       ])
-    ])`);
-    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+    ]);`);
+    assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
 });

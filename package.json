@@ -1,6 +1,6 @@
 {
   "name": "cream-and-sugar",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "A deliciously functional syntax for JavaScript with native support for JSX",
   "keywords": [
     "javascript",

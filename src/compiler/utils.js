@@ -167,10 +167,10 @@ function getMsgPassingFns() {
 // Official list of reserved words
 function getReservedWords() {
   return [
-    'fn', 'caseof', 'match', 'if',
+    'fn', 'caseof', 'match', 'if', 'default', 'catch',
     'for', 'in', 'when', 'var', 'const', 'let', 'while',
     'switch', 'function', 'with', 'else', 'instanceof', 'super',
-    'enum', 'break', 'extends', 'catch', 'new', 'class',
+    'enum', 'break', 'extends', 'new', 'class',
     'try', 'continue', 'typeof', 'delete', 'return',
     'static', 'CNS_'
   ];

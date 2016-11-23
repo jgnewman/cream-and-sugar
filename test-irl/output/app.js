@@ -186,12 +186,23 @@ process.umask = function() { return 0; };
 (function (process){
 const CNS_ = {
 
+  /**
+   * @private
+   * Contains runtime configuration options
+   */
   config: {
     use: {
       react: true
     }
   },
 
+  /**
+   * @private
+   * Retrieves runtime configuration options
+   *
+   * @param  {String} key  The name of the value to retrieve
+   * @return {Any}
+   */
   getConfig: function (key) {
     const pieces = key.split('.');
     var obj = CNS_.config;
@@ -202,6 +213,68 @@ const CNS_ = {
     return obj;
   },
 
+  /**
+   * @private
+   * Generates a tuple data type
+   *
+   * @param  {Array} arr  Any array.
+   * @return {Array}      Marked with a special property identifying it as a tuple.
+   */
+  tuple: function (arr) {
+    if (!arr.length) CNS_.die('Tuples can not be empty.');
+    Object.defineProperty
+      ? Object.defineProperty(arr, 'CNS_isTuple_', {enumerable: false, configurable: false, writable: false, value: CNS_})
+      : (arr.CNS_isTuple_ = CNS_);
+    return arr;
+  },
+
+  /**
+   * @private
+   * Determines whether a value is a tuple.
+   *
+   * @param  {Any}     val  Any value
+   * @return {Boolean}      Whether the value was a tuple.
+   */
+  isTuple: function (val) {
+    return val.CNS_isTuple_ === CNS_;
+  },
+
+  /**
+   * @private
+   * Conditionally executes one function or another.
+   *
+   * @param  {Any}      condition  Assessed for its truthiness.
+   * @param  {Function} callback   Executed if `condition` is truthy.
+   * @param  {Function} elseCase   Executed if `condition` is falsy.
+   * @return {Any}                 The result of the executed function or `undefined`.
+   */
+  qualify: function (condition, callback, elseCase) {
+    return condition ? callback() : elseCase ? elseCase() : undefined;
+  },
+
+  /**
+   * @private
+   * Binds a function to the current context. If the value is not a function,
+   * Generates a function that returns the value, bound to the current context.
+   *
+   * @param  {Any} val      Any value.
+   * @param  {Any} context  Any value.
+   * @return {Function}     Retrieves `val` and is bound to `context`.
+   */
+  lazify: function(val, context) {
+    return typeof val === 'function'
+           ? val.bind(context)
+           : function () { return val }.bind(context);
+  },
+
+  /**
+   * @public
+   * Sets a language configuration option.
+   *
+   * @param  {String} key  The name of the config option.
+   * @param  {Any}    val  The value for the option.
+   * @return {undefined}
+   */
   lang: function (key, val) {
     const pieces = key.split('.');
     var obj = CNS_.config;
@@ -216,69 +289,112 @@ const CNS_ = {
     });
   },
 
+  /**
+   * @public
+   * Shortcuts throwing an error in a way that can be returned by a
+   * JavaScript function.
+   *
+   * @param  {String} msg  The error message.
+   * @return {undefined}
+   */
   die: function (msg) {
     throw new Error(msg);
   },
 
+  /**
+   * @public
+   * Generates an array of a certain length specified by the bound parameters.
+   *
+   * @param  {Number} from     A lower bound.
+   * @param  {Number} through  An upper bound.
+   * @return {Array}           The resulting array.
+   */
   range: function (from, through) {
     const out = [];
     for (var i = from; i <= through; i += 1) out.push(i);
     return out;
   },
 
+  /**
+   * @public
+   * Shorcuts console.log but only if it exists.
+   */
   log: function () {
     return typeof console !== 'undefined' && typeof console.log === 'function'
       ? console.log.apply(console, arguments)
       : undefined;
   },
 
+  /**
+   * @public
+   * Shorcuts console.warn but only if it exists.
+   * Tries to fall back to console.log.
+   */
   warn: function () {
     return typeof console !== 'undefined' && typeof console.warn === 'function'
       ? console.warn.apply(console, arguments)
       : CNS_.log.apply(null, arguments);
   },
 
+  /**
+   * @public
+   * Shorcuts console.debug but only if it exists.
+   * Tries to fall back to console.log.
+   */
   debug: function () {
     return typeof console !== 'undefined' && typeof console.debug === 'function'
       ? console.debug.apply(console, arguments)
       : CNS_.log.apply(null, arguments);
   },
 
-  // CNS_.tuple([1, 2, 3]) -> {{1, 2, 3}}
-  tuple: function (arr) {
-    if (!arr.length) CNS_.die('Tuples can not be empty.');
-    Object.defineProperty
-      ? Object.defineProperty(arr, 'CNS_isTuple_', {enumerable: false, configurable: false, writable: false, value: CNS_})
-      : (arr.CNS_isTuple_ = CNS_);
-    return arr;
-  },
-
-  // CNS_.listToObject([fun1, fun2], function (fun) { return fun.name }) -> {fun1: fun1, fun2: fun2}
+  /**
+   * @public
+   * Converts a tuple to an object.
+   *
+   * @param  {Tuple}    list  A tuple data type.
+   * @param  {Function} fn    Optional. Called once for each item and determines
+   *                          how to name the object key.
+   * @return {Object}
+   */
   tupleToObject: function (list, fn) {
     const obj = {};
-    if (list.CNS_isTuple_ !== CNS_) CNS_.die('Argument provided is not a tuple');
+    if (!CNS_.isTuple(list)) CNS_.die('Argument provided is not a tuple');
     list.forEach(function (item, index) { obj[fn ? fn(item, index) : index] = item });
     return obj;
   },
 
-  // CNS_.tupleToArray({{ a, b }}) -> [ a, b ]
+  /**
+   * @public
+   * Converts a tuple to an array.
+   *
+   * @param  {Tuple} tuple  An instance of a tuple data type.
+   * @return {Array}        Converted from the tuple.
+   */
   tupleToArray: function (tuple) {
-    if (tuple.CNS_isTuple_ !== CNS_) CNS_.die('Argument provided is not a tuple');
+    if (!CNS_.isTuple(tuple)) CNS_.die('Argument provided is not a tuple');
     return tuple.slice();
   },
 
-  // CNS_.arrayToTuple([1, 2]) -> {{ 1, 2 }}
+  /**
+   * @public
+   * Converts an array to a tuple.
+   *
+   * @param  {Array} arr  Any array.
+   * @return {Tuple}      Converted from the array.
+   */
   arrayToTuple: function (arr) {
-    if (arr.CNS_isTuple_ === CNS_ || !Array.isArray(arr)) CNS_.die('Argument provided is not an array');
+    if (CNS_.isTuple(arr) || !Array.isArray(arr)) CNS_.die('Argument provided is not an array');
     return CNS_.tuple(arr.slice());
   },
 
-  // CNS_.qualify(x === 4, function () { return doSomething() })
-  qualify: function (condition, callback, elseCase) {
-    return condition ? callback() : elseCase ? elseCase() : undefined;
-  },
-
-  // CNS_.eql([1, 2, 3], [1, 2, 3]) -> true
+  /**
+   * @public
+   * Performs a deep equal operation on two collections.
+   *
+   * @param  {Any} a   Any data.
+   * @param  {Any} b   Any data.
+   * @return {Boolean} Whether `a` and `b` are deep equal.
+   */
   eql: function (a, b) {
     if (a === CNS_ || b === CNS_) return true; // <- Hack to force a match
     if (a === b || (typeof a === 'number' && typeof b === 'number' && isNaN(a) && isNaN(b))) return true;
@@ -292,7 +408,15 @@ const CNS_ = {
     return false;
   },
 
-  // CNS_.match(args, [['Identifier', 'x']])
+  /**
+   * @private
+   * Matches a function's arguments against expected patterns.
+   * For example: CNS_.match(args, [['Identifier', 'x']]);
+   *
+   * @param  {Array} args     Contains a function's arguments.
+   * @param  {Array} pattern  Describes patterns to match arguments against.
+   * @return {Boolean}        Whether or not arguments match patterns.
+   */
   match: function (args, pattern) {
     const NUMTEST    = /^(\-)?[0-9]+(\.[0-9]+)?(e\-?[0-9]+)?$/;
     const ATOMTEST   = /^[\$_A-z][\$_A-z0-9]*$/;
@@ -305,10 +429,8 @@ const CNS_ = {
       }
     }
     function arrMismatch(matchType, arg) {
-      switch (matchType) {
-        case 'Tuple': return arg.CNS_isTuple_ !== CNS_;
-        case 'Arr': return arg.CNS_isTuple_ === CNS_;
-      }
+      const isTuple = CNS_.isTuple(arg);
+      return matchType === 'Tuple' && !isTuple || matchType === 'Arr' && isTuple;
     }
     function testArrParam(arg, arrParam, position) {
       if (arrParam === '_') return true; // Yes, if it's the catch all.
@@ -354,89 +476,174 @@ const CNS_ = {
     });
   },
 
-  // CNS_.args(arguments) -> [...arguments]
+  /**
+   * @private
+   * Converts `arguments` to an array.
+   *
+   * @param  {Arguments} args  Any `arguments` object.
+   * @return {Array}           Converted from the `arguments`.
+   */
   args: function (args) {
     const out = [];
     Array.prototype.push.apply(out, args);
     return out;
   },
 
-  // CNS_.get(0, [1, 2, 3, 4]) -> 1
+  /**
+   * @public
+   * Retrieves an item from a collection.
+   *
+   * @param  {String|Number} item        Identifies the item by key or position.
+   * @param  {Collection}    collection  Any collection type.
+   * @return {Any}                       The retrieved item.
+   */
   get: function (item, collection) {
     return collection[item];
   },
 
-  // CNS_.throw(create(Error))
+  /**
+   * @public
+   * Throws an instance of an error object.
+   * For example: CNS_.throw(CNS_.create(Error));
+   *
+   * @param  {Error} err  Any error object.
+   * @return {undefined}
+   */
   throw: function (err) {
     throw err;
   },
 
-  // CNS_.create(ClassName, arg1, arg2) -> ClassName { ... }
+  /**
+   * @public
+   * Creates a `new` object.
+   * For example: CNS_.create(ClassName, arg1, arg2);
+   *
+   * @param  {Constructor} cls  Any constructor function.
+   * @return {Instance}         An instance of the constructor's object.
+   */
   create: function(cls) {
     return new (Function.prototype.bind.apply(cls, arguments));
   },
 
-  // CNS_.type('hello') -> 'string'
-  type: function (val) {
+  /**
+   * @public
+   * Assesses data types.
+   *
+   * @param  {Any} val  Any value.
+   * @return {String}   The type of data assessed.
+   */
+  dataType: function (val) {
     const type = typeof val;
     switch (type) {
       case 'symbol': return 'atom';
       case 'number': return isNaN(val) ? 'nan' : type;
-      case 'object': return val === null ? 'null' :
-                              Array.isArray(val) ? (val.CNS_isTuple_ === CNS_ ? 'tuple' : 'array') :
-                                val instanceof Date ? 'date' :
-                                  val instanceof RegExp ? 'regexp':
-                                    (typeof HTMLElement !== 'undefined' && val instanceof HTMLElement) ? 'htmlelement' :
-                                      (
-                                        (typeof Worker !== 'undefined' && val instanceof Worker) ||
-                                        (val.constructor.name === 'ChildProcess' && typeof val.pid === 'number')
-                                      )
-                                      ? 'process' : type;
+      case 'object':
+        if (val === null) return 'null';
+        if (Array.isArray(val)) return CNS_.isTuple(val) ? 'tuple' : 'array';
+        if (val instanceof Date) return 'date';
+        if (val instanceof RegExp) return 'regexp';
+        if (typeof HTMLElement !== 'undefined' && val instanceof HTMLElement) return 'htmlelement';
+        if ( (typeof Worker !== 'undefined' && val instanceof Worker) ||
+             (val.constructor.name === 'ChildProcess' && typeof val.pid === 'number') ) return 'process';
+        return type;
       default: return type;
     }
   },
 
-  // CNS_.instanceof([], Object) -> true
+  /**
+   * @public
+   * Functionizes the `instanceof` operator.
+   *
+   * @param  {Any}         val   Any value.
+   * @param  {Constructor} type  Any constructor function.
+   * @return {Boolean}           The result of calling `val instanceof type`.
+   */
   instanceof: function (val, type) {
     return val instanceof type;
   },
 
-  // CNS_.head([1, 2, 3]) -> 1
+  /**
+   * @public
+   * Returns the first item in a list.
+   *
+   * @param  {Array|Tuple|String} list  Any list type.
+   * @return {Any}                      The item in position 0.
+   */
   head: function (list) {
     return list[0];
   },
 
-  // CNS_.tail([1, 2, 3]) -> [2, 3]
+  /**
+   * @public
+   * Returns all but the first item in a list.
+   *
+   * @param  {Array|Tuple|String} list  Any list type.
+   * @return {Array|Tuple|String}       Minus the first item in `list`.
+   */
   tail: function (list) {
-    return list.slice(1);
+    const out = list.slice(1);
+    return CNS_.isTuple(list) ? CNS_.tuple(out) : out;
   },
 
-  // CNS_.random([1, 2, 3, 4]) -> 3
+  /**
+   * Selects a random item from a list type colelction.
+   *
+   * @param  {Array|Tuple|String} list  Any list type.
+   * @return {Any}                      A randomly selected item.
+   */
   random: function (list) {
     return list[Math.floor(Math.random()*list.length)];
   },
 
-  // CNS_.lead([1, 2, 3]) -> [1, 2]
+  /**
+   * @public
+   * Returns all but the last item in a list.
+   *
+   * @param  {Array|Tuple|String} list  Any list type.
+   * @return {Array|Tuple|String}       Minus the last item in `list`.
+   */
   lead: function (list) {
-    return list.slice(0, list.length - 1);
+    const out = list.slice(0, list.length - 1);
+    return CNS_.isTuple(list) ? CNS_.tuple(out) : out;
   },
 
-  // CNS_.last([1, 2, 3]) -> 3
+  /**
+   * @public
+   * Returns the last item in a list.
+   *
+   * @param  {Array|Tuple|String} list  Any list type.
+   * @return {Any}                      The item in the last position.
+   */
   last: function (list) {
     return list[list.length - 1];
   },
 
-  // CNS_.apply(function () { ... }, [1, 2, 3])
+  /**
+   * @public
+   * Calls a function.
+   * For example: CNS_.apply(function () {}, x, y, z);
+   *
+   * @param  {Function} fn  The function to call.
+   * @return {Any}          The result of calling the function.
+   */
   apply: function (fn) {
     var args = Array.prototype.slice.call(arguments, 1);
     return args.length ? fn.apply(null, args) : fn();
   },
 
-  // CNS_.update('name', 'john', {name: 'bill'}) -> {name: 'john'}
-  // CNS_.update(1, 'x', ['a', 'b', 'c']) -> ['a', 'x', 'c']
+  /**
+   * @public
+   * Creates a new collection by updating an item in an existing collection.
+   * EXCEPTION: If the collection is a function, modifies the existing function.
+   *
+   * @param  {String|Number} keyOrIndex  Identifies the item to update.
+   * @param  {Any}           val         The new value.
+   * @param  {Collection}    collection  Any collection type.
+   * @return {Collection}                A copy of the original collection.
+   */
   update: function (keyOrIndex, val, collection) {
     if (Array.isArray(collection)) {
-      if (collection.CNS_isTuple_ === CNS_ && collection.indexOf(keyorIndex) === -1) {
+      if (CNS_.isTuple(collection) && collection.indexOf(keyorIndex) === -1) {
         CNS_.die('Can not add extra items to tuples.');
       }
       const newSlice = collection.slice();
@@ -446,6 +653,12 @@ const CNS_ = {
       const clone = collection.cloneNode();
       clone[keyOrIndex] = val;
       return clone;
+    } else if (typeof collection === 'function') {
+      // Updating a function allows breaking the functionalism rule only
+      // because JavaScript makes it impossible to clone a function and account
+      // for all necessary cases. This should be avoided where possible.
+      collection[keyOrIndex] = val;
+      return collection;
     } else {
       const replacer = {};
       replacer[keyOrIndex] = val;
@@ -453,11 +666,17 @@ const CNS_ = {
     }
   },
 
-  // CNS_.remove(1, ['a', 'b', 'c']) -> ['a', 'b']
-  // CNS_.remove('name', {name: 'john', age: 33}) -> {age: 33}
+  /**
+   * @public
+   * Creates a new collection by removing an item in an existing collection.
+   *
+   * @param  {String|Number} keyOrIndex  Identifies the item to remove.
+   * @param  {Collection}    collection  Any collection type.
+   * @return {Collection}                A copy of the original collection.
+   */
   remove: function (keyOrIndex, collection) {
     if (Array.isArray(collection)) {
-      if (collection.CNS_isTuple_ === CNS_) CNS_.die('Can not remove items from tuples.');
+      if (CNS_.isTuple(collection)) CNS_.die('Can not remove items from tuples.');
       const splicer = collection.slice();
       splicer.splice(keyOrIndex, 1);
       return splicer;
@@ -473,7 +692,15 @@ const CNS_ = {
     }
   },
 
-  // CNS_.createElement('div', {className: 'foo'}, [CNS_.createElement(...)])
+  /**
+   * @public
+   * Creats an html element.
+   *
+   * @param  {String|Constructor} type  The type of element to create.
+   * @param  {Object}             attrs The element's attributes.
+   * @param  {Array}              body  Children of the element.
+   * @return {HtmlElement}              The resulting element.
+   */
   createElement: function (type, attrs, body) {
     var react;
     const a = attrs || {}, b = body || [];
@@ -481,7 +708,7 @@ const CNS_ = {
     if (!react && typeof require !== 'undefined') {
       try { react = require('react') } catch (_) { react = null }
     }
-    if (react && CNS_.getConfig('use.react')) return react.createElement(type, a, b);
+    if (react && CNS_.getConfig('use.react')) return react.createElement.apply(react, [type, a].concat(b));
     if (typeof document === 'undefined') CNS_.die('No HTML document is available.');
     const elem = document.createElement(type);
     Object.keys(a).forEach(function (key) {
@@ -493,6 +720,15 @@ const CNS_ = {
   },
 
   // CNS_.aritize(fun, 2);
+  /**
+   * @public
+   * Makes a new function that calls an existing function but only
+   * accepts a certain amount of arguments.
+   *
+   * @param  {Function} fun    A function to lock down.
+   * @param  {Number}   arity  The acceptable amount of arguments.
+   * @return {Function}        A resulting function.
+   */
   aritize: function (fun, arity) {
     return function () {
       if (arguments.length === arity) {
@@ -503,10 +739,24 @@ const CNS_ = {
     };
   },
 
+  /**
+   * @public
+   * Selects a single DOM element by selector.
+   *
+   * @param  {String} selector  Describes the element to select.
+   * @return {HTMLElement}      The selected element.
+   */
   dom: function (selector) {
     return document.querySelector(selector);
   },
 
+  /**
+   * @public
+   * Selects an array of DOM elements by selector.
+   *
+   * @param  {String} selector  Describes the element to select.
+   * @return {Array}            The selected elements.
+   */
   domArray: function (selector) {
     return Array.prototype.slice.call(document.querySelectorAll(selector));
   },
@@ -515,7 +765,10 @@ const CNS_ = {
    * Begin message passing stuff
    ********************************/
 
-   // A pack of utils for handling message passing.
+   /**
+    * @private
+    * A package of utilities for multithreading.
+    */
    msgs: {
      isBrowser: function () { return typeof navigator !== 'undefined' },
      isChild: false,
@@ -555,7 +808,7 @@ const CNS_ = {
        if (Array.isArray(data)) {
          var out = [];
          data.forEach(function (item) { out.push(CNS_.msgs.symbolize(item, reSymbolize)) });
-         if (!reSymbolize && data.CNS_isTuple_ === CNS_) (out = { CNS_tuple_: out });
+         if (!reSymbolize && CNS_.isTuple(data)) (out = { CNS_tuple_: out });
          return out;
        // If this is an object, check to see if it's supposed to be a tuple.
        } else if (typeof data === 'object' && data !== null) {
@@ -624,33 +877,59 @@ const CNS_ = {
      }
    },
 
-   // Create a new process exclusively from a function body.
-   // Example:
-   // createProcess _ =>
-   //   spawn fn =>
-   //     ...process body...
-   // export { createProcess: aritize createProcess 0 }
+   /**
+    * @public
+    * Spins up a new thread from a function.
+    *
+    * @param  {Function} fn  Contains the process body.
+    * @return {Object}       The multithreading tools package.
+    */
    spawn: function (fn) {
     return new CNS_.msgs.Thread('(' + fn.toString() + '())');
    },
 
-   // Specifies what to do when a message comes in
+   /**
+    * @public
+    * Determines what to do when messages come in from another thread.
+    *
+    * @param  {Function} fn  Handles the incoming message.
+    * @return {undefined}
+    */
    receive: function (fn) {
      CNS_.msgs.handlers.push(fn);
    },
 
-   // Kills a process
+   /**
+    * @public
+    * Kills a process.
+    *
+    * @param  {Process} thread  A thread to kill.
+    * @return {undefined}
+    */
    kill: function (thread) {
      thread.isBrowser ? thread.thread.terminate() : thread.thread.kill('SIGINT');
    },
 
-   // Should be like send(msg)
+   /**
+    * @public
+    * Sends a message back to a parent thread from a child thread.
+    *
+    * @param  {Serializable} msg  Any serializable data.
+    * @return {undefined}
+    */
    reply: function (msg) {
      const m = CNS_.msgs.symbolize(msg, false);
      CNS_.msgs.isBrowser() ? postMessage(m) : process.send(m) ;
    },
 
-   // Should be like send(thread, msg)
+   /**
+    * @public
+    * Sends a message to a child thread.
+    *
+    * @param  {Process}      thread  The child process.
+    * @param  {Serializable} msg     Any serializable data.
+    * @return {undefined}
+    */
    send: function (thread, msg) {
      const m = CNS_.msgs.symbolize(msg, false);
      CNS_.msgs.isBrowser() ? thread.thread.postMessage(m) : thread.thread.send(m);

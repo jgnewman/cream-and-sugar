@@ -13,7 +13,7 @@ var _utils = require('../utils');
     var test = condition.test;
     var body = condition.body;
 
-    var compiledTest = test.compile(true);
+    var compiledTest = test === 'default' ? test : test.compile(true);
     var casePrefix = compiledTest === 'default' ? compiledTest : 'case ' + compiledTest;
     if (index === _this.conditions.length - 1 && compiledTest !== 'default') {
       needsDefault = true;

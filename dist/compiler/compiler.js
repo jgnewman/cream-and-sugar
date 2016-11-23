@@ -84,6 +84,8 @@ require('./nodes/BackCons');
 
 require('./nodes/Pipe');
 
+require('./nodes/Chain');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /*
@@ -109,6 +111,9 @@ function compile(path, callback, options) {
 function compileCode(str, callback, options) {
   var tree = void 0;
   options = options || {};
+
+  // Make sure we always have a trailing newline
+  str = /\n$/.test(str) ? str : str + '\n';
 
   // Parse the tree.
   try {

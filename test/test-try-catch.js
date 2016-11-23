@@ -8,7 +8,7 @@ describe('Try/Catch', () => {
     const toCompile = 'try\n'
                     + '  dostuff _\n'
                     + '  doMoreStuff _\n'
-                    + 'catch err\n'
+                    + 'default err\n'
                     + '  doOtherStuff _\n'
                     + '  doMoreOtherStuff _\n';
     const expected = nlToSpace(`(function () {
@@ -31,7 +31,7 @@ describe('Try/Catch', () => {
       } catch (err) {
         return handle(err);
       }
-    }.bind(this)())`);
+    }.bind(this)());`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
@@ -43,7 +43,7 @@ describe('Try/Catch', () => {
       } catch (err) {
         return handle(err);
       }
-    }.bind(this)())`);
+    }.bind(this)());`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
@@ -55,7 +55,7 @@ describe('Try/Catch', () => {
       } catch (err) {
         return handle(err);
       }
-    }.bind(this)())`);
+    }.bind(this)());`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 

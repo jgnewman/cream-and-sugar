@@ -67,12 +67,12 @@ Just like the `when` expression (and in fact almost everywhere in CnS), if one o
 Qualifiers are a quick way to perform either a function call or an operation under a certain condition without requiring the verbosity of a `when` or `caseof` expression. It is only within the syntax of a qualifier expression that you will use the keywords `if` and `else`. Here are a few examples:
 
 ```coffeescript
-if food != gone then eat food
+if food != gone do eat food
 
-if food != gone then eat food  else starve _
+if food != gone do eat food  else starve _
 
 fs.writeFileSync './myFile', 'my text', fn err, result ->
-  if err then throw err
+  if err do throw err
   doSomethingWithresult
 ```
 

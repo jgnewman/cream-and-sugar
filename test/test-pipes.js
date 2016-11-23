@@ -11,8 +11,8 @@ describe('Scope Piping', () => {
       return y((function () {
         return x
       }()))
-    }())`);
-    assert.equal(compileCode(toCompile), expected);
+    }());`);
+    assert.equal(compileCode(toCompile).trim(), expected);
   });
 
   it('should assign a scope pipe to a variable', () => {
@@ -22,8 +22,8 @@ describe('Scope Piping', () => {
       return y((function () {
         return x
       }()))
-    }())`);
-    assert.equal(compileCode(toCompile), expected);
+    }());`);
+    assert.equal(compileCode(toCompile).trim(), expected);
   });
 
   it('should compile a more complex scope pipe', () => {
@@ -35,8 +35,8 @@ describe('Scope Piping', () => {
           return { foo: "bar" }
         }()))
       }()))
-    }())`);
-    assert.equal(compileCode(toCompile), expected);
+    }());`);
+    assert.equal(compileCode(toCompile).trim(), expected);
   });
 
   it('should give scope pipes priority as arguments', () => {
@@ -46,8 +46,8 @@ describe('Scope Piping', () => {
       return z((function () {
         return y
       }()))
-    }()))`);
-    assert.equal(compileCode(toCompile), expected);
+    }()));`);
+    assert.equal(compileCode(toCompile).trim(), expected);
   });
 
   it('should allow piping with cons statements', () => {
@@ -57,8 +57,8 @@ describe('Scope Piping', () => {
       return z((function () {
         return y
       }()))
-    }())))`);
-    assert.equal(compileCode(toCompile), expected);
+    }())));`);
+    assert.equal(compileCode(toCompile).trim(), expected);
   });
 
 });

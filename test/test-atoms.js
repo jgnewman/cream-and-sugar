@@ -6,12 +6,12 @@ describe('Atoms', () => {
 
   it('should compile an atom into a symbol', () => {
     const toCompile = 'ATOM';
-    assert.equal("Symbol.for('ATOM')", compileCode(toCompile));
+    assert.equal(compileCode(toCompile).trim(), "Symbol.for('ATOM');");
   });
 
   it('should compile an atom into an object key', () => {
     const toCompile = '{ATOM:foo}';
-    assert.equal("{[Symbol.for('ATOM')]:foo}", shrink(compileCode(toCompile)));
+    assert.equal(shrink(compileCode(toCompile)), "{[Symbol.for('ATOM')]:foo};");
   });
 
 });

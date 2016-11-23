@@ -136,7 +136,7 @@ createDate _ #=> Sat Sep 10 2016 16:06:07 GMT-0400 (EDT)
 Whereas in JavaScript, the "fat arrow" (what we've been calling a "rocket") is used exclusively as a shortcut for `Function.bind`, in Cream & Sugar, all functions use the rocket. If you want to use `Function.bind`, you have 2 options. The first is to actually call `bind` like so...
 
 ```coffeescript
-uselessFn = (fn x => x).bind(@)
+uselessFn = (fn x => x).bind @
 ```
 
 Notice that, in Cream & Sugar, JavaScript's keyword `this` has become `@`. By the same token, an expression such as `this.foo` can be written as simply `@foo` in CnS.
@@ -155,6 +155,39 @@ add x, y ::=> x + y
 ```
 
 You'll just need to make sure that if you use the bind operator in one of your patterns, you'll need to use it in all of them.
+
+Another way to use the bind operator is to apply it to a variable name. For example you might do something like this:
+
+```coffeescript
+dosomething = fn x, y => something x y
+
+boundFn = ::dosomething
+```
+
+Using the bind operator in this way binds the function to the current context. Additionally, if it is used with a reference to a value that is _not_ a function, it will generate a function that returns the value. For example:
+
+```coffeescript
+four = 4
+
+fourFn = ::four
+
+fourFn _
+#=> 4
+```
+
+This is especially useful because it allows you to wrap up a context for later retrieval:
+
+```coffeescript
+parentContext = {
+  factory: (fn =>
+    getParent = ::@
+    fn => getParent _
+  )
+}
+
+(parentContext.factory _) _
+#=> parentContext
+```
 
 ## Anonymous Pattern Matches with `match`
 

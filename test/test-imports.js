@@ -7,13 +7,13 @@ describe('Imports', () => {
 
   it('should import a module with no assignment', () => {
     const toCompile = `import './myfile'`;
-    const expected = nlToSpace(`require('./myfile')`);
+    const expected = nlToSpace(`require('./myfile');`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
   it('should import a single item from a module', () => {
     const toCompile = `import a from './myfile'`;
-    const expected = nlToSpace(`const a = require('./myfile')`);
+    const expected = nlToSpace(`const a = require('./myfile');`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
@@ -23,7 +23,7 @@ describe('Imports', () => {
       var ref0_ = require('./myfile');
       const a = ref0_.a;
       const b = ref0_.b;
-      const c = ref0_.c
+      const c = ref0_.c;
     `);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });

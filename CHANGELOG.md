@@ -1,3 +1,35 @@
+0.6.0
+=====
+
+Shipped on 11.23.2016
+
+#### Thanksgiving Update!
+
+### Fix
+
+
+### Feature
+
+- New `chain` syntax allows method chaining. See docs.
+- New `~` symbol protects reserved references and bif references from compiler checks and translations.
+
+### Change
+
+- Solidified indentation rules for consistency. Any time there is an indent **ANYWHERE** there must be an accompanying dedent. This includes within objects and JSX-like notation.
+- Qualifier syntax has changed. Keyword `then` was replaced with `do` for syntactical consistencys.
+  - `if ... do ... else ...`
+  - `for ... in ... do ... onlyif ...`
+  - `incase ... throws ... do ...`
+- TryCatch syntax has changed. Keyword `catch` was replaced with `default`.
+
+### Under the Hood
+
+- Finally updated docs.
+- Fixed a couple mistakes in the README.
+- Updated tests.
+- Cleaner grammar handles indentation better.
+
+
 0.5.0
 =====
 

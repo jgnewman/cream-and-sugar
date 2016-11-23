@@ -8,7 +8,7 @@ describe('Anonymous Functions', () => {
     const toCompile = `fn => eat food`;
     const expected = nlToSpace(`function () {
       return eat(food);
-    }`);
+    };`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
@@ -16,7 +16,7 @@ describe('Anonymous Functions', () => {
     const toCompile = `fn ::=> eat food`;
     const expected = nlToSpace(`function () {
       return eat(food);
-    }.bind(this)`);
+    }.bind(this);`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
@@ -27,7 +27,7 @@ describe('Anonymous Functions', () => {
       const x = args[0];
       const y = args[1];
       return eat(food);
-    }`);
+    };`);
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 

@@ -6,42 +6,42 @@ describe('Arrays', () => {
 
   it('should compile an empty array', () => {
     const toCompile = '[]';
-    assert.equal(toCompile, compileCode(toCompile));
+    assert.equal(compileCode(toCompile).trim(), '[];');
   });
 
   it('should compile a single item array', () => {
     const toCompile = '[1]';
-    assert.equal(toCompile, compileCode(toCompile));
+    assert.equal(compileCode(toCompile).trim(), '[1];');
   });
 
   it('should compile a multi item array', () => {
     const toCompile = '[1, 2, 3]';
-    assert.equal(toCompile, compileCode(toCompile));
+    assert.equal(compileCode(toCompile).trim(), '[1, 2, 3];');
   });
 
   it('should compile an array beginning with new lines', () => {
     const toCompile = `[\n\n\n1, 2, 3]`;
-    assert.equal('[1, 2, 3]', compileCode(toCompile));
+    assert.equal(compileCode(toCompile).trim(), '[1, 2, 3];');
   });
 
   it('should compile an array ending with new lines', () => {
     const toCompile = `[1, 2, 3\n\n\n]`;
-    assert.equal('[1, 2, 3]', compileCode(toCompile));
+    assert.equal(compileCode(toCompile).trim(), '[1, 2, 3];');
   });
 
   it('should compile an array beginning and ending with new lines', () => {
     const toCompile = `[\n\n\n1, 2, 3\n\n\n]`;
-    assert.equal('[1, 2, 3]', compileCode(toCompile));
+    assert.equal(compileCode(toCompile).trim(), '[1, 2, 3];');
   });
 
   it('should compile an array with new lines between items', () => {
     const toCompile = `[1,\n2,\n3]`;
-    assert.equal('[1, 2, 3]', compileCode(toCompile));
+    assert.equal(compileCode(toCompile).trim(), '[1, 2, 3];');
   });
 
   it('should compile an array with new lines everywhere', () => {
     const toCompile = `[\n1,\n2,\n3\n]`;
-    assert.equal('[1, 2, 3]', compileCode(toCompile));
+    assert.equal(compileCode(toCompile).trim(), '[1, 2, 3];');
   });
 
   it('should compile an array with different kinds of items', () => {
@@ -53,7 +53,7 @@ describe('Arrays', () => {
                     + '  [4, 5, 6],\n'
                     + '  {a: foo, b: bar}\n'
                     + ']';
-    assert.equal('[foo(bar), 2 + 2, 3, foo.bar, [4, 5, 6], { a: foo, b: bar }]', compileCode(toCompile));
+    assert.equal(compileCode(toCompile).trim(), '[foo(bar), 2 + 2, 3, foo.bar, [4, 5, 6], { a: foo, b: bar }];');
   });
 
   it('should compile an array with comments inline', () => {
@@ -65,7 +65,7 @@ describe('Arrays', () => {
                     + '  d, e, f,\n'
                     + '  g, h, i # comment\n'
                     + ']';
-    assert.equal(compileCode(toCompile), '[a, b, c, d, e, f, g, h, i]',);
+    assert.equal(compileCode(toCompile).trim(), '[a, b, c, d, e, f, g, h, i];',);
   });
 
 });

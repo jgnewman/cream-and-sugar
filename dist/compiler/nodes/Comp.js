@@ -13,7 +13,7 @@ var _utils = require('../utils');
   var list = this.list.compile(true);
   var caveat = this.caveat ? this.caveat.compile(true) : null;
   if (!caveat) {
-    return (list + '.map(function ' + params + ' {\n        return ' + action + ';\n      }.bind(this))\n    ').replace(/\s+/g, ' ');
+    return (list + '.map(function ' + params + ' {\n        return ' + action + ';\n      }.bind(this))\n    ').replace(/\s+$/, '').replace(/\s+/g, ' ');
   } else {
     return ('\n      (function () {\n        const acc_ = [];\n        ' + list + '.forEach(function ' + params + ' {\n          if (' + caveat + ') {\n            acc_.push(' + action + ');\n          }\n        }.bind(this));\n        return acc_;\n      }.bind(this)())\n    ').replace(/^\s+|\s+$/g, '');
   }

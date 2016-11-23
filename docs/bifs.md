@@ -57,6 +57,43 @@ create Date  #=> Fri Sep 09 2016 17:00:43 GMT-0400 (EDT)
 create Error, "This is error text." #=> Error: This is error text(…)
 ```
 
+### `dataType data`
+
+- `data {Any}`: Any data type.
+
+Intelligently and reasonably assesses data types and returns a string identifying the type of `data`.
+
+```coffeescript
+dataType 'hello' #=> 'string'
+
+dataType 3.4 #=> 'number'
+
+dataType NaN #=> 'nan'
+
+dataType null #=> 'null'
+
+dataType [1, 2, 3] #=> 'array'
+
+dataType /^foo$/ #=> 'regexp'
+
+dataType <div></div> #=> 'htmlelement'
+
+dataType (create Date) #=> 'date'
+
+dataType undefined #=> 'undefined'
+
+dataType OK #=> 'atom'
+
+dataType (spawn fn => 'hello') #=> 'process'
+
+dataType fn => 'hello' #=> 'function'
+
+dataType {foo: 'bar'} #=> 'object'
+
+dataType {{ x, y }} #=> 'tuple'
+```
+
+
 ### `debug message`
 
 - `message {String}`: A message to log to the console.
@@ -372,41 +409,6 @@ tupleToObject {{ function1, function2 }}, fn item => item.name
 #=> {'function1': function1, 'function2': function2}
 ```
 
-### `type data`
-
-- `data {Any}`: Any data type.
-
-Intelligently and reasonably assesses data types and returns a string identifying the type of `data`.
-
-```coffeescript
-type 'hello' #=> 'string'
-
-type 3.4 #=> 'number'
-
-type NaN #=> 'nan'
-
-type null #=> 'null'
-
-type [1, 2, 3] #=> 'array'
-
-type /^foo$/ #=> 'regexp'
-
-type <div></div> #=> 'htmlelement'
-
-type (create Date) #=> 'date'
-
-type undefined #=> 'undefined'
-
-type OK #=> 'atom'
-
-type (spawn fn => 'hello') #=> 'process'
-
-type fn => 'hello' #=> 'function'
-
-type {foo: 'bar'} #=> 'object'
-
-type {{ x, y }} #=> 'tuple'
-```
 
 ### `update key, value, collection`
 

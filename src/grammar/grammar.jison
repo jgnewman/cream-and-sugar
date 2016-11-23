@@ -16,18 +16,17 @@
                                                  this.unput('\n');
                                                %}
 
-\#.*($|\r\n|\r|\n)                   %{
-                                        if (/[\[\{]\s+/.test(this.pastInput())) return;
-                                        return 'NEWLINE';
-                                     %} /* return NEWLINE for lines that end with comments */
+\#.*($|\r\n|\r|\n)                             %{
+                                                  this.unput('\n');
+                                               %}
 
-\[\s*                                return "[";
+"["                                  return "[";
 "]"                                  return "]";
 
-\{\{\s*                              return "{{";
+"{{"                                 return "{{";
 "}}"                                 return "}}";
 
-\{\s*                                return "{";
+"{"                                  return "{";
 "}"                                  return "}";
 
 ">>="                                return ">>=";
@@ -89,6 +88,8 @@
 
 \s+                                  /* skip other whitespace */
 
+\~[a-zA-Z\_\$][a-zA-Z0-9\_\$]*((\s*\.\s*)?[a-zA-Z0-9\_\$]+)*   return "IDENTIFIER";
+
 "fn"                                 return "FN";
 "caseof"                             return "CASEOF";
 "match"                              return "MATCH";
@@ -99,15 +100,15 @@
 "do"                                 return "DO";
 "for"                                return "FOR";
 "in"                                 return "IN";
-"then"                               return "THEN";
 "when"                               return "WHEN";
 "where"                              return "WHERE";
 "try"                                return "TRY";
-"catch"                              return "CATCH";
+"default"                            return "DEFAULT";
 "import"                             return "IMPORT";
 "export"                             return "EXPORT";
 "from"                               return "FROM";
 "onlyif"                             return "ONLYIF";
+"chain"                              return "CHAIN";
 
 "isnt"                               return "LOGIC";
 "is"                                 return "LOGIC";
@@ -223,6 +224,7 @@ SourceElement
   | Cond
   | Caseof
   | TryCatch
+  | Chain
   | Fun
   | Polymorph
   ;
@@ -345,9 +347,7 @@ Logic
   ;
 
 ListSeparator
-  : "," NewLine INDENT
-  | "," NewLine
-  | "," INDENT
+  : "," NewLine
   | ","
   ;
 
@@ -360,17 +360,17 @@ ListItems
     {
       $$ = $1;
     }
-  | ListItems DEDENT
+  | NewLine SourceElement
     {
-      $$ = $1;
-    }
-  | ListItems INDENT
-    {
-      $$ = $1;
+      $$ = [$2];
     }
   | SourceElement
     {
       $$ = [$1];
+    }
+  | NewLine
+    {
+      $$ = [];
     }
   | /* empty */
     {
@@ -383,12 +383,20 @@ Arr
     {
       $$ = new ArrNode($2, createSourceLocation(null, @1, @3));
     }
+  | "[" INDENT ListItems DEDENT NewLine "]"
+    {
+      $$ = new ArrNode($3, createSourceLocation(null, @1, @6));
+    }
   ;
 
 Tuple
   : "{{" ListItems "}}"
     {
       $$ = new TupleNode($2, createSourceLocation(null, @1, @3));
+    }
+  | "{{" INDENT ListItems DEDENT NewLine "}}"
+    {
+      $$ = new TupleNode($3, createSourceLocation(null, @1, @6));
     }
   ;
 
@@ -411,17 +419,17 @@ KVPairs
     {
       $$ = $1;
     }
-  | KVPairs DEDENT
+  | NewLine KVPair
     {
-      $$ = $1;
-    }
-  | KVPairs INDENT
-    {
-      $$ = $1;
+      $$ = [$2];
     }
   | KVPair
     {
       $$ = [$1];
+    }
+  | NewLine
+    {
+      $$ = [];
     }
   | /* empty */
     {
@@ -433,6 +441,10 @@ Obj
   : "{" KVPairs "}"
     {
       $$ = new ObjNode($2, createSourceLocation(null, @1, @3));
+    }
+  | "{" INDENT KVPairs DEDENT NewLine "}"
+    {
+      $$ = new ObjNode($3, createSourceLocation(null, @1, @6));
     }
   ;
 
@@ -547,11 +559,11 @@ Comp
   ;
 
 Qualifier
-  : IF SourceElement THEN SourceElement
+  : IF SourceElement DO SourceElement
     {
       $$ = new QualifierNode($4, $2, null, "if", createSourceLocation(null, @1, @4));
     }
-  | IF SourceElement THEN SourceElement ELSE SourceElement
+  | IF SourceElement DO SourceElement ELSE SourceElement
     {
       $$ = new QualifierNode($4, $2, $6, "if", createSourceLocation(null, @1, @6));
     }
@@ -596,6 +608,10 @@ Destr
   | "{" ListItems "}"
     {
       $$ = new DestructureNode($2, 'Keys', createSourceLocation(null, @1, @1));
+    }
+  | "{" INDENT ListItems DEDENT NewLine "}"
+    {
+      $$ = new DestructureNode($3, 'Keys', createSourceLocation(null, @1, @6));
     }
   | Tuple
     {
@@ -650,6 +666,13 @@ Assignment
         type: 'Keys',
         items: $2
       }, $5, createSourceLocation(null, @1, @5));
+    }
+  | "{" INDENT ListItems DEDENT NewLine "}" "=" Assignable
+    {
+      $$ = new AssignmentNode({
+        type: 'Keys',
+        items: $3
+      }, $8, createSourceLocation(null, @1, @8));
     }
   | "[" Identifier "|" Identifier "]" "=" Assignable
     {
@@ -749,7 +772,15 @@ Condition
     {
       $$ = { test: $1, body: [$3] };
     }
+  | DEFAULT "->" SourceElement
+    {
+      $$ = { test: $1, body: [$3] };
+    }
   | SourceElement NewLines INDENT Block DEDENT
+    {
+      $$ = { test: $1, body: $4 };
+    }
+  | DEFAULT NewLines INDENT Block DEDENT
     {
       $$ = { test: $1, body: $4 };
     }
@@ -785,7 +816,7 @@ Caseof
   ;
 
 Catch
-  : NewLines CATCH
+  : NewLines DEFAULT
     {
       $$ = $2;
     }
@@ -888,6 +919,13 @@ Polymorph
   : MATCH INDENT MatchFns DEDENT
     {
       $$ = new PolymorphNode($3, false, createSourceLocation(null, @1, @4));
+    }
+  ;
+
+Chain
+  : CHAIN INDENT Block DEDENT
+    {
+      $$ = new ChainNode($3, createSourceLocation(null, @1, @4));
     }
   ;
 
@@ -1131,6 +1169,13 @@ function CondNode(conditions, loc) {
   this.shared = shared;
 }
 
+function ChainNode(body, loc) {
+  this.type = 'Chain';
+  this.body = body;
+  this.loc = loc;
+  this.shared = shared;
+}
+
 function CaseofNode(comparator, conditions, loc) {
   this.type = 'Caseof';
   this.length = conditions.length;
@@ -1265,3 +1310,4 @@ n.PipeNode = PipeNode;
 n.WrapNode = WrapNode;
 n.DestructureNode = DestructureNode;
 n.Functionizer = Functionizer;
+n.ChainNode = ChainNode;

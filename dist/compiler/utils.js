@@ -166,7 +166,7 @@ function getMsgPassingFns() {
 
 // Official list of reserved words
 function getReservedWords() {
-  return ['fn', 'caseof', 'match', 'if', 'for', 'in', 'when', 'var', 'const', 'let', 'while', 'switch', 'function', 'with', 'else', 'instanceof', 'super', 'enum', 'break', 'extends', 'catch', 'new', 'class', 'try', 'continue', 'typeof', 'delete', 'return', 'static', 'CNS_'];
+  return ['fn', 'caseof', 'match', 'if', 'default', 'catch', 'for', 'in', 'when', 'var', 'const', 'let', 'while', 'switch', 'function', 'with', 'else', 'instanceof', 'super', 'enum', 'break', 'extends', 'new', 'class', 'try', 'continue', 'typeof', 'delete', 'return', 'static', 'CNS_'];
 }
 
 exports.parser = _parser2.default;

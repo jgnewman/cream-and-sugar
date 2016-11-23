@@ -35,6 +35,7 @@ import './nodes/Regexp';
 import './nodes/Wrap';
 import './nodes/BackCons';
 import './nodes/Pipe';
+import './nodes/Chain';
 
 /*
  * Export a function for initializing compilation.
@@ -59,6 +60,9 @@ export function compile(path, callback, options) {
 export function compileCode(str, callback, options) {
   let tree;
   options = options || {};
+
+  // Make sure we always have a trailing newline
+  str = /\n$/.test(str) ? str : str + '\n';
 
   // Parse the tree.
   try {
