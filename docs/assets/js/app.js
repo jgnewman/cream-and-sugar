@@ -84,7 +84,7 @@ const reactify = require('./util/reactify');
 
 function render () {
   return CNS_.createElement("a", {className: "logo", href: "/"}, [
-CNS_.createElement("img", {className: "logo-main", src: "../assets/images/logo.svg"}, []),
+CNS_.createElement("img", {className: "logo-main", src: "./assets/images/logo.svg"}, []),
 CNS_.createElement("span", {className: "logo-line top-left"}, []),
 CNS_.createElement("span", {className: "logo-line top-right"}, []),
 CNS_.createElement("span", {className: "logo-line bottom-right"}, []),
