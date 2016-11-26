@@ -1,0 +1,54 @@
+###
+Hand this module a collection of functions to have it build a
+React class.
+###
+
+import React from 'react'
+
+
+###
+Build an object using a list full of functions
+###
+handleList fnList => handleList fnList, {}
+handleList [], accum => accum
+handleList [ hd | tl ], accum => handleList tl, (update hd.name, hd, accum)
+
+###
+Build an object using a tuple full of functions
+###
+handleTuple fnList =>
+  tupleToObject fnList, fn each =>
+    each.name
+
+###
+Build a class using a tuple full of functions
+###
+handleObject fnList => fnList
+
+###
+Build an object using a single function
+###
+handleFun fun => update fun.name, fun, {}
+
+###
+Builds a React class and adds propTypes
+###
+buildClass obj, propTypes =>
+  update 'propTypes', propTypes, (React.createClass obj)
+
+###
+Assess the type of the function list and hand it off
+to the appropriate class builder.
+###
+reactify fnList, propTypes =>
+  caseof dataType fnList
+    'array'    -> buildClass (handleList fnList), propTypes
+    'tuple'    -> buildClass (handleTuple fnList), propTypes
+    'object'   -> buildClass (handleObject fnList), propTypes
+    'function' -> buildClass (handleFun fnList), propTypes
+    default    -> throw create Error, 'Could not create a react class.'
+
+###
+Export reactify.
+###
+export aritize reactify, 2

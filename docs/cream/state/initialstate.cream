@@ -1,0 +1,48 @@
+import { retrieveState, uniqueId } from '../util/storage'
+
+###
+Default values for when somebody enters the app for the first time.
+###
+initialState = {
+  menuOpen: false,
+  downloadSelection: {
+    id: 'browserify',
+    text: 'Browserify transformer',
+    href: 'https://www.npmjs.com/package/creamify'
+  },
+  downloadOptions: {
+    browserify: {
+      id: 'browserify',
+      text: 'Browserify transformer',
+      href: 'https://www.npmjs.com/package/creamify'
+    },
+    gulp: {
+      id: 'gulp',
+      text: 'Gulp plugin',
+      href: 'https://www.npmjs.com/package/gulp-cns'
+    },
+    webpack: {
+      id: 'webpack',
+      text: 'Webpack loader',
+      href: 'https://www.npmjs.com/package/cns-loader'
+    },
+    raw: {
+      id: 'raw',
+      text: 'Raw language',
+      href: 'https://www.npmjs.com/package/cream-and-sugar'
+    }
+  }
+}
+
+###
+Determines whether to use localStorage values
+our our default values for hydrating the initial
+redux state.
+###
+hydrateInitialState _ =>
+  storage = retrieveState _
+  if storage do storage else initialState
+
+
+# Export the initial state
+export hydrateInitialState _

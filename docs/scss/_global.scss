@@ -1,0 +1,181 @@
+html, html * {
+  outline: none !important;
+}
+
+body {
+  font-family: $sans;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: $serif;
+  font-weight: 700;
+}
+
+.logo {
+  padding: 51px 0;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  z-index: 10;
+
+  @include phone {
+    padding: 0;
+  }
+
+  &, & * {
+    @include prefix('transition', all .5s ease);
+  }
+
+  .logo-line {
+    display: block;
+    width: 1px;
+    height: 75px;
+    position: absolute;
+    background: rgba(255, 255, 255, .43);
+    position: absolute;
+
+    @include phone {
+      height: 0;
+      opacity: 0;
+    }
+
+    &.top-right {
+      @include prefix('transform', rotate(45deg));
+      top: -10px;
+      right: 56px;
+
+      @include phone {
+        right: 28px;
+        top: -5px;
+      }
+    }
+
+    &.top-left {
+      @include prefix('transform', rotate(315deg));
+      top: -10px;
+      right: 138px;
+
+      @include phone {
+        top: -5px;
+        right: 166px;
+      }
+    }
+
+    &.bottom-right {
+      @include prefix('transform', rotate(135deg));
+      bottom: -10px;
+      right: 56px;
+
+      @include phone {
+        right: 28px;
+        bottom: -5px;
+      }
+    }
+
+    &.bottom-left {
+      @include prefix('transform', rotate(225deg));
+      bottom: -10px;
+      right: 138px;
+
+      @include phone {
+        bottom: -5px;
+        right: 166px;
+      }
+    }
+  }
+
+  .logo-text {
+    position: absolute;
+    display: block;
+    font-size: 9px;
+    font-family: $serif;
+    font-weight: 400;
+    text-align: center;
+    width: 49px;
+    letter-spacing: .5px;
+    color: $white;
+
+    &.top {
+      top: 30px;
+      right: 73px;
+
+      @include phone {
+        opacity: 0;
+        top: 15px;
+      }
+    }
+
+    &.bottom {
+      bottom: 30px;
+      right: 73px;
+
+      @include phone {
+        opacity: 0;
+        bottom: 15px;
+      }
+    }
+  }
+}
+
+.nav {
+  display: inline-block;
+  width: 30px;
+  height: 19px;
+  position: absolute;
+  cursor: pointer;
+  top: 40px;
+  right: 40px;
+  z-index: 10;
+
+  @include phone {
+    top: 33px;
+    right: 30px;
+  }
+
+  &, & * {
+    @include prefix('transition', all .5s ease);
+  }
+
+  .line {
+    width: 30px;
+    height: 1px;
+    background: $white;
+    position: absolute;
+
+    &.top {
+      top: 0;
+      left: 0;
+    }
+
+    &.middle {
+      top: 9px;
+      left: 0;
+    }
+
+    &.bottom {
+      bottom: 0;
+      left: 0;
+    }
+  }
+
+  &.open {
+
+    .line.top {
+      @include prefix('transform', rotate(225deg));
+      top: 9px;
+    }
+
+    .line.middle {
+      left: 50%;
+      width: 0;
+    }
+
+    .line.bottom {
+      @include prefix('transform', rotate(315deg));
+      bottom: 9px;
+    }
+  }
+}

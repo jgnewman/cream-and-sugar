@@ -1,0 +1,7 @@
+import { createStore } from 'redux'
+import initialState from './initialstate'
+import reducer from './reducer'
+
+store = createStore reducer, initialState
+
+export store

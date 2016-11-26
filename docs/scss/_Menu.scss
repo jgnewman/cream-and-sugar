@@ -1,0 +1,118 @@
+#app .menu {
+  background: rgba(0, 0, 0, .6);
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  opacity: 1;
+
+  &, & * {
+    @include prefix('transition', all .6s ease);
+  }
+
+  .menu-inner {
+    @include prefix('box-sizing', border-box);
+    margin-left: 294px;
+    margin-top: 40px;
+    border-left: 1px solid rgba(255, 255, 255, .25);
+    padding-left: 60px;
+  }
+
+  h1 {
+    font-size: 100px;
+    margin: 0;
+  }
+
+  h2 {
+    font-size: 30px;
+    font-family: $sans;
+    font-weight: 300;
+    margin: 0;
+  }
+
+  .row {
+    margin: 55px auto 95px -35px;
+
+    &:after {
+      content: '';
+      width: 100%;
+      height: 1px;
+      display: block;
+      clear: both;
+    }
+  }
+
+  .column {
+    float: left;
+    width: 50%;
+    max-width: 278px;
+  }
+
+  .menu-link {
+    display: block;
+    vertical-align: middle;
+    cursor: pointer;
+    padding: 5px 0;
+    letter-spacing: .5px;
+
+    &, &:before, & * {
+      @include prefix('transition', all .3s ease);
+    }
+
+    &:before {
+      display: inline-block;
+      content: url(../images/arrow.svg);
+      width: 35px;
+      height: 20px;
+      text-indent: -35px;
+      overflow: hidden;
+      vertical-align: middle;
+      opacity: 0;
+    }
+
+    &:hover {
+      font-weight: 800;
+
+      &, &:before, & * {
+        @include prefix('transition', all .3s ease);
+      }
+
+      &:before {
+        opacity: .47;
+        text-indent: -10px;
+      }
+    }
+  }
+
+  .copyright {
+    color: $offwhite;
+    font-size: 12px;
+    opacity: .47;
+    display: block;
+    letter-spacing: .5px;
+    position: absolute;
+    left: 40px;
+    bottom: 40px;
+    width: 214px;
+    text-align: center;
+  }
+
+  &.hidden {
+    opacity: 0;
+    right: -100%;
+
+    h1, h2 {
+      margin-left: -75%;
+    }
+
+    .row {
+      margin-left: -65%;
+    }
+
+    .download {
+      margin-left: -55%;
+    }
+  }
+}

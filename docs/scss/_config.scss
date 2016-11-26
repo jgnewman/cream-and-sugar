@@ -1,0 +1,26 @@
+$white: #ffffff;
+$black: #000000;
+$offwhite: #FBF4EC;
+$offblack: #171717;
+$offgray: #F8F6F8;
+
+$serif: 'Bitter', serif;
+$sans: 'Open Sans', sans-serif;
+
+@mixin prefix($key, $val) {
+  -webkit-#{$key}: $val;
+  -moz-#{$key}: $val;
+  #{$key}: $val;
+}
+
+@mixin tablet {
+  @media screen and (max-width: 768px) {
+    @content;
+  }
+}
+
+@mixin phone {
+  @media screen and (max-width: 550px) {
+    @content;
+  }
+}

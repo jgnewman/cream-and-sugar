@@ -1,0 +1,11 @@
+import React from 'react'
+import ReactDOM from 'react-dom'
+import store from './state/store'
+import { saveState } from './util/storage'
+import AppContainer from './containers/AppContainer'
+
+# Persist the state whenever it changes
+store.subscribe fn => saveState (store.getState _)
+
+# Render the application
+ReactDOM.render <AppContainer store={store} />, (dom '#app')

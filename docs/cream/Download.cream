@@ -1,0 +1,44 @@
+import React from 'react'
+import ReactDOM from 'react-dom'
+import reactify from './util/reactify'
+
+propTypes = {
+  downloadOptions: React.PropTypes.object.isRequired,
+  downloadSelection: React.PropTypes.object.isRequired,
+  handleSelectLink: React.PropTypes.func.isRequired,
+  selectLink: React.PropTypes.func.isRequired
+}
+
+render _ =>
+  { downloadOptions, downloadSelection, handleSelectLink } = @props
+
+  <div className="download">
+
+    <label className="download-label">
+      "HOW WILL YOU TAKE THAT?"
+    </label>
+
+    <select
+      className="download-dropdown"
+      value={downloadSelection.id}
+      onChange={::handleSelectLink}
+    >
+
+      (Object.keys downloadOptions).map fn key =>
+        option = get key, downloadOptions
+
+        <option key={key} value={option.id}>
+          option.text
+        </option>
+
+    </select>
+
+    <a
+      className="download-button"
+      href={downloadSelection.href}
+    >
+      "GO"
+    </a>
+  </div>
+
+export reactify render, propTypes

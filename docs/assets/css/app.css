@@ -1,0 +1,326 @@
+@import url(../../node_modules/normalize.css/normalize.css);
+html, html * {
+  outline: none !important; }
+
+body {
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 300; }
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: "Bitter", serif;
+  font-weight: 700; }
+
+.logo {
+  padding: 51px 0;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  z-index: 10; }
+  @media screen and (max-width: 550px) {
+    .logo {
+      padding: 0; } }
+  .logo, .logo * {
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    transition: all 0.5s ease; }
+  .logo .logo-line {
+    display: block;
+    width: 1px;
+    height: 75px;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.43);
+    position: absolute; }
+    @media screen and (max-width: 550px) {
+      .logo .logo-line {
+        height: 0;
+        opacity: 0; } }
+    .logo .logo-line.top-right {
+      -webkit-transform: rotate(45deg);
+      -moz-transform: rotate(45deg);
+      transform: rotate(45deg);
+      top: -10px;
+      right: 56px; }
+      @media screen and (max-width: 550px) {
+        .logo .logo-line.top-right {
+          right: 28px;
+          top: -5px; } }
+    .logo .logo-line.top-left {
+      -webkit-transform: rotate(315deg);
+      -moz-transform: rotate(315deg);
+      transform: rotate(315deg);
+      top: -10px;
+      right: 138px; }
+      @media screen and (max-width: 550px) {
+        .logo .logo-line.top-left {
+          top: -5px;
+          right: 166px; } }
+    .logo .logo-line.bottom-right {
+      -webkit-transform: rotate(135deg);
+      -moz-transform: rotate(135deg);
+      transform: rotate(135deg);
+      bottom: -10px;
+      right: 56px; }
+      @media screen and (max-width: 550px) {
+        .logo .logo-line.bottom-right {
+          right: 28px;
+          bottom: -5px; } }
+    .logo .logo-line.bottom-left {
+      -webkit-transform: rotate(225deg);
+      -moz-transform: rotate(225deg);
+      transform: rotate(225deg);
+      bottom: -10px;
+      right: 138px; }
+      @media screen and (max-width: 550px) {
+        .logo .logo-line.bottom-left {
+          bottom: -5px;
+          right: 166px; } }
+  .logo .logo-text {
+    position: absolute;
+    display: block;
+    font-size: 9px;
+    font-family: "Bitter", serif;
+    font-weight: 400;
+    text-align: center;
+    width: 49px;
+    letter-spacing: .5px;
+    color: #ffffff; }
+    .logo .logo-text.top {
+      top: 30px;
+      right: 73px; }
+      @media screen and (max-width: 550px) {
+        .logo .logo-text.top {
+          opacity: 0;
+          top: 15px; } }
+    .logo .logo-text.bottom {
+      bottom: 30px;
+      right: 73px; }
+      @media screen and (max-width: 550px) {
+        .logo .logo-text.bottom {
+          opacity: 0;
+          bottom: 15px; } }
+
+.nav {
+  display: inline-block;
+  width: 30px;
+  height: 19px;
+  position: absolute;
+  cursor: pointer;
+  top: 40px;
+  right: 40px;
+  z-index: 10; }
+  @media screen and (max-width: 550px) {
+    .nav {
+      top: 33px;
+      right: 30px; } }
+  .nav, .nav * {
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    transition: all 0.5s ease; }
+  .nav .line {
+    width: 30px;
+    height: 1px;
+    background: #ffffff;
+    position: absolute; }
+    .nav .line.top {
+      top: 0;
+      left: 0; }
+    .nav .line.middle {
+      top: 9px;
+      left: 0; }
+    .nav .line.bottom {
+      bottom: 0;
+      left: 0; }
+  .nav.open .line.top {
+    -webkit-transform: rotate(225deg);
+    -moz-transform: rotate(225deg);
+    transform: rotate(225deg);
+    top: 9px; }
+  .nav.open .line.middle {
+    left: 50%;
+    width: 0; }
+  .nav.open .line.bottom {
+    -webkit-transform: rotate(315deg);
+    -moz-transform: rotate(315deg);
+    transform: rotate(315deg);
+    bottom: 9px; }
+
+#app {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: padding 0.5s ease;
+  -moz-transition: padding 0.5s ease;
+  transition: padding 0.5s ease;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: url(../images/coffee-cup.jpg) right center no-repeat transparent;
+  background-size: cover;
+  color: #FBF4EC;
+  padding: 40px;
+  overflow: hidden; }
+  @media screen and (max-width: 550px) {
+    #app {
+      padding: 25px 25px; } }
+  #app h1, #app h2, #app h3, #app h4, #app h5, #app h6,
+  #app .h1, #app .h2, #app .h3, #app .h4, #app .h5, #app .h6 {
+    color: #ffffff; }
+  #app .home-content {
+    position: absolute;
+    left: 40px;
+    bottom: 40px;
+    width: 300px;
+    opacity: 1; }
+    #app .home-content, #app .home-content * {
+      -webkit-transition: all 0.8s ease;
+      -moz-transition: all 0.8s ease;
+      transition: all 0.8s ease; }
+    #app .home-content.hidden {
+      bottom: -50%;
+      opacity: 0;
+      height: 0; }
+    #app .home-content .home-text {
+      font-size: 14px;
+      line-height: 2.3;
+      font-weight: 300;
+      color: #FBF4EC;
+      margin-bottom: 95px;
+      letter-spacing: .5px; }
+  #app .download {
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    width: 284px;
+    height: 36px;
+    border: 1px solid #ffffff; }
+    #app .download .download-label {
+      font-family: "Bitter", serif;
+      color: #FBF4EC;
+      font-weight: bold;
+      margin-top: -38px;
+      margin-bottom: 22px;
+      display: block;
+      line-height: 16px;
+      font-size: 16px;
+      letter-spacing: 2px; }
+    #app .download .download-dropdown {
+      float: left;
+      display: block;
+      height: 36px;
+      width: 226px;
+      border: 0;
+      background: transparent;
+      color: #ffffff;
+      font-weight: 300;
+      font-family: "Open Sans", sans-serif;
+      letter-spacing: .5px;
+      color: #FBF4EC; }
+    #app .download .download-button {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      float: left;
+      display: block;
+      height: 36px;
+      width: 58px;
+      background: #ffffff;
+      color: #171717;
+      font-weight: 600;
+      text-align: center;
+      padding-top: 10px;
+      cursor: pointer;
+      text-decoration: none; }
+
+#app .menu {
+  background: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  opacity: 1; }
+  #app .menu, #app .menu * {
+    -webkit-transition: all 0.6s ease;
+    -moz-transition: all 0.6s ease;
+    transition: all 0.6s ease; }
+  #app .menu .menu-inner {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-left: 294px;
+    margin-top: 40px;
+    border-left: 1px solid rgba(255, 255, 255, 0.25);
+    padding-left: 60px; }
+  #app .menu h1 {
+    font-size: 100px;
+    margin: 0; }
+  #app .menu h2 {
+    font-size: 30px;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 300;
+    margin: 0; }
+  #app .menu .row {
+    margin: 55px auto 95px -35px; }
+    #app .menu .row:after {
+      content: '';
+      width: 100%;
+      height: 1px;
+      display: block;
+      clear: both; }
+  #app .menu .column {
+    float: left;
+    width: 50%;
+    max-width: 278px; }
+  #app .menu .menu-link {
+    display: block;
+    vertical-align: middle;
+    cursor: pointer;
+    padding: 5px 0;
+    letter-spacing: .5px; }
+    #app .menu .menu-link, #app .menu .menu-link:before, #app .menu .menu-link * {
+      -webkit-transition: all 0.3s ease;
+      -moz-transition: all 0.3s ease;
+      transition: all 0.3s ease; }
+    #app .menu .menu-link:before {
+      display: inline-block;
+      content: url(../images/arrow.svg);
+      width: 35px;
+      height: 20px;
+      text-indent: -35px;
+      overflow: hidden;
+      vertical-align: middle;
+      opacity: 0; }
+    #app .menu .menu-link:hover {
+      font-weight: 800; }
+      #app .menu .menu-link:hover, #app .menu .menu-link:hover:before, #app .menu .menu-link:hover * {
+        -webkit-transition: all 0.3s ease;
+        -moz-transition: all 0.3s ease;
+        transition: all 0.3s ease; }
+      #app .menu .menu-link:hover:before {
+        opacity: .47;
+        text-indent: -10px; }
+  #app .menu .copyright {
+    color: #FBF4EC;
+    font-size: 12px;
+    opacity: .47;
+    display: block;
+    letter-spacing: .5px;
+    position: absolute;
+    left: 40px;
+    bottom: 40px;
+    width: 214px;
+    text-align: center; }
+  #app .menu.hidden {
+    opacity: 0;
+    right: -100%; }
+    #app .menu.hidden h1, #app .menu.hidden h2 {
+      margin-left: -75%; }
+    #app .menu.hidden .row {
+      margin-left: -65%; }
+    #app .menu.hidden .download {
+      margin-left: -55%; }

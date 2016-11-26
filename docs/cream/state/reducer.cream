@@ -1,0 +1,24 @@
+import initialState from './initialstate'
+import { uniqueId } from '../util/storage'
+
+
+# If we don't have state, recurse with the initial state
+# If we have state, begin reducing
+reducer state, action where !state => reducer initialState, action
+reducer state, action =>
+  caseof action.type
+
+    # Open and close the main menu
+    TOGGLE_MENU
+      Object.assign {}, state, { menuOpen: !state.menuOpen }
+
+    # Choose a download link
+    SELECT_LINK
+      newOption = get action.payload, state.downloadOptions
+      Object.assign {}, state, { downloadSelection: newOption }
+
+    # Just return the state
+    default
+      state
+
+export reducer

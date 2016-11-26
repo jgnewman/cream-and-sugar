@@ -1,0 +1,15 @@
+toggleMenu _ =>
+  {
+    type: TOGGLE_MENU
+  }
+
+selectLink value =>
+  {
+    type: SELECT_LINK,
+    payload: value
+  }
+
+export {
+  toggleMenu: toggleMenu,
+  selectLink: selectLink
+}

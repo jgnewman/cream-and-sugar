@@ -1,0 +1,42 @@
+import React from 'react'
+import ReactDOM from 'react-dom'
+import reactify from './util/reactify'
+import Download from './Download'
+
+propTypes = {
+  menuOpen: React.PropTypes.bool.isRequired,
+  downloadOptions: React.PropTypes.object.isRequired,
+  downloadSelection: React.PropTypes.object.isRequired,
+  handleSelectLink: React.PropTypes.func.isRequired,
+  selectLink: React.PropTypes.func.isRequired
+}
+
+render _ =>
+  {
+    menuOpen, downloadOptions, downloadSelection, handleSelectLink,
+    selectLink
+  } = @props
+
+  classes =
+    when
+      menuOpen  -> 'home-content hidden'
+      !menuOpen -> 'home-content'
+
+  <div className={classes}>
+    <p className="home-text">
+      "
+      Cream & Sugar is a functional programming language that compiles to
+      JavaScript. Inspired by languages like Elixir and Haskell, it's meant
+      to be simple, beautiful, and easily digestible.
+      "
+    </p>
+
+    <Download
+      downloadOptions={downloadOptions}
+      downloadSelection={downloadSelection}
+      handleSelectLink={handleSelectLink}
+      selectLink={selectLink}
+    />
+  </div>
+
+export reactify render, propTypes

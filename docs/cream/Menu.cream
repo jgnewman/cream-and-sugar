@@ -1,0 +1,62 @@
+import React from 'react'
+import ReactDOM from 'react-dom'
+import reactify from './util/reactify'
+import Download from './Download'
+
+propTypes = {
+  menuOpen: React.PropTypes.bool.isRequired,
+  downloadOptions: React.PropTypes.object.isRequired,
+  downloadSelection: React.PropTypes.object.isRequired,
+  handleSelectLink: React.PropTypes.func.isRequired,
+  selectLink: React.PropTypes.func.isRequired
+}
+
+render _ =>
+  {
+    menuOpen, downloadOptions, handleSelectLink, downloadSelection,
+    selectLink
+  } = @props
+
+  classes =
+    when
+      menuOpen  -> 'menu'
+      !menuOpen -> 'menu hidden'
+
+  <div className={classes}>
+    <div className="menu-inner">
+      <h1>"Main Menu"</h1>
+      <h2>"Everything You Need Is Here"</h2>
+      <div className="row">
+        <div className="column">
+          <a className="menu-link">"Overview"</a>
+          <a className="menu-link">"Data Types"</a>
+          <a className="menu-link">"Logic & Infix Operators"</a>
+          <a className="menu-link">"Functions"</a>
+          <a className="menu-link">"Modules"</a>
+          <a className="menu-link">"Conditions"</a>
+          <a className="menu-link">"Iterations"</a>
+        </div>
+        <div className="column">
+          <a className="menu-link">"JSX-ish Syntax"</a>
+          <a className="menu-link">"Error Handling"</a>
+          <a className="menu-link">"Method Chaining"</a>
+          <a className="menu-link">"Curry Piping"</a>
+          <a className="menu-link">"Processes"</a>
+          <a className="menu-link">"Built-In Functions"</a>
+        </div>
+      </div>
+
+      <Download
+        downloadOptions={downloadOptions}
+        downloadSelection={downloadSelection}
+        handleSelectLink={handleSelectLink}
+        selectLink={selectLink}
+      />
+
+    </div>
+    <span className="copyright">
+      "Copyright © 2016 John Newman."
+    </span>
+  </div>
+
+export reactify render, propTypes

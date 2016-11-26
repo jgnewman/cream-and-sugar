@@ -1,0 +1,11 @@
+
+handleClickNav _ =>
+  @props.toggleMenu _
+
+handleSelectLink evt =>
+  @props.selectLink evt.target.value
+
+export {
+  handleClickNav: handleClickNav,
+  handleSelectLink: handleSelectLink
+}

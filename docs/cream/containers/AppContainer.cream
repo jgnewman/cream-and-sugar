@@ -1,0 +1,83 @@
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import actions from '../state/actions'
+import reactify from '../util/reactify'
+import Logo from '../Logo'
+import Nav from '../Nav'
+import HomeContent from '../HomeContent'
+import Menu from '../Menu'
+
+import {
+  handleClickNav,
+  handleSelectLink
+} from '../handlers/handlers'
+
+###
+@private select - Used with `connect` to add state properties to the container
+                  as props.
+@param   {Object} state  The current redux state.
+@returns {Object}        Class properties mapped to the redux state.
+###
+select state =>
+  {
+    menuOpen: state.menuOpen,
+    downloadOptions: state.downloadOptions,
+    downloadSelection: state.downloadSelection
+  }
+
+###
+@private action - Used with `connect` to add actions to the container
+                  as props.
+@param   {Function} dispatch  A function for dispatching redux actions.
+@returns {Object}             Action dispatching functions mapped to class properties.
+Example:
+{ propName: (bindActionCreators actions.fnName, dispatch) }
+###
+action dispatch =>
+  {
+    toggleMenu: ( bindActionCreators actions.toggleMenu, dispatch ),
+    selectLink: ( bindActionCreators actions.selectLink, dispatch )
+  }
+
+
+###
+@public render - A render function for the React class.
+@returns {ReactElement} Used to render the app.
+###
+render _ =>
+  {
+    menuOpen, toggleMenu, downloadOptions, downloadSelection,
+    selectLink
+  } = @props
+
+  # Render out a div
+  <div>
+    <Logo />
+
+    <Nav
+      menuOpen={menuOpen}
+      toggleMenu={toggleMenu}
+      handleClickNav={handleClickNav}
+    />
+
+    <HomeContent
+      menuOpen={menuOpen}
+      downloadOptions={downloadOptions}
+      downloadSelection={downloadSelection}
+      handleSelectLink={handleSelectLink}
+      selectLink={selectLink}
+    />
+
+    <Menu
+      menuOpen={menuOpen}
+      downloadOptions={downloadOptions}
+      downloadSelection={downloadSelection}
+      handleSelectLink={handleSelectLink}
+      selectLink={selectLink}
+    />
+  </div>
+
+# Create and export a connected component
+export (connect select, action) (reactify render, {})

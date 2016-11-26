@@ -1,0 +1,32 @@
+###
+Saves our redux state to local storage
+###
+saveState state =>
+  try
+    serialized = JSON.stringify state
+    localStorage.setItem 'cns', serialized
+  default err
+    undefined
+
+###
+Retrieves a previous state from local storage
+###
+retrieveState _ =>
+  try
+    serialized = localStorage.getItem 'cns'
+    JSON.parse serialized
+  default err
+    undefined
+
+###
+Creates a unique ID
+###
+uniqueId _ =>
+  ((create Date).getTime _) + '-' + (Math.round (Math.random _) * 50000)
+
+# Export our state functions
+export {
+  saveState: saveState,
+  retrieveState: retrieveState,
+  uniqueId: uniqueId
+}

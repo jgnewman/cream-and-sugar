@@ -1,0 +1,27 @@
+import React from 'react'
+import ReactDOM from 'react-dom'
+import reactify from './util/reactify'
+
+propTypes = {
+  menuOpen: React.PropTypes.bool.isRequired,
+  toggleMenu: React.PropTypes.func.isRequired,
+  handleClickNav: React.PropTypes.func.isRequired
+}
+
+render _ =>
+  { menuOpen, handleClickNav } = @props
+
+  classes =
+    when
+      menuOpen  -> 'nav open'
+      !menuOpen -> 'nav'
+
+  <a
+    className={classes}
+    onClick={::handleClickNav}>
+    <span className="line top"></span>
+    <span className="line middle"></span>
+    <span className="line bottom"></span>
+  </a>
+
+export reactify render, propTypes
