@@ -8,14 +8,16 @@ var gulp = require('gulp'),
     browserSync = require('browser-sync').create(),
     source = require('vinyl-source-stream'),
     sequence = require('run-sequence'),
-    creamify = require('creamify')
+    creamify = require('creamify'),
+    panini = require('panini'),
+    rename = require('gulp-rename'),
     reload = browserSync.reload;
 
 /**
  * Cleaning dist/ folder
  */
 gulp.task('clean', function(cb) {
-  return gulp.src(['css/**', 'js/**'], { read: false })
+  return gulp.src(['css/**', 'js/**', 'reference/**'], { read: false })
              .pipe(clean());
 })
 
@@ -51,14 +53,34 @@ gulp.task('clean', function(cb) {
   .pipe(gulp.dest('assets/js'));
 })
 
+.task('docs', function () {
+  return gulp.src('markdown/**/*.md')
+  .pipe(panini({
+    root: 'markdown/',
+    layouts: 'layouts/'
+  }))
+  .pipe(rename(function (path) {
+    path.dirname += ('/' + path.basename);
+    path.basename = 'index';
+    path.extname = '.html';
+  }))
+  .pipe(gulp.dest('reference'));
+})
+
 /**
  * watch files and recompile
  */
 .task('watch', function () {
   return gulp.watch(
-    ['cream/**/*.cream', 'scss/**/*.scss', 'index.html'],
+    [
+      'cream/**/*.cream',
+      'scss/**/*.scss',
+      'markdown/**/*.md',
+      'layouts/**/*.html',
+      'index.html'
+    ],
     function () {
-      return sequence('sass', 'js', browserSync.reload);
+      return sequence('sass', 'js', 'docs', browserSync.reload);
     }
   );
 })
@@ -67,5 +89,5 @@ gulp.task('clean', function(cb) {
  * compile resources and run a server
  */
 .task('serve', function(done) {
-  return sequence('clean', ['sass', 'js'], 'server', 'watch', done);
+  return sequence('clean', ['sass', 'js', 'docs'], 'server', 'watch', done);
 });;

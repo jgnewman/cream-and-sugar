@@ -1,12 +1,29 @@
+0.6.1
+=====
+
+Shipped on xx.xx.xxxx
+
+### Fix
+
+- Fix CreamML where it wasn't properly handling `htmlFor`.
+
+### Feature
+
+
+### Change
+
+
+### Under the Hood
+
+- "JSX-like" syntax is currently being officially called CreamML.
+
+
 0.6.0
 =====
 
 Shipped on 11.23.2016
 
 #### Thanksgiving Update!
-
-### Fix
-
 
 ### Feature
 

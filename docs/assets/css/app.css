@@ -181,8 +181,7 @@ h1, h2, h3, h4, h5, h6,
       transition: all 0.8s ease; }
     #app .home-content.hidden {
       bottom: -50%;
-      opacity: 0;
-      height: 0; }
+      opacity: 0; }
     #app .home-content .home-text {
       font-size: 14px;
       line-height: 2.3;
@@ -324,3 +323,105 @@ h1, h2, h3, h4, h5, h6,
       margin-left: -65%; }
     #app .menu.hidden .download {
       margin-left: -55%; }
+
+.docs:after {
+  content: '';
+  display: block;
+  clear: both;
+  width: 100%;
+  height: 1px; }
+
+.docs h1, .docs h2, .docs h3, .docs h4, .docs h5, .docs h6,
+.docs .h1, .docs .h2, .docs .h3, .docs .h4, .docs .h5, .docs .h6 {
+  margin: 0;
+  line-height: 1.2; }
+
+.docs h1, .docs .h1 {
+  font-size: 52px; }
+
+.docs h2, .docs .h2 {
+  font-size: 40px; }
+  .docs h2.subhead, .docs .h2.subhead {
+    font-family: "Open Sans", sans-serif;
+    font-weight: 300;
+    font-size: 18px;
+    letter-spacing: 1px; }
+
+.docs h3, .docs .h3 {
+  font-size: 28px; }
+
+.docs h4, .docs .h4 {
+  font-size: 18px; }
+
+.docs h5, .docs .h5 {
+  font-size: 14px; }
+
+.docs h6, .docs .h6 {
+  font-size: 12px;
+  text-transform: uppercase;
+  font-family: "Open Sans", sans-serif; }
+
+.docs .branding {
+  background: url(../images/coffee-cup.jpg) right center no-repeat transparent;
+  min-height: 800px;
+  color: #FBF4EC;
+  float: left;
+  width: 336px; }
+
+.docs .content {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0 0 0 336px;
+  position: relative;
+  padding: 50px calc((100% - 270px)/2) 0 36px;
+  color: #171717;
+  line-height: 2.3;
+  font-size: 12px;
+  font-weight: 400; }
+  .docs .content:before {
+    content: '';
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background: #F8F6F8; }
+
+.docs .left-border {
+  margin-bottom: 50px;
+  position: relative; }
+  .docs .left-border:before {
+    content: '';
+    width: 5px;
+    height: 100%;
+    background: #D12F52;
+    margin-left: -36px;
+    display: block;
+    position: absolute; }
+
+.docs pre, .docs pre code {
+  font-size: 13px;
+  line-height: 1.4;
+  font-family: 'Fira Code', consolas, monospace;
+  display: block; }
+
+.docs pre {
+  margin: 0 0 0 calc(100% + 72px);
+  position: relative;
+  height: 0; }
+
+.docs pre code {
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  padding-top: 1em;
+  opacity: 0;
+  margin-left: 25px; }
+  .docs pre code.visible {
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    opacity: 1;
+    margin-left: 0; }

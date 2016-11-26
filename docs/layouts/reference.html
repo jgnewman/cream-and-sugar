@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Cream & Sugar: {{title}}</title>
+    <link href="https://fonts.googleapis.com/css?family=Bitter:400,700|Open+Sans:300,400,800" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/app.css">
+  </head>
+  <body class="docs">
+    <div class="branding">
+      logo
+      <br/>
+      copyright
+    </div>
+    <div class="content">
+      <div class="left-border">
+        <h1>{{title}}</h1>
+        <h2 class="subhead">{{subhead}}</h2>
+      </div>
+      {{> body}}
+    </div>
+    <script>
+      window.addEventListener('load', function () {
+        Array.prototype.slice.call(document.querySelectorAll('pre code')).forEach(function (code) {
+          var lines = code.innerHTML.trim().split('\n');
+          var out = [lines[0]];
+          var sliceAmount;
+          lines.slice(1).forEach(function (line, index) {
+            if (index === 0) {
+              var whitespace = line.match(/^\s+/);
+              sliceAmount = whitespace[0];
+            }
+            out.push(line.replace(sliceAmount, ''));
+          });
+          code.innerHTML = out.join('\n');
+          code.className = 'visible';
+        });
+      });
+    </script>
+  </body>
+</html>
