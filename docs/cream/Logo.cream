@@ -4,7 +4,7 @@ import reactify from './util/reactify'
 
 render _ =>
   <a className="logo" href="/">
-    <img className="logo-main" src="./assets/images/logo.svg" />
+    <img className="logo-main" src="/assets/images/logo.svg" />
     <span className="logo-line top-left"></span>
     <span className="logo-line top-right"></span>
     <span className="logo-line bottom-right"></span>

@@ -6,7 +6,6 @@ import actions from '../state/actions'
 import reactify from '../util/reactify'
 import Logo from '../Logo'
 import Nav from '../Nav'
-import HomeContent from '../HomeContent'
 import Menu from '../Menu'
 
 import {
@@ -61,14 +60,6 @@ render _ =>
       menuOpen={menuOpen}
       toggleMenu={toggleMenu}
       handleClickNav={handleClickNav}
-    />
-
-    <HomeContent
-      menuOpen={menuOpen}
-      downloadOptions={downloadOptions}
-      downloadSelection={downloadSelection}
-      handleSelectLink={handleSelectLink}
-      selectLink={selectLink}
     />
 
     <Menu

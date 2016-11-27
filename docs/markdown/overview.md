@@ -7,33 +7,18 @@ subhead: What is Cream & Sugar Anyway?
 {{#markdown}}
 
 ```
+# a basic factorial calculator
 factorial 0 => 1
 factorial n => n * factorial n - 1
 ```
 
-Cream & Sugar (also called CnS) is a functional language that compiles to JavaScript. It has a couple of benefits over pure JavaScript as well as other "meta-JavaScript" dialects:
+Cream & Sugar (also called C&S) is a functional language that compiles to JavaScript. It has a couple of benefits over pure JavaScript as well as other "meta-JavaScript" dialects:
 
-1. CnS has a beautiful, easy-to-read syntax inspired in part by CoffeeScript and Haskell, but retaining all of JavaScript's familiar data forms.
-2. CnS provides [native support for JSX](./jsx.md) as part of the native syntax. And if you aren't using React, you can still use JSX syntax to generate DOM elements.
-3. CnS makes it extremely simple to spin up [child processes](./processes.md) in both Node.js and the browser as well as pass messages between them.
-4. CnS implements all the best parts of functionalism including immutable data, pattern matching, arity requirements, and recursion, all in a forgiving way that doesn't add too much overhead to your application's performance.
+1. CnS has a beautiful, easy-to-read syntax inspired in part by Elixir and Haskell, but retaining all of JavaScript's familiar data forms.
+2. CnS provides [JSX-like structures](/reference/creamml/) as part of the native syntax. And if you aren't using React, you can still use these structures to generate DOM elements.
+3. CnS makes it extremely simple to spin up [child processes](/reference/processes/) in both Node.js and the browser as well as pass messages between them.
+4. CnS implements all the best parts of functionalism including **immutable data**, **pattern matching**, **arity requirements**, and **recursion**, all in a forgiving way and with minimal performance overhead.
 
-If this sounds interesting to you, read on. Here are all the docs we've got at the moment:
-
-## Table of Contents
-
-- [Data Types](datatypes.md)
-- [Logic & Infix Operations](operations.md)
-- [Functions](functions.md)
-- [Modules](modules.md)
-- [Conditions](conditions.md)
-- [Iteration](iteration.md)
-- [JSX Syntax](jsx.md)
-- [Error Handling](errors.md)
-- [Method Chaining](chains.md))
-- [Curry Piping](pipes.md)
-- [Processes](processes.md)
-- [Built-In Functions](bifs.md)
-- [An Example React App](sample.md)
+If this sounds interesting to you, we'd recommend reading on. Why not start with [data types](/reference/data-types/)?
 
 {{/markdown}}

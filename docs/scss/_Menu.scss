@@ -1,5 +1,12 @@
 #app .menu {
   background: rgba(0, 0, 0, .6);
+}
+
+#docs-app .menu {
+  background: rgba(0, 0, 0, .85);
+}
+
+#app .menu, #docs-app .menu {
   position: fixed;
   top: 0;
   right: 0;
@@ -7,6 +14,14 @@
   height: 100%;
   z-index: 5;
   opacity: 1;
+  color: $offwhite;
+  overflow: hidden;
+
+  @include tablet {
+    position: absolute;
+    height: auto;
+    padding-bottom: 100px;
+  }
 
   &, & * {
     @include prefix('transition', all .6s ease);
@@ -15,14 +30,33 @@
   .menu-inner {
     @include prefix('box-sizing', border-box);
     margin-left: 294px;
-    margin-top: 40px;
-    border-left: 1px solid rgba(255, 255, 255, .25);
+    margin-top: 30px;
     padding-left: 60px;
+
+    @include tablet {
+      margin-left: 0;
+      border-left: 0;
+      margin-top: 100px;
+    }
+
+    @include phone {
+      margin-top: 75px;
+    }
   }
 
   h1 {
     font-size: 100px;
     margin: 0;
+    color: $white;
+    line-height: 1.1;
+
+    @include smalldesk {
+      font-size: 48px;
+    }
+
+    @include tablet {
+      display: none;
+    }
   }
 
   h2 {
@@ -30,6 +64,17 @@
     font-family: $sans;
     font-weight: 300;
     margin: 0;
+    color: $white;
+    line-height: 1.1;
+
+    @include smalldesk {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    @include tablet {
+      display: none;
+    }
   }
 
   .row {
@@ -48,6 +93,12 @@
     float: left;
     width: 50%;
     max-width: 278px;
+
+    @include phone {
+      float: none;
+      max-width: 100%;
+      width: 100%;
+    }
   }
 
   .menu-link {
@@ -56,6 +107,14 @@
     cursor: pointer;
     padding: 5px 0;
     letter-spacing: .5px;
+    font-size: 14px;
+    line-height: 1;
+    text-decoration: none;
+    color: $offwhite;
+
+    @include phone {
+      padding: 10px 0;
+    }
 
     &, &:before, & * {
       @include prefix('transition', all .3s ease);
@@ -72,7 +131,7 @@
       opacity: 0;
     }
 
-    &:hover {
+    &.active, &:hover {
       font-weight: 800;
 
       &, &:before, & * {
@@ -83,6 +142,10 @@
         opacity: .47;
         text-indent: -10px;
       }
+    }
+
+    &.active {
+      cursor: default;
     }
   }
 

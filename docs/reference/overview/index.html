@@ -5,47 +5,31 @@
     <title>Cream & Sugar: Overview</title>
     <link href="https://fonts.googleapis.com/css?family=Bitter:400,700|Open+Sans:300,400,800" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css/app.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
   </head>
   <body class="docs">
-    <div class="branding">
-      logo
-      <br/>
-      copyright
-    </div>
+    <div class="branding"></div>
     <div class="content">
       <div class="left-border">
         <h1>Overview</h1>
         <h2 class="subhead">What is Cream &amp; Sugar Anyway?</h2>
       </div>
       
-      <pre><code>factorial 0 =&gt; 1
+      <pre><code># a basic factorial calculator
+      factorial 0 =&gt; 1
       factorial n =&gt; n * factorial n - 1
-      </code></pre><p>Cream &amp; Sugar (also called CnS) is a functional language that compiles to JavaScript. It has a couple of benefits over pure JavaScript as well as other &quot;meta-JavaScript&quot; dialects:</p>
+      </code></pre><p>Cream &amp; Sugar (also called C&amp;S) is a functional language that compiles to JavaScript. It has a couple of benefits over pure JavaScript as well as other &quot;meta-JavaScript&quot; dialects:</p>
       <ol>
-      <li>CnS has a beautiful, easy-to-read syntax inspired in part by CoffeeScript and Haskell, but retaining all of JavaScript&#39;s familiar data forms.</li>
-      <li>CnS provides <a href="./jsx.md">native support for JSX</a> as part of the native syntax. And if you aren&#39;t using React, you can still use JSX syntax to generate DOM elements.</li>
-      <li>CnS makes it extremely simple to spin up <a href="./processes.md">child processes</a> in both Node.js and the browser as well as pass messages between them.</li>
-      <li>CnS implements all the best parts of functionalism including immutable data, pattern matching, arity requirements, and recursion, all in a forgiving way that doesn&#39;t add too much overhead to your application&#39;s performance.</li>
+      <li>CnS has a beautiful, easy-to-read syntax inspired in part by Elixir and Haskell, but retaining all of JavaScript&#39;s familiar data forms.</li>
+      <li>CnS provides <a href="/reference/creamml/">JSX-like structures</a> as part of the native syntax. And if you aren&#39;t using React, you can still use these structures to generate DOM elements.</li>
+      <li>CnS makes it extremely simple to spin up <a href="/reference/processes/">child processes</a> in both Node.js and the browser as well as pass messages between them.</li>
+      <li>CnS implements all the best parts of functionalism including <strong>immutable data</strong>, <strong>pattern matching</strong>, <strong>arity requirements</strong>, and <strong>recursion</strong>, all in a forgiving way and with minimal performance overhead.</li>
       </ol>
-      <p>If this sounds interesting to you, read on. Here are all the docs we&#39;ve got at the moment:</p>
-      <h2 id="table-of-contents">Table of Contents</h2>
-      <ul>
-      <li><a href="datatypes.md">Data Types</a></li>
-      <li><a href="operations.md">Logic &amp; Infix Operations</a></li>
-      <li><a href="functions.md">Functions</a></li>
-      <li><a href="modules.md">Modules</a></li>
-      <li><a href="conditions.md">Conditions</a></li>
-      <li><a href="iteration.md">Iteration</a></li>
-      <li><a href="jsx.md">JSX Syntax</a></li>
-      <li><a href="errors.md">Error Handling</a></li>
-      <li><a href="chains.md">Method Chaining</a>)</li>
-      <li><a href="pipes.md">Curry Piping</a></li>
-      <li><a href="processes.md">Processes</a></li>
-      <li><a href="bifs.md">Built-In Functions</a></li>
-      <li><a href="sample.md">An Example React App</a></li>
-      </ul>
+      <p>If this sounds interesting to you, we&#39;d recommend reading on. Why not start with <a href="/reference/data-types/">data types</a>?</p>
       
     </div>
+    <section id="docs-app"></section>
     <script>
       window.addEventListener('load', function () {
         Array.prototype.slice.call(document.querySelectorAll('pre code')).forEach(function (code) {
@@ -60,9 +44,11 @@
             out.push(line.replace(sliceAmount, ''));
           });
           code.innerHTML = out.join('\n');
-          code.className = 'visible';
+          code.className = 'visible lang-coffeescript';
+          hljs.highlightBlock(code);
         });
       });
     </script>
+    <script src="../../assets/js/app.js"></script>
   </body>
 </html>

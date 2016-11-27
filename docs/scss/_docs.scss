@@ -1,5 +1,5 @@
 .docs {
-  $sidebarwidth: 336px;
+  $sidebarwidth: 294px;
 
   &:after {
     content: '';
@@ -50,21 +50,40 @@
 
   .branding {
     background: url(../images/coffee-cup.jpg) right center no-repeat transparent;
-    min-height: 800px;
+    height: 100%;
     color: $offwhite;
-    float: left;
+    position: fixed;
     width: $sidebarwidth;
+
+    @include smalldesk {
+      width: 100%;
+      position: static;
+      height: 100px;
+    }
+
+    @include phone {
+      height: 66px;
+    }
   }
 
   .content {
     @include prefix('box-sizing', border-box);
     margin: 0 0 0 $sidebarwidth;
     position: relative;
-    padding: 50px calc((100% - 270px)/2) 0 36px;
+    padding: 40px calc((100% - 220px)/2) 50px 36px;
     color: $offblack;
     line-height: 2.3;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 400;
+
+    @include smalldesk {
+      margin: 0;
+      padding: 50px 54% 50px 36px;
+    }
+
+    @include tablet {
+      padding: 36px;
+    }
 
     &:before {
       content: '';
@@ -75,18 +94,53 @@
       width: 50%;
       height: 100%;
       background: $offgray;
+
+      @include tablet {
+        display: none;
+      }
+    }
+
+    a {
+      color: $docsred;
+      text-decoration: none;
+      cursor: pointer;
+      position: relative;
+      display: inline-block;
+      white-space: nowrap;
+
+      &:after {
+        @include prefix('transition', width .3s ease);
+        content: '';
+        display: block;
+        width: 0;
+        height: 1px;
+        background: $docsred;
+        position: absolute;
+        right: 0;
+        left: auto;
+        bottom: 2px;
+      }
+
+      &:hover {
+        &:after {
+          @include prefix('transition', width .3s ease);
+          width: 100%;
+          left: 0;
+          right: auto;
+        }
+      }
     }
   }
 
   .left-border {
-    margin-bottom: 50px;
+    margin-bottom: 25px;
     position: relative;
 
     &:before {
       content: '';
       width: 5px;
       height: 100%;
-      background: #D12F52;
+      background: $docsred;
       margin-left: -36px;
       display: block;
       position: absolute;
@@ -96,26 +150,93 @@
   pre, pre code {
     font-size: 13px;
     line-height: 1.4;
-    font-family: 'Fira Code', consolas, monospace;
     display: block;
+  }
+
+  code {
+    font-family: 'Fira Code', 'Hasklig', consolas, monospace;
   }
 
   pre {
     margin: 0 0 0 calc(100% + 72px);
     position: relative;
     height: 0;
+
+    @include tablet {
+      margin: 0 -36px;
+      height: auto;
+      padding: 10px 36px 20px;
+      background: $offgray;
+      border: 1px solid darken($offgray, 5%);
+    }
   }
 
   pre code {
-    @include prefix('transition', all .3s ease);
+    @include prefix('transition', all .6s ease);
     padding-top: 1em;
     opacity: 0;
     margin-left: 25px;
 
     &.visible {
-      @include prefix('transition', all .3s ease);
+      @include prefix('transition', all .6s ease);
       opacity: 1;
       margin-left: 0;
+    }
+  }
+
+  .hljs {
+    overflow-x: inherit;
+    padding-left: 0;
+    background: transparent;
+  }
+
+  .hljs-comment {
+    opacity: .5;
+  }
+
+  .nav {
+    @include phone {
+      top: 25px;
+      right: 25px;
+    }
+    .line {
+      background: $offblack;
+      @include smalldesk {
+        background: $white;
+      }
+    }
+    &.open .line {
+      background: $white;
+    }
+  }
+
+  .logo {
+    position: fixed;
+    left: 40px;
+    top: 40px;
+
+    @include smalldesk {
+      position: absolute;;
+      padding: 0;
+      top: 35px;
+    }
+
+    @include phone {
+      top: 15px;
+      left: 25px;
+    }
+
+    .logo-line {
+      @include smalldesk {
+        height: 0;
+        opacity: 0;
+      }
+    }
+
+    .logo-text {
+      @include smalldesk {
+        opacity: 0;
+      }
     }
   }
 

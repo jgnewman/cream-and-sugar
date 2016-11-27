@@ -3,6 +3,7 @@ $black: #000000;
 $offwhite: #FBF4EC;
 $offblack: #171717;
 $offgray: #F8F6F8;
+$docsred: #D12F52;
 
 $serif: 'Bitter', serif;
 $sans: 'Open Sans', sans-serif;
@@ -11,6 +12,12 @@ $sans: 'Open Sans', sans-serif;
   -webkit-#{$key}: $val;
   -moz-#{$key}: $val;
   #{$key}: $val;
+}
+
+@mixin smalldesk {
+  @media screen and (max-width: 1190px) {
+    @content;
+  }
 }
 
 @mixin tablet {

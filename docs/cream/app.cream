@@ -3,9 +3,17 @@ import ReactDOM from 'react-dom'
 import store from './state/store'
 import { saveState } from './util/storage'
 import AppContainer from './containers/AppContainer'
+import DocsContainer from './containers/DocsContainer'
+
+appDom = dom '#app'
+docsDom = dom '#docs-app'
 
 # Persist the state whenever it changes
 store.subscribe fn => saveState (store.getState _)
 
 # Render the application
-ReactDOM.render <AppContainer store={store} />, (dom '#app')
+when
+  appDom
+    ReactDOM.render <AppContainer store={store} />, appDom
+  docsDom
+    ReactDOM.render <DocsContainer store={store} />, docsDom

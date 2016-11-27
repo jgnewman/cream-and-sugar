@@ -8,13 +8,36 @@ propTypes = {
   downloadOptions: React.PropTypes.object.isRequired,
   downloadSelection: React.PropTypes.object.isRequired,
   handleSelectLink: React.PropTypes.func.isRequired,
-  selectLink: React.PropTypes.func.isRequired
+  handleClickMenuLink: React.PropTypes.func.isRequired,
+  selectLink: React.PropTypes.func.isRequired,
+  toggleMenu: React.PropTypes.func.isRequired
 }
+
+getLeftContent _ =>
+  [
+    {inner: 'Overview', href: '/reference/overview/'},
+    {inner: 'Data Types', href: '/reference/data-types/'},
+    {inner: 'Logic & Infix Operators', href: '/reference/logic-infix/'},
+    {inner: 'Functions', href: '/reference/functions/'},
+    {inner: 'Modules', href: '/reference/modules/'},
+    {inner: 'Conditions', href: '/reference/conditions/'},
+    {inner: 'Iterations', href: '/reference/iterations/'}
+  ]
+
+getRightContent _ =>
+  [
+    {inner: 'CreamML (JSX)', href: '/reference/creamml/'},
+    {inner: 'Error Handling', href: '/reference/error-handling/'},
+    {inner: 'Method Chaining', href: '/reference/method-chaining/'},
+    {inner: 'Curry Piping', href: '/reference/curry-piping/'},
+    {inner: 'Processes', href: '/reference/processes/'},
+    {inner: 'Built-In Functions', href: '/reference/bifs/'}
+  ]
 
 render _ =>
   {
     menuOpen, downloadOptions, handleSelectLink, downloadSelection,
-    selectLink
+    selectLink, handleClickMenuLink
   } = @props
 
   classes =
@@ -28,21 +51,42 @@ render _ =>
       <h2>"Everything You Need Is Here"</h2>
       <div className="row">
         <div className="column">
-          <a className="menu-link">"Overview"</a>
-          <a className="menu-link">"Data Types"</a>
-          <a className="menu-link">"Logic & Infix Operators"</a>
-          <a className="menu-link">"Functions"</a>
-          <a className="menu-link">"Modules"</a>
-          <a className="menu-link">"Conditions"</a>
-          <a className="menu-link">"Iterations"</a>
+
+          (getLeftContent _).map fn obj, index ::=>
+
+            isActive    = location.pathname == obj.href
+            linkClasses = if isActive do 'menu-link active' else 'menu-link'
+            href        = if isActive do null else obj.href
+            onClick     = if isActive do null else ::handleClickMenuLink
+
+            <a
+              className={linkClasses}
+              href={href}
+              key={index}
+              onClick={onClick}
+            >
+              obj.inner
+            </a>
+
         </div>
         <div className="column">
-          <a className="menu-link">"JSX-ish Syntax"</a>
-          <a className="menu-link">"Error Handling"</a>
-          <a className="menu-link">"Method Chaining"</a>
-          <a className="menu-link">"Curry Piping"</a>
-          <a className="menu-link">"Processes"</a>
-          <a className="menu-link">"Built-In Functions"</a>
+
+          (getRightContent _).map fn obj, index ::=>
+
+            isActive    = location.pathname == obj.href
+            linkClasses = if isActive do 'menu-link active' else 'menu-link'
+            href        = if isActive do null else obj.href
+            onClick     = if isActive do null else ::handleClickMenuLink
+
+            <a
+              className={linkClasses}
+              href={href}
+              key={index}
+              onClick={onClick}
+            >
+              obj.inner
+            </a>
+
         </div>
       </div>
 

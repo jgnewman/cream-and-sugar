@@ -146,6 +146,51 @@ h1, h2, h3, h4, h5, h6,
     transform: rotate(315deg);
     bottom: 9px; }
 
+.download {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  width: 284px;
+  height: 36px;
+  border: 1px solid #ffffff; }
+  .download .download-label {
+    font-family: "Bitter", serif;
+    color: #FBF4EC;
+    font-weight: bold;
+    margin-top: -38px;
+    margin-bottom: 22px;
+    display: block;
+    line-height: 16px;
+    font-size: 16px;
+    letter-spacing: 2px; }
+  .download .download-dropdown {
+    float: left;
+    display: block;
+    height: 36px;
+    width: 226px;
+    border: 0;
+    background: transparent;
+    color: #ffffff;
+    font-weight: 300;
+    font-family: "Open Sans", sans-serif;
+    letter-spacing: .5px;
+    color: #FBF4EC; }
+  .download .download-button {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    float: left;
+    display: block;
+    height: 36px;
+    width: 58px;
+    background: #ffffff;
+    color: #171717;
+    font-weight: 600;
+    text-align: center;
+    padding-top: 10px;
+    cursor: pointer;
+    text-decoration: none; }
+
 #app {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -189,103 +234,107 @@ h1, h2, h3, h4, h5, h6,
       color: #FBF4EC;
       margin-bottom: 95px;
       letter-spacing: .5px; }
-  #app .download {
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-    width: 284px;
-    height: 36px;
-    border: 1px solid #ffffff; }
-    #app .download .download-label {
-      font-family: "Bitter", serif;
-      color: #FBF4EC;
-      font-weight: bold;
-      margin-top: -38px;
-      margin-bottom: 22px;
-      display: block;
-      line-height: 16px;
-      font-size: 16px;
-      letter-spacing: 2px; }
-    #app .download .download-dropdown {
-      float: left;
-      display: block;
-      height: 36px;
-      width: 226px;
-      border: 0;
-      background: transparent;
-      color: #ffffff;
-      font-weight: 300;
-      font-family: "Open Sans", sans-serif;
-      letter-spacing: .5px;
-      color: #FBF4EC; }
-    #app .download .download-button {
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
-      box-sizing: border-box;
-      float: left;
-      display: block;
-      height: 36px;
-      width: 58px;
-      background: #ffffff;
-      color: #171717;
-      font-weight: 600;
-      text-align: center;
-      padding-top: 10px;
-      cursor: pointer;
-      text-decoration: none; }
 
 #app .menu {
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.6); }
+
+#docs-app .menu {
+  background: rgba(0, 0, 0, 0.85); }
+
+#app .menu, #docs-app .menu {
   position: fixed;
   top: 0;
   right: 0;
   width: 100%;
   height: 100%;
   z-index: 5;
-  opacity: 1; }
-  #app .menu, #app .menu * {
+  opacity: 1;
+  color: #FBF4EC;
+  overflow: hidden; }
+  @media screen and (max-width: 768px) {
+    #app .menu, #docs-app .menu {
+      position: absolute;
+      height: auto;
+      padding-bottom: 100px; } }
+  #app .menu, #app .menu *, #docs-app .menu, #docs-app .menu * {
     -webkit-transition: all 0.6s ease;
     -moz-transition: all 0.6s ease;
     transition: all 0.6s ease; }
-  #app .menu .menu-inner {
+  #app .menu .menu-inner, #docs-app .menu .menu-inner {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     margin-left: 294px;
-    margin-top: 40px;
-    border-left: 1px solid rgba(255, 255, 255, 0.25);
+    margin-top: 30px;
     padding-left: 60px; }
-  #app .menu h1 {
+    @media screen and (max-width: 768px) {
+      #app .menu .menu-inner, #docs-app .menu .menu-inner {
+        margin-left: 0;
+        border-left: 0;
+        margin-top: 100px; } }
+    @media screen and (max-width: 550px) {
+      #app .menu .menu-inner, #docs-app .menu .menu-inner {
+        margin-top: 75px; } }
+  #app .menu h1, #docs-app .menu h1 {
     font-size: 100px;
-    margin: 0; }
-  #app .menu h2 {
+    margin: 0;
+    color: #ffffff;
+    line-height: 1.1; }
+    @media screen and (max-width: 1190px) {
+      #app .menu h1, #docs-app .menu h1 {
+        font-size: 48px; } }
+    @media screen and (max-width: 768px) {
+      #app .menu h1, #docs-app .menu h1 {
+        display: none; } }
+  #app .menu h2, #docs-app .menu h2 {
     font-size: 30px;
     font-family: "Open Sans", sans-serif;
     font-weight: 300;
-    margin: 0; }
-  #app .menu .row {
+    margin: 0;
+    color: #ffffff;
+    line-height: 1.1; }
+    @media screen and (max-width: 1190px) {
+      #app .menu h2, #docs-app .menu h2 {
+        font-size: 18px;
+        margin-top: 10px; } }
+    @media screen and (max-width: 768px) {
+      #app .menu h2, #docs-app .menu h2 {
+        display: none; } }
+  #app .menu .row, #docs-app .menu .row {
     margin: 55px auto 95px -35px; }
-    #app .menu .row:after {
+    #app .menu .row:after, #docs-app .menu .row:after {
       content: '';
       width: 100%;
       height: 1px;
       display: block;
       clear: both; }
-  #app .menu .column {
+  #app .menu .column, #docs-app .menu .column {
     float: left;
     width: 50%;
     max-width: 278px; }
-  #app .menu .menu-link {
+    @media screen and (max-width: 550px) {
+      #app .menu .column, #docs-app .menu .column {
+        float: none;
+        max-width: 100%;
+        width: 100%; } }
+  #app .menu .menu-link, #docs-app .menu .menu-link {
     display: block;
     vertical-align: middle;
     cursor: pointer;
     padding: 5px 0;
-    letter-spacing: .5px; }
-    #app .menu .menu-link, #app .menu .menu-link:before, #app .menu .menu-link * {
+    letter-spacing: .5px;
+    font-size: 14px;
+    line-height: 1;
+    text-decoration: none;
+    color: #FBF4EC; }
+    @media screen and (max-width: 550px) {
+      #app .menu .menu-link, #docs-app .menu .menu-link {
+        padding: 10px 0; } }
+    #app .menu .menu-link, #app .menu .menu-link:before, #app .menu .menu-link *, #docs-app .menu .menu-link, #docs-app .menu .menu-link:before, #docs-app .menu .menu-link * {
       -webkit-transition: all 0.3s ease;
       -moz-transition: all 0.3s ease;
       transition: all 0.3s ease; }
-    #app .menu .menu-link:before {
+    #app .menu .menu-link:before, #docs-app .menu .menu-link:before {
       display: inline-block;
       content: url(../images/arrow.svg);
       width: 35px;
@@ -294,16 +343,18 @@ h1, h2, h3, h4, h5, h6,
       overflow: hidden;
       vertical-align: middle;
       opacity: 0; }
-    #app .menu .menu-link:hover {
+    #app .menu .menu-link.active, #app .menu .menu-link:hover, #docs-app .menu .menu-link.active, #docs-app .menu .menu-link:hover {
       font-weight: 800; }
-      #app .menu .menu-link:hover, #app .menu .menu-link:hover:before, #app .menu .menu-link:hover * {
+      #app .menu .menu-link.active, #app .menu .menu-link.active:before, #app .menu .menu-link.active *, #app .menu .menu-link:hover, #app .menu .menu-link:hover:before, #app .menu .menu-link:hover *, #docs-app .menu .menu-link.active, #docs-app .menu .menu-link.active:before, #docs-app .menu .menu-link.active *, #docs-app .menu .menu-link:hover, #docs-app .menu .menu-link:hover:before, #docs-app .menu .menu-link:hover * {
         -webkit-transition: all 0.3s ease;
         -moz-transition: all 0.3s ease;
         transition: all 0.3s ease; }
-      #app .menu .menu-link:hover:before {
+      #app .menu .menu-link.active:before, #app .menu .menu-link:hover:before, #docs-app .menu .menu-link.active:before, #docs-app .menu .menu-link:hover:before {
         opacity: .47;
         text-indent: -10px; }
-  #app .menu .copyright {
+    #app .menu .menu-link.active, #docs-app .menu .menu-link.active {
+      cursor: default; }
+  #app .menu .copyright, #docs-app .menu .copyright {
     color: #FBF4EC;
     font-size: 12px;
     opacity: .47;
@@ -314,14 +365,14 @@ h1, h2, h3, h4, h5, h6,
     bottom: 40px;
     width: 214px;
     text-align: center; }
-  #app .menu.hidden {
+  #app .menu.hidden, #docs-app .menu.hidden {
     opacity: 0;
     right: -100%; }
-    #app .menu.hidden h1, #app .menu.hidden h2 {
+    #app .menu.hidden h1, #app .menu.hidden h2, #docs-app .menu.hidden h1, #docs-app .menu.hidden h2 {
       margin-left: -75%; }
-    #app .menu.hidden .row {
+    #app .menu.hidden .row, #docs-app .menu.hidden .row {
       margin-left: -65%; }
-    #app .menu.hidden .download {
+    #app .menu.hidden .download, #docs-app .menu.hidden .download {
       margin-left: -55%; }
 
 .docs:after {
@@ -363,22 +414,37 @@ h1, h2, h3, h4, h5, h6,
 
 .docs .branding {
   background: url(../images/coffee-cup.jpg) right center no-repeat transparent;
-  min-height: 800px;
+  height: 100%;
   color: #FBF4EC;
-  float: left;
-  width: 336px; }
+  position: fixed;
+  width: 294px; }
+  @media screen and (max-width: 1190px) {
+    .docs .branding {
+      width: 100%;
+      position: static;
+      height: 100px; } }
+  @media screen and (max-width: 550px) {
+    .docs .branding {
+      height: 66px; } }
 
 .docs .content {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  margin: 0 0 0 336px;
+  margin: 0 0 0 294px;
   position: relative;
-  padding: 50px calc((100% - 270px)/2) 0 36px;
+  padding: 40px calc((100% - 220px)/2) 50px 36px;
   color: #171717;
   line-height: 2.3;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 400; }
+  @media screen and (max-width: 1190px) {
+    .docs .content {
+      margin: 0;
+      padding: 50px 54% 50px 36px; } }
+  @media screen and (max-width: 768px) {
+    .docs .content {
+      padding: 36px; } }
   .docs .content:before {
     content: '';
     display: block;
@@ -388,9 +454,39 @@ h1, h2, h3, h4, h5, h6,
     width: 50%;
     height: 100%;
     background: #F8F6F8; }
+    @media screen and (max-width: 768px) {
+      .docs .content:before {
+        display: none; } }
+  .docs .content a {
+    color: #D12F52;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    white-space: nowrap; }
+    .docs .content a:after {
+      -webkit-transition: width 0.3s ease;
+      -moz-transition: width 0.3s ease;
+      transition: width 0.3s ease;
+      content: '';
+      display: block;
+      width: 0;
+      height: 1px;
+      background: #D12F52;
+      position: absolute;
+      right: 0;
+      left: auto;
+      bottom: 2px; }
+    .docs .content a:hover:after {
+      -webkit-transition: width 0.3s ease;
+      -moz-transition: width 0.3s ease;
+      transition: width 0.3s ease;
+      width: 100%;
+      left: 0;
+      right: auto; }
 
 .docs .left-border {
-  margin-bottom: 50px;
+  margin-bottom: 25px;
   position: relative; }
   .docs .left-border:before {
     content: '';
@@ -404,24 +500,76 @@ h1, h2, h3, h4, h5, h6,
 .docs pre, .docs pre code {
   font-size: 13px;
   line-height: 1.4;
-  font-family: 'Fira Code', consolas, monospace;
   display: block; }
+
+.docs code {
+  font-family: 'Fira Code', 'Hasklig', consolas, monospace; }
 
 .docs pre {
   margin: 0 0 0 calc(100% + 72px);
   position: relative;
   height: 0; }
+  @media screen and (max-width: 768px) {
+    .docs pre {
+      margin: 0 -36px;
+      height: auto;
+      padding: 10px 36px 20px;
+      background: #F8F6F8;
+      border: 1px solid #ede8ed; } }
 
 .docs pre code {
-  -webkit-transition: all 0.3s ease;
-  -moz-transition: all 0.3s ease;
-  transition: all 0.3s ease;
+  -webkit-transition: all 0.6s ease;
+  -moz-transition: all 0.6s ease;
+  transition: all 0.6s ease;
   padding-top: 1em;
   opacity: 0;
   margin-left: 25px; }
   .docs pre code.visible {
-    -webkit-transition: all 0.3s ease;
-    -moz-transition: all 0.3s ease;
-    transition: all 0.3s ease;
+    -webkit-transition: all 0.6s ease;
+    -moz-transition: all 0.6s ease;
+    transition: all 0.6s ease;
     opacity: 1;
     margin-left: 0; }
+
+.docs .hljs {
+  overflow-x: inherit;
+  padding-left: 0;
+  background: transparent; }
+
+.docs .hljs-comment {
+  opacity: .5; }
+
+@media screen and (max-width: 550px) {
+  .docs .nav {
+    top: 25px;
+    right: 25px; } }
+
+.docs .nav .line {
+  background: #171717; }
+  @media screen and (max-width: 1190px) {
+    .docs .nav .line {
+      background: #ffffff; } }
+
+.docs .nav.open .line {
+  background: #ffffff; }
+
+.docs .logo {
+  position: fixed;
+  left: 40px;
+  top: 40px; }
+  @media screen and (max-width: 1190px) {
+    .docs .logo {
+      position: absolute;
+      padding: 0;
+      top: 35px; } }
+  @media screen and (max-width: 550px) {
+    .docs .logo {
+      top: 15px;
+      left: 25px; } }
+  @media screen and (max-width: 1190px) {
+    .docs .logo .logo-line {
+      height: 0;
+      opacity: 0; } }
+  @media screen and (max-width: 1190px) {
+    .docs .logo .logo-text {
+      opacity: 0; } }
