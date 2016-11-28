@@ -159,11 +159,16 @@ return setTimeout(function () {
   }.bind(this)());
 };
 
+function siteIsLive () {
+  return /cream-and-sugar/.test(location.href);
+};
+
 function render () {
   var ref1_ = this.props;
 const handleClickLogo = ref1_.handleClickLogo;
 const menuOpen = ref1_.menuOpen;
-return CNS_.createElement("a", {className: "logo", href: "/cream-and-sugar/", onClick: CNS_.lazify(logoClick, this)}, [
+const url = CNS_.qualify(siteIsLive(), function () { return '/cream-and-sugar/'; }.bind(this), function () { return '/'; }.bind(this));
+return CNS_.createElement("a", {className: "logo", href: url, onClick: CNS_.lazify(logoClick, this)}, [
 CNS_.createElement("img", {className: "logo-main", src: "https://jgnewman.github.io/cream-and-sugar/assets/images/logo.svg"}, []),
 CNS_.createElement("span", {className: "logo-line top-left"}, []),
 CNS_.createElement("span", {className: "logo-line top-right"}, []),
@@ -200,12 +205,18 @@ function getRightContent () {
   return [{ inner: 'CreamML (JSX)', href: '/reference/creamml/' }, { inner: 'Error Handling', href: '/reference/error-handling/' }, { inner: 'Method Chaining', href: '/reference/method-chaining/' }, { inner: 'Curry Piping', href: '/reference/curry-piping/' }, { inner: 'Processes', href: '/reference/processes/' }, { inner: 'Built-In Functions', href: '/reference/bifs/' }, { inner: 'An Example C&S App', href: 'https://github.com/jgnewman/react-cns' }];
 };
 
+function isRelative () {
+const args = CNS_.args(arguments);
+const path = args[0];
+  return /^https?\:/.test(path);
+};
+
 function normalizePath () {
 const args = CNS_.args(arguments);
 const path = args[0];
   return (function () {
     if (/cream-and-sugar/.test(location.pathname)) {
-      return `/cream-and-sugar${path}`
+      return CNS_.qualify(isRelative(path), function () { return `/cream-and-sugar${path}`; }.bind(this), function () { return path; }.bind(this))
     } else if (true) {
       return path
     } else {

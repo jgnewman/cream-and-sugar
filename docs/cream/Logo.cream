@@ -20,10 +20,15 @@ logoClick evt =>
     !menuOpen
       if isHomePage do evt.preventDefault _ else null
 
+siteIsLive _ =>
+  /cream-and-sugar/.test location.href
+
 render _ =>
   { handleClickLogo, menuOpen } = @props
 
-  <a className="logo" href="/cream-and-sugar/" onClick={::logoClick}>
+  url = if siteIsLive _ do '/cream-and-sugar/' else '/'
+
+  <a className="logo" href={url} onClick={::logoClick}>
     <img className="logo-main" src="https://jgnewman.github.io/cream-and-sugar/assets/images/logo.svg" />
     <span className="logo-line top-left"></span>
     <span className="logo-line top-right"></span>

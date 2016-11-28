@@ -35,10 +35,13 @@ getRightContent _ =>
     {inner: 'An Example C&S App', href: 'https://github.com/jgnewman/react-cns'}
   ]
 
+isRelative path =>
+  /^https?\:/.test path
+
 normalizePath path =>
   when
     /cream-and-sugar/.test location.pathname
-      `/cream-and-sugar${path}`
+      if isRelative path do `/cream-and-sugar${path}` else path
     true
       path
 
