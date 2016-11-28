@@ -144,7 +144,7 @@ const evt = args[0];
 const handleClickLogo = ref0_.handleClickLogo;
 const menuOpen = ref0_.menuOpen;
 const boundHandler = CNS_.lazify(handleClickLogo, this);
-const isHomePage = location.pathname === '/';
+const isHomePage = location.pathname === '/cream-and-sugar/';
 return (function () {
     if (menuOpen) {
       boundHandler();
@@ -163,7 +163,7 @@ function render () {
   var ref1_ = this.props;
 const handleClickLogo = ref1_.handleClickLogo;
 const menuOpen = ref1_.menuOpen;
-return CNS_.createElement("a", {className: "logo", href: "/", onClick: CNS_.lazify(logoClick, this)}, [
+return CNS_.createElement("a", {className: "logo", href: "/cream-and-sugar/", onClick: CNS_.lazify(logoClick, this)}, [
 CNS_.createElement("img", {className: "logo-main", src: "https://jgnewman.github.io/cream-and-sugar/assets/images/logo.svg"}, []),
 CNS_.createElement("span", {className: "logo-line top-left"}, []),
 CNS_.createElement("span", {className: "logo-line top-right"}, []),
@@ -200,6 +200,20 @@ function getRightContent () {
   return [{ inner: 'CreamML (JSX)', href: '/reference/creamml/' }, { inner: 'Error Handling', href: '/reference/error-handling/' }, { inner: 'Method Chaining', href: '/reference/method-chaining/' }, { inner: 'Curry Piping', href: '/reference/curry-piping/' }, { inner: 'Processes', href: '/reference/processes/' }, { inner: 'Built-In Functions', href: '/reference/bifs/' }, { inner: 'An Example C&S App', href: 'https://github.com/jgnewman/react-cns' }];
 };
 
+function normalizePath () {
+const args = CNS_.args(arguments);
+const path = args[0];
+  return (function () {
+    if (/cream-and-sugar/.test(location.pathname)) {
+      return `/cream-and-sugar${path}`
+    } else if (true) {
+      return path
+    } else {
+      throw new Error('No match found for "when" statement.');
+    }
+  }.bind(this)());
+};
+
 function render () {
   var ref0_ = this.props;
 const menuOpen = ref0_.menuOpen;
@@ -233,7 +247,7 @@ const obj = args[0];
 const index = args[1];
   const isActive = location.pathname === obj.href;
 const linkClasses = CNS_.qualify(isActive, function () { return 'menu-link active'; }.bind(this), function () { return 'menu-link'; }.bind(this));
-const href = CNS_.qualify(isActive, function () { return null; }.bind(this), function () { return obj.href; }.bind(this));
+const href = CNS_.qualify(isActive, function () { return null; }.bind(this), function () { return normalizePath(obj.href); }.bind(this));
 const onClick = CNS_.qualify(isActive, function () { return null; }.bind(this), function () { return CNS_.lazify(handleClickMenuLink, this); }.bind(this));
 return CNS_.createElement("a", {className: linkClasses, href: href, key: index, onClick: onClick}, [
 obj.inner
@@ -247,7 +261,7 @@ const obj = args[0];
 const index = args[1];
   const isActive = location.pathname === obj.href;
 const linkClasses = CNS_.qualify(isActive, function () { return 'menu-link active'; }.bind(this), function () { return 'menu-link'; }.bind(this));
-const href = CNS_.qualify(isActive, function () { return null; }.bind(this), function () { return obj.href; }.bind(this));
+const href = CNS_.qualify(isActive, function () { return null; }.bind(this), function () { return normalizePath(obj.href); }.bind(this));
 const onClick = CNS_.qualify(isActive, function () { return null; }.bind(this), function () { return CNS_.lazify(handleClickMenuLink, this); }.bind(this));
 return CNS_.createElement("a", {className: linkClasses, href: href, key: index, onClick: onClick}, [
 obj.inner

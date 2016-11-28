@@ -35,6 +35,14 @@ getRightContent _ =>
     {inner: 'An Example C&S App', href: 'https://github.com/jgnewman/react-cns'}
   ]
 
+normalizePath path =>
+  when
+    /cream-and-sugar/.test location.pathname
+      `/cream-and-sugar${path}`
+    true
+      path
+
+
 render _ =>
   {
     menuOpen, downloadOptions, handleSelectLink, downloadSelection,
@@ -57,7 +65,7 @@ render _ =>
 
             isActive    = location.pathname == obj.href
             linkClasses = if isActive do 'menu-link active' else 'menu-link'
-            href        = if isActive do null else obj.href
+            href        = if isActive do null else normalizePath obj.href
             onClick     = if isActive do null else ::handleClickMenuLink
 
             <a
@@ -76,7 +84,7 @@ render _ =>
 
             isActive    = location.pathname == obj.href
             linkClasses = if isActive do 'menu-link active' else 'menu-link'
-            href        = if isActive do null else obj.href
+            href        = if isActive do null else normalizePath obj.href
             onClick     = if isActive do null else ::handleClickMenuLink
 
             <a
