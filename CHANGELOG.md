@@ -1,7 +1,7 @@
 0.6.1
 =====
 
-Shipped on xx.xx.xxxx
+Shipped on 11.27.2016
 
 ### Fix
 
@@ -19,6 +19,7 @@ Shipped on xx.xx.xxxx
 ### Under the Hood
 
 - "JSX-like" syntax is currently being officially called CreamML.
+- Launch the new docs site v1
 
 
 0.6.0
