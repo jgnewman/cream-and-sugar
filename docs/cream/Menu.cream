@@ -36,7 +36,7 @@ getRightContent _ =>
   ]
 
 isRelative path =>
-  /^https?\:/.test path
+  !/^https?\:/.test path
 
 normalizePath path =>
   when

@@ -208,7 +208,7 @@ function getRightContent () {
 function isRelative () {
 const args = CNS_.args(arguments);
 const path = args[0];
-  return /^https?\:/.test(path);
+  return !/^https?\:/.test(path);
 };
 
 function normalizePath () {
