@@ -164,7 +164,7 @@ function render () {
 const handleClickLogo = ref1_.handleClickLogo;
 const menuOpen = ref1_.menuOpen;
 return CNS_.createElement("a", {className: "logo", href: "/", onClick: CNS_.lazify(logoClick, this)}, [
-CNS_.createElement("img", {className: "logo-main", src: "/assets/images/logo.svg"}, []),
+CNS_.createElement("img", {className: "logo-main", src: "https://jgnewman.github.io/cream-and-sugar/assets/images/logo.svg"}, []),
 CNS_.createElement("span", {className: "logo-line top-left"}, []),
 CNS_.createElement("span", {className: "logo-line top-right"}, []),
 CNS_.createElement("span", {className: "logo-line bottom-right"}, []),

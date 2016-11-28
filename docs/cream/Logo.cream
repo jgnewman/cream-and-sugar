@@ -24,7 +24,7 @@ render _ =>
   { handleClickLogo, menuOpen } = @props
 
   <a className="logo" href="/" onClick={::logoClick}>
-    <img className="logo-main" src="/assets/images/logo.svg" />
+    <img className="logo-main" src="https://jgnewman.github.io/cream-and-sugar/assets/images/logo.svg" />
     <span className="logo-line top-left"></span>
     <span className="logo-line top-right"></span>
     <span className="logo-line bottom-right"></span>
