@@ -31,7 +31,8 @@ getRightContent _ =>
     {inner: 'Method Chaining', href: '/reference/method-chaining/'},
     {inner: 'Curry Piping', href: '/reference/curry-piping/'},
     {inner: 'Processes', href: '/reference/processes/'},
-    {inner: 'Built-In Functions', href: '/reference/bifs/'}
+    {inner: 'Built-In Functions', href: '/reference/bifs/'},
+    {inner: 'An Example C&S App', href: 'https://github.com/jgnewman/react-cns'}
   ]
 
 render _ =>

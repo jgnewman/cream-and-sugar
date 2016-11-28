@@ -784,6 +784,14 @@ Condition
     {
       $$ = { test: $1, body: $4 };
     }
+  | SourceElement "->" NewLines INDENT Block DEDENT
+    {
+      $$ = { test: $1, body: $5 };
+    }
+  | DEFAULT "->" NewLines INDENT Block DEDENT
+    {
+      $$ = { test: $1, body: $5 };
+    }
   ;
 
 Conditions

@@ -8,8 +8,12 @@ handleClickMenuLink _ =>
 handleSelectLink evt =>
   @props.selectLink evt.target.value
 
+handleClickLogo _ =>
+  @props.toggleMenu _
+
 export {
   handleClickNav: handleClickNav,
   handleSelectLink: handleSelectLink,
-  handleClickMenuLink: handleClickMenuLink
+  handleClickMenuLink: handleClickMenuLink,
+  handleClickLogo: handleClickLogo
 }

@@ -19,11 +19,28 @@ describe('Caseof', () => {
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
-  it('should compile a basic caseof statement with multi-line bodies', () => {
+  it('should compile a multiline caseof statement', () => {
     const toCompile = 'caseof err\n'
                     + "  'hello'\n"
                     + '    doStuff _\n'
                     + '  default\n'
+                    + '    doOtherStuff _\n\n';
+    const expected = nlToSpace(`(function () {
+      switch (err) {
+        case 'hello':
+          return doStuff();
+        default:
+          return doOtherStuff();
+      }
+    }.bind(this)());`);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+  });
+
+  it('should compile a multiline caseof statement with optional arrows', () => {
+    const toCompile = 'caseof err\n'
+                    + "  'hello' ->\n"
+                    + '    doStuff _\n'
+                    + '  default ->\n'
                     + '    doOtherStuff _\n\n';
     const expected = nlToSpace(`(function () {
       switch (err) {

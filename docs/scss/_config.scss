@@ -7,6 +7,7 @@ $docsred: #D12F52;
 
 $serif: 'Bitter', serif;
 $sans: 'Open Sans', sans-serif;
+$codefont: 'Fira Code', 'Hasklig', consolas, monospace;
 
 @mixin prefix($key, $val) {
   -webkit-#{$key}: $val;

@@ -1,6 +1,8 @@
 .docs {
   $sidebarwidth: 294px;
 
+  overflow-x: hidden;
+
   &:after {
     content: '';
     display: block;
@@ -13,6 +15,9 @@
   .h1, .h2, .h3, .h4, .h5, .h6 {
     margin: 0;
     line-height: 1.2;
+    @include tablet {
+      line-height: 1.4;
+    }
   }
 
   h1, .h1 {
@@ -20,22 +25,66 @@
   }
 
   h2, .h2 {
-    font-size: 40px;
+    font-size: 32px;
 
     &.subhead {
       font-family: $sans;
       font-weight: 300;
       font-size: 18px;
       letter-spacing: 1px;
+      margin-top: 5px;
     }
   }
 
   h3, .h3 {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   h4, .h4 {
-    font-size: 18px;
+    @include prefix('transition', all 1s ease);
+    font-family: $codefont;
+    font-weight: 400;
+    font-size: 16px;
+    position: relative;
+    padding: 5px 0 5px 15px;
+    margin-top: 2em;
+    margin-bottom: 1em;
+    opacity: 0;
+    margin-left: -36px;
+    background: $offgray;
+
+    &:before {
+      content: '';
+      width: 5px;
+      height: 100%;
+      background: $offblack;
+      display: block;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+    }
+
+    &:after {
+      content: '';
+      width: 5px;
+      height: 100%;
+      background: $offblack;
+      display: block;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+    }
+
+    &.visible {
+      @include prefix('transition', all 1s ease);
+      opacity: 1;
+      margin-left: 0;
+    }
+
+    .bif {
+      font-weight: 700;
+      color: $docsred;
+    }
   }
 
   h5, .h5 {
@@ -72,7 +121,7 @@
     position: relative;
     padding: 40px calc((100% - 220px)/2) 50px 36px;
     color: $offblack;
-    line-height: 2.3;
+    line-height: 2.1;
     font-size: 13px;
     font-weight: 400;
 
@@ -147,14 +196,75 @@
     }
   }
 
+  blockquote {
+    @include prefix('border-radius', 3px);
+    margin: 0 0 25px 0;
+    position: relative;
+    padding: 35px 25px 5px;
+    font-weight: 400;
+    background: $offgray;
+    overflow: hidden;
+    font-style: italic;
+
+    &:before {
+      content: '';
+      width: 5px;
+      height: 100%;
+      background: $docsred;
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    &:after {
+      @include prefix('box-sizing', border-box);
+      content: 'IMPORTANT NOTE';
+      font-style: normal;
+      letter-spacing: .5px;
+      font-weight: 700;
+      font-family: $serif;
+      display: block;
+      position: absolute;
+      padding-left: 25px;
+      padding-top: 3px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      border-bottom: 1px dashed rgba(0, 0, 0, .06);
+      background: rgba(0, 0, 0, .03);
+    }
+
+    code {
+      background: $white !important;
+    }
+  }
+
   pre, pre code {
     font-size: 13px;
     line-height: 1.4;
     display: block;
+
+    @include smalldesk {
+      font-size: 12px;
+    }
+  }
+
+  p code, li code {
+    @include prefix('border-radius', 3px);
+    background: $offgray;
+    border: 1px solid darken($offgray, 2%);
+    padding: 0 3px;
+    font-size: 12px;
+    white-space: nowrap;
+    display: inline-block;
+    margin-right: 1px;
+    line-height: 1.9;
+    font-variant-ligatures: none;
   }
 
   code {
-    font-family: 'Fira Code', 'Hasklig', consolas, monospace;
+    font-family: $codefont;
   }
 
   pre {
@@ -162,10 +272,14 @@
     position: relative;
     height: 0;
 
+    @include smalldesk {
+      margin: 0 0 0 115%;
+    }
+
     @include tablet {
       margin: 0 -36px;
       height: auto;
-      padding: 10px 36px 20px;
+      padding: 10px 36px 15px;
       background: $offgray;
       border: 1px solid darken($offgray, 5%);
     }
@@ -216,7 +330,7 @@
     top: 40px;
 
     @include smalldesk {
-      position: absolute;;
+      position: absolute;
       padding: 0;
       top: 35px;
     }

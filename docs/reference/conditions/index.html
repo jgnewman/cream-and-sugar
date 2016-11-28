@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cream & Sugar: Conditions</title>
+    <link href="https://fonts.googleapis.com/css?family=Bitter:400,700|Open+Sans:300,400,800" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/app.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  </head>
+  <body class="docs">
+    <div class="branding"></div>
+    <div class="content">
+      <div class="left-border">
+        <h1>Conditions</h1>
+        <h2 class="subhead">Else Cases Required</h2>
+      </div>
+      
+      <p>Whereas in JavaScript, your standard <code>if</code> statement doesn&#39;t actually return a value, every type of conditional expression in CnS does.</p>
+      <p>There are a few ways to handle conditions, and we&#39;ll talk about each one here.</p>
+      <blockquote>
+      <p>In the coming examples we&#39;ll be using the infix operators <code>==</code> and <code>!=</code>. In CnS, these operators translate to <code>===</code> and <code>!==</code> respectively. You also have the option of writing them as <code>is</code> and <code>isnt</code>.</p>
+      </blockquote>
+      <h2 id="multi-clause-conditions">Multi-Clause Conditions</h2>
+      <pre><code>myVar = 4
+      
+      when
+        myVar == 2 -&gt; doSomething _
+        myVar != 2 -&gt; doSomethingElse _
+      </code></pre><p>The multi-clause condition is the most similar to JavaScript&#39;s <code>if</code>. It begins with the keyword <code>when</code>, followed by an indent and terminates with a dedent. Between these markers, you&#39;ll create your conditional clauses. Each one is comprised of a test condition, followed by an arrow, followed by a block of what to do if the condition was truthy. If that block needs to span multiple lines you will trade out the arrow for indentation. Here are a couple of examples:</p>
+      <p>In the provided <code>when</code> example, the first condition does not evaluate truthily and so <code>doSomething</code> is never executed. Instead, the second condition does evaluate truthily and so <code>doSomethingElse</code> is executed. Since this is the only statement in the block, the block returns the value of that statement and, consequently, the <code>when</code> expression itself returns the result of that block.</p>
+      <pre><code>myVar = 4
+      
+      when
+        myVar == 4
+          doSomething _
+          doSomethingElse _
+        true
+          doThirdThing _
+      </code></pre><p>In this next <code>when</code> example, the first condition evaluates truthily and its block is executed. This time, the block contains multiple statements so we use indentation instead of an arrow. The block returns the result of the last statement executed and, consequently, the <code>when</code> expression returns the result of whichever block was executed.</p>
+      <pre><code>myVar =
+        when
+          4 == 4 -&gt; &#39;hello&#39;
+          4 != 4 -&gt; &#39;goodbye&#39;
+      
+      myVar == &#39;hello&#39;
+      #=&gt; true
+      </code></pre><p>Because <code>when</code> statements return values, they can be assigned to variables.</p>
+      <p>Notice that there is no <code>else</code> statement as part of a <code>when</code> block. This is because Cream &amp; Sugar is big on getting things to match up. You can use <code>true</code> as the condition of your final clause if you want to simulate an <code>else</code> case (as you saw in a previous example) but, really, it&#39;s better to be specific about what you&#39;re looking for. In the most recent example, the two conditions we used were <code>4 == 4</code> and <code>4 != 4</code>. This is good for the psychology of code readability and helps us quickly understand exactly what it is we are really looking for.</p>
+      <p>If a <code>when</code> expression is executed and none of the conditions are matched, you&#39;ll get an error. This helps to ensure that you&#39;re truly covering all your bases rather than having potentially accidental data simply flow through an <code>else</code> case.</p>
+      <h2 id="case-switching">Case Switching</h2>
+      <p>Similar to the <code>when</code> expression is the <code>caseof</code> expression. Like <code>when</code>, it returns a value. Unlike <code>when</code>, it makes use of JavaScript&#39;s <code>switch</code> statement under the hood. As such, it does have the equivalent of an &quot;else&quot; case in the form of a <code>default</code> clause. However, unlike JavaScript&#39;s <code>switch</code>, there are no case fall-throughs. Following is an example.</p>
+      <pre><code>greeting = &#39;hello&#39;
+      
+      caseof greeting
+        &#39;hello&#39; -&gt; doSomething _
+        &#39;how are you?&#39; -&gt; doSomethingElse _
+        default -&gt; doThirdThing _
+      </code></pre><p>As you can see in this example, <code>caseof</code> is extremely similar to <code>when</code>. It is comprised of the keyword <code>caseof</code>, followed by some value to examine, followed by indentation, your various clauses, and finally a dedent. In each clause, we are testing the equality of our condition against our comparative value. If we find a match, that block is executed. If not, the <code>default</code> block is executed. If you don&#39;t include a <code>default</code> clause and no matches are found, you&#39;ll get an error.</p>
+      <p>Just like the <code>when</code> expression (and in fact almost everywhere in CnS), if one of your blocks needs to take up multiple lines, just try using indentation.</p>
+      <h2 id="qualifiers">Qualifiers</h2>
+      <pre><code>if food != gone do eat food
+      
+      if food != gone do eat food else starve _
+      </code></pre><p>Qualifiers are a quick way to perform either a function call or an operation under a certain condition without requiring the verbosity of a <code>when</code> or <code>caseof</code> expression. It is only within the syntax of a qualifier expression that you will use the keywords <code>if</code> and <code>else</code>. Here are a few examples:</p>
+      <pre><code>fs.writeFileSync &#39;./file&#39;, &#39;text&#39;, fn err, res -&gt;
+        if err do throw err
+        doSomethingWith res
+      </code></pre><p>When using qualifiers, the <code>else</code> case is optional and, like all conditional expressions in CnS, qualifiers return values. If you include an <code>else</code> case, the qualifier expression will always return the result of whichever statement is executed. If you don&#39;t include an <code>else</code> case, the expression will return the result of the conditional action if it is executed or <code>undefined</code> if it is not. Unlike <code>when</code>, it will not throw an error.</p>
+      
+    </div>
+    <section id="docs-app"></section>
+    <script>
+      window.addEventListener('load', function () {
+        Array.prototype.slice.call(document.querySelectorAll('pre code')).forEach(function (code) {
+          var lines = code.innerHTML.trim().split('\n');
+          var out = [lines[0]];
+          var sliceAmount;
+          lines.slice(1).forEach(function (line, index) {
+            if (index === 0) {
+              var whitespace = line.match(/^\s+/);
+              whitespace = whitespace ? whitespace[0] : '';
+              if (/([=-](\&gt;)?|\{|match|\&gt;|div|try|chain|default\s+[^\n])$/.test(lines[0])) {
+                whitespace = whitespace.slice(2);
+              }
+              sliceAmount = whitespace;
+            }
+            out.push(line.replace(sliceAmount, ''));
+          });
+          code.innerHTML = out.join('\n');
+          code.className = 'visible lang-coffeescript';
+          hljs.highlightBlock(code);
+        });
+        Array.prototype.slice.call(document.querySelectorAll('h4')).forEach(function (h4) {
+          var html = h4.innerHTML.split(/\s+/g);
+          html[0] = '<span class="bif" id="' + html[0] + '">' + html[0] + '</span>';
+          h4.innerHTML = html.join(' ');
+          h4.className = 'visible';
+        });
+        (function () {
+          var hash = location.hash;
+          if (hash) {
+            var item = document.querySelector(hash);
+            setTimeout(function () {
+              item && window.scroll(0, item.offsetParent.offsetTop);
+            },0);
+          }
+        }());
+      });
+    </script>
+    <script src="../../assets/js/app.js"></script>
+  </body>
+</html>

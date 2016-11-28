@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cream & Sugar: Functions</title>
+    <link href="https://fonts.googleapis.com/css?family=Bitter:400,700|Open+Sans:300,400,800" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/app.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  </head>
+  <body class="docs">
+    <div class="branding"></div>
+    <div class="content">
+      <div class="left-border">
+        <h1>Functions</h1>
+        <h2 class="subhead">Where the Magic Really Happens</h2>
+      </div>
+      
+      <p>In C&amp;S, there are a few different ways to create functions. However, the result of each technique is the same under the hood. You always end up with a first-class piece of data that can be executed and passed around just as you&#39;d expect any function should.</p>
+      <p>Functions in C&amp;S can be named or anonymous. They can also make use of pattern matching, even when they&#39;re technically anonymous. In fact, the whole concept of the function is a little bit different in C&amp;S than in vanilla JavaScript because it&#39;s all about pattern matching.</p>
+      <p>In JavaScript, you create functions that takes arguments. In Cream &amp; Sugar, you define syntactical patterns that stand in as shortcuts for larger blocks of code. This may seem like we&#39;re mincing words, but the shift in mindset is important to understanding functional programming. Consider the provided recursive factorial calculator written in JavaScript.</p>
+      <pre><code># Factorial calculator in JavaScript
+      function factorial(n) {
+        if (n === 0) {
+          return 1;
+        } else {
+          return n * factorial(n - 1);
+        }
+      }
+      </code></pre><p>The mindset here is that we&#39;ve created a function called <code>factorial</code> that takes a single argument (n). Within the function body, we examine <code>n</code> and perform different actions depending on the value of <code>n</code>.</p>
+      <p>Now consider the same function written in C&amp;S.</p>
+      <pre><code># Factorial calculator in C&amp;S
+      factorial 0 =&gt; 1
+      factorial n =&gt; n * factorial n - 1
+      </code></pre><p>In this case, <code>factorial 0</code> is a pattern that matches up with the value 1. When the language detects this pattern, it spits out 1. We also have another pattern (<code>factorial n</code>) that will be matched in the case that the user attempts to call the function with a single argument that is not 0. This pattern matches up with a function body that ends up calling <code>factorial</code> over and over again, subtracting 1 from its argument each time until the first pattern is matched and the recursion ends.</p>
+      <p>If you take a look at the C&amp;S compiled output, you&#39;ll notice that, under the hood, we&#39;re still just building functions that do a conditional analysis of their arguments. However, getting yourself into the pattern match mindset will be very useful in terms of getting used to pattern matching as a tool for shortening your syntax and making your functions logically simpler.</p>
+      <p>And at this point, you should have a decent grasp on the first technique for defining functions in Cream &amp; Sugar – using named patterns. But before we get into more details, let&#39;s talk about function calls.</p>
+      <h2 id="function-calls">Function Calls</h2>
+      <pre><code># JavaScript
+      foo(x, y)
+      foo(bar(x), y)
+      
+      # Cream &amp; Sugar
+      foo x, y
+      foo (bar x), y
+      </code></pre><p>Function calls in C&amp;S look like function calls in JavaScript, <strong>minus</strong> the parentheses. Arguments should still be separated by commas, however you will not surround them with parentheses. Instead, you will use parentheses to denote a function call taking another function call as an argument.</p>
+      <pre><code># JavaScript
+      foo()
+      
+      # Cream &amp; Sugar
+      foo _
+      </code></pre><p>If you need to call a function with no arguments, you will call it using the &quot;empty identifier&quot; <code>_</code> as shown. In C&amp;S, a lone underscore signifies either an un-needed parameter in pattern matches (more on that later) or an empty argument list in function calls.</p>
+      <p>Now let&#39;s talk about the different ways you can create functions.</p>
+      <h2 id="named-patterns">Named Patterns</h2>
+      <pre><code># Cream &amp; Sugar
+      add x, y =&gt; x + y
+      
+      # Compiled JavaScript
+      function add(x, y) { return x + y; }
+      </code></pre><p>Using named patterns means using a &quot;rocket&quot; symbol to match up a function call pattern with a body that should be executed when we detect that pattern. You can define as many patterns for a function call as you need. The compiled output is optimized for efficiency.</p>
+      <pre><code># Cream &amp; Sugar
+      add 0, 0 =&gt; 0
+      add x, y =&gt; x + y
+      
+      # (Simplified) Compiled JavaScript
+      function add(x, y) {
+        if (/* 2 args and both equal 0 */) {
+          return 0;
+        } else if (/* 2 variable args */) {
+          return x + y;
+        } else {
+          throw new Error(&#39;No match found.&#39;);
+        }
+      }
+      </code></pre><p>Notice that if you use multiple patterns, Cream &amp; Sugar will demand that one of your patterns be matched whenever the function is called. If no match is found, it&#39;ll produce an error rather than potentially failing more ambiguously somewhere later on in the flow.</p>
+      <p>Because functions created with this technique are not any different than other functions, they can be used without any problems when passed to a metafunction such as <code>Array.map</code>.</p>
+      <p>Before moving on, it should be noted that often times you&#39;ll need a function block to span multiple lines. In a case like this, all we need to do is let the compiler know where the block ends. So if your function block spans multiple lines, just use indentation.</p>
+      <pre><code># A pattern for when our argument is 0
+      add2 0 =&gt; 2
+      
+      # A pattern for when our argument is anything else
+      add2 x =&gt;
+        x + 2
+      
+      [1, 2, 3].map add2 #=&gt; [3, 4, 5]
+      </code></pre><p><em>The last expression evaluated in your function will always be returned automatically.</em></p>
+      <p>When it comes to pattern matching, there is a lot that you can do. But before we dive into all the ways pattern matching can make your life easier, let&#39;s talk about the other techniques available for creating functions.</p>
+      <h2 id="anonymous-functions">Anonymous Functions</h2>
+      <pre><code>[1, 2, 3].map fn item =&gt; item + 2
+      </code></pre><p>Sometimes you want to create a function on the fly. It won&#39;t be re-used anywhere so you don&#39;t need to give it a name. In C&amp;S you can do this with the <code>fn</code> keyword.</p>
+      <p>And, of course, you can use indentation if you want the function to span multiple lines.</p>
+      <pre><code>add = fn x, y =&gt; x + y
+      
+      add 2, 2 #=&gt; 4
+      </code></pre><p>This syntax is also nice if you&#39;d like to assign a function to a varaible.</p>
+      <p>The <code>fn</code> keyword keeps our syntax consistent. Whereas in one case, we might say that <code>add x, y =&gt; x + y</code> could be read as &quot;the function add of x and y returns the result of x plus y,&quot; we might also say that <code>add = fn x, y =&gt; x + y</code> could be read as &quot;add is a function of x and y that returns the result of x plus y&quot;.</p>
+      <pre><code>createDate = fn =&gt; create Date
+      
+      createDate _
+      #=&gt; Sat Sep 10 2016 16:06:07 GMT-0400 (EDT)
+      </code></pre><p>If there are no parameters to be passed to an anonymous function, then the parameter list is unnecessary.</p>
+      <h2 id="context-binding">Context Binding</h2>
+      <p>Whereas in JavaScript, the &quot;fat arrow&quot; (what we&#39;ve been calling a &quot;rocket&quot;) is used exclusively as a shortcut for <code>Function.bind</code>, in Cream &amp; Sugar, all functions use the rocket. If you want to use <code>Function.bind</code>, you have 2 options. The first is to actually call <code>bind</code>.</p>
+      <pre><code>uselessFn = (fn x =&gt; x).bind @
+      </code></pre><p>Notice that, in Cream &amp; Sugar, JavaScript&#39;s keyword <code>this</code> has become <code>@</code>. By the same token, an expression such as <code>this.foo</code> can be written as simply <code>@foo</code> in C&amp;S.</p>
+      <pre><code>uselessFn = fn x ::=&gt; x
+      </code></pre><p>What&#39;s a whole lot nicer than using <code>.bind</code> is using the scope resolution (or &quot;bind&quot;) operator to make sure that your function is always executed within the current scope.</p>
+      <pre><code>add 0, 0 ::=&gt; 0
+      add x, y ::=&gt; x + y
+      </code></pre><p>In fact, you can even use this operator to apply bindings to named patterns!</p>
+      <p>You&#39;ll just need to make sure that if you use the bind operator in one of your patterns, you&#39;ll need to use it in all of them.</p>
+      <pre><code>dosomething = fn x, y =&gt; something x y
+      boundFn = ::dosomething
+      </code></pre><p>Another way to use the bind operator is to apply it to a variable name. Using the bind operator in this way binds the function to the current context.</p>
+      <pre><code>fourFn = ::4
+      fourFn _ #=&gt; 4
+      </code></pre><p>Additionally, if it is used with a reference to a value that is <em>not</em> a function, it will generate a function that returns the value.</p>
+      <pre><code>parentContext = {
+        factory: fn =&gt;
+          getParent = ::@
+          fn =&gt; getParent _
+      }
+      
+      (parentContext.factory _) _
+      #=&gt; parentContext
+      </code></pre><p>This is especially useful because it allows you to wrap up a context for later retrieval.</p>
+      <h2 id="anonymous-pattern-matches-with-match-">Anonymous Pattern Matches with <code>match</code></h2>
+      <p>One nice feature of Cream &amp; Sugar is that you can actually define pattern matches without naming a function. Doing so follows a similar form as named patterns except that you&#39;ll use <code>match</code> and indentation to group your function bodies together rather than writing the name of the function for each pattern. Consider the provided example:</p>
+      <pre><code>eatFood =
+        match
+          &#39;pizza&#39; =&gt; &#39;ate pizza&#39;
+          food    =&gt; &#39;ate some other kind of food&#39;
+      
+      eatFood &#39;hamburger&#39;
+      #=&gt; &#39;ate some other kind of food&#39;
+      </code></pre><p>This technique is especially useful when accepting messages from <a href="/reference/processes/">external processes</a>. For example, C&amp;S actually allows you to quickly and easily spin up extra operating system processes and pass messages between them. In order to handle incoming messages, you call the <code>receive</code> function and pass a function to it. This is a great place to use <code>match</code>.</p>
+      <pre><code>receive match
+        {{ OK, msg }}  =&gt; doSomethingWith msg
+        {{ ERR, msg }} =&gt; throw (create Error, msg)
+      </code></pre><p>This example handles messages coming in from other OS processes. It expects messages to come in as tuples where the first item is an <a href="/reference/data-types/">atom</a> and the second item is a string.</p>
+      <h2 id="more-pattern-matching-tricks">More Pattern Matching Tricks</h2>
+      <pre><code>map list, fun =&gt; map list, fun, []
+      map [], fun, acc =&gt; acc
+      map [h|t], fun, acc =&gt;
+        map t, fun, acc &lt;&lt; (fun h, acc.length)
+      
+      # 4 lines, 122 chars
+      </code></pre><p>Apart from simply detecting specific values and variable data, you can also use pattern matching to destructure your arguments and pick up on things like empty arrays. To illustrate, let&#39;s use pattern matching to re-write JavaScript&#39;s <code>Array.map</code> function.</p>
+      <p>Before we get into an explanation of what&#39;s going on in the example, let&#39;s look at a JavaScript equivalent.</p>
+      <pre><code>function map(list, fun, acc) {
+        if (arguments.length === 2) {
+          return map(list, fun, []);
+        } else if (!list.length) {
+          return acc;
+        } else {
+          const h = list[0];
+          const t = list.slice(1);
+          return map(t, fun, acc.concat(fun(h, acc.length)));
+        }
+      }
+      
+      # 11 lines, 263 chars
+      </code></pre><p>Hopefully the JavaScript translation will help make things clearer if you aren&#39;t used to this type of syntax yet. Essentially, in the C&amp;S version, we&#39;ve defined 3 patterns for the <code>map</code> function. If it is called with 2 arguments (<code>list</code>, <code>fun</code>), we&#39;ll immediately recurse with both of these arguments as well as an extra array that we&#39;ll use to accumulate values.</p>
+      <p>At some point, we&#39;ll end up hitting pattern 2 where our <code>list</code> argument is an empty array. If this happens, recursion will end and we&#39;ll return the accumulator.</p>
+      <p>In every other case, we&#39;ll be hitting pattern 3 and accumulating values.</p>
+      <p>In pattern 3, We use the form <code>[h|t]</code> to destructure our <code>list</code> argument into two pieces – <code>h</code> for the first item in the array and <code>t</code> for a new array comprised of all the remaining items. The names <code>h</code> and <code>t</code> are short for &quot;head&quot; and &quot;tail&quot;.</p>
+      <p>We&#39;ll recurse with the &quot;tail&quot; array so that eventually we&#39;ll run out of items and hit pattern 2. As we do, we&#39;ll also pass in the function and a new array. That array is created by concatenating our current accumulator with the result of calling <code>fun</code> with our &quot;head&quot; item and the length of the accumulator.</p>
+      <p>When destructuring arguments, you may sometimes want to make use of part of a destructured collection, but not the rest of it. However, in C&amp;S, it is bad practice to name a variable and then never use it. Consider the provided example.</p>
+      <pre><code>recur [] =&gt; undefined
+      recur [h|t] =&gt; recur t
+      </code></pre><p>In this example, we created a function called <code>recur</code> that takes an array and calls itself once for every item in that array. In the second pattern, we slice the head off of the array so that the function can be called again with only the tail. The gross part is that we went so far as to name the head of our array <code>h</code> but then never actually reference <code>h</code> anywhere in the function body. If we&#39;re not careful, it can look like a mistake. The way to compensate is to use the <code>_</code> identifier.</p>
+      <pre><code>recur [] =&gt; undefined
+      recur [_|t] =&gt; recur t
+      </code></pre><p>In this case, we&#39;ve assigned the head of our array to <code>_</code> which is a special identifier in C&amp;S that doesn&#39;t actually reference anything. It essentially tells the program (and anyone who may read your code), &quot;something will be here but I don&#39;t care what it is because I&#39;m not going to use it&quot;. If you were to try to get the value of <code>_</code> from within the function body, it would be undefined.</p>
+      <h3 id="guards">Guards</h3>
+      <p>Sometimes you may wish to make a pattern more complex. For example, you may wish to test for a number but only trigger a match if that number is even. For this, C&amp;S gives you guards.</p>
+      <pre><code>doStuff n where n % 2 == 0 =&gt; n * 2
+      doStuff n where n % 2 != 0 =&gt; n * 3
+      </code></pre><p>Guards are signified by the keyword <code>where</code> and fall between a pattern and its rocket. The example provided illustrates how you might execute a different function body when the argument coming in is even vs when it is odd.</p>
+      <h2 id="allowed-arities">Allowed Arities</h2>
+      <p>&quot;Arity&quot; refers to the amount of arguments a function takes. In the previous example, you will no doubt realize that our <code>map</code> function can be called with an arity of either 2 or 3 (meaning 2 arguments or 3 arguments). However, you may not want to let your users call this function with 3 arguments. The 3 arguments version, you will probably say, should be reserved for recursion.</p>
+      <p>A good place to solve this problem is when you export the function from your module.</p>
+      <pre><code>export {
+        map: (aritize map, 2)
+      }
+      </code></pre><p>The built-in <code>aritize</code> function takes a function and an arity as its arguments and returns a new function that can only be called with the allowed arity. Now, when a user imports <code>map</code> from your module, they will get an error if they try to call it with any amount of arguments other than 2. However, recursion within the function will still work just fine with 3 arguments.</p>
+      <pre><code>export {
+        map: map
+      }
+      </code></pre><p>Note that you do not have to force an arity when you export a function. You could just as easily write the following to allow users to call your function with any arity at all:</p>
+      
+    </div>
+    <section id="docs-app"></section>
+    <script>
+      window.addEventListener('load', function () {
+        Array.prototype.slice.call(document.querySelectorAll('pre code')).forEach(function (code) {
+          var lines = code.innerHTML.trim().split('\n');
+          var out = [lines[0]];
+          var sliceAmount;
+          lines.slice(1).forEach(function (line, index) {
+            if (index === 0) {
+              var whitespace = line.match(/^\s+/);
+              whitespace = whitespace ? whitespace[0] : '';
+              if (/([=-](\&gt;)?|\{|match|\&gt;|div|try|chain|default\s+[^\n])$/.test(lines[0])) {
+                whitespace = whitespace.slice(2);
+              }
+              sliceAmount = whitespace;
+            }
+            out.push(line.replace(sliceAmount, ''));
+          });
+          code.innerHTML = out.join('\n');
+          code.className = 'visible lang-coffeescript';
+          hljs.highlightBlock(code);
+        });
+        Array.prototype.slice.call(document.querySelectorAll('h4')).forEach(function (h4) {
+          var html = h4.innerHTML.split(/\s+/g);
+          html[0] = '<span class="bif" id="' + html[0] + '">' + html[0] + '</span>';
+          h4.innerHTML = html.join(' ');
+          h4.className = 'visible';
+        });
+        (function () {
+          var hash = location.hash;
+          if (hash) {
+            var item = document.querySelector(hash);
+            setTimeout(function () {
+              item && window.scroll(0, item.offsetParent.offsetTop);
+            },0);
+          }
+        }());
+      });
+    </script>
+    <script src="../../assets/js/app.js"></script>
+  </body>
+</html>

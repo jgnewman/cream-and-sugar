@@ -18,9 +18,17 @@ h1, h2, h3, h4, h5, h6,
   position: relative;
   cursor: pointer;
   z-index: 10; }
+  @media screen and (max-width: 768px) {
+    .logo {
+      position: absolute;
+      padding: 0;
+      top: 35px;
+      left: 40px; } }
   @media screen and (max-width: 550px) {
     .logo {
-      padding: 0; } }
+      padding: 0;
+      top: 25px;
+      left: 25px; } }
   .logo, .logo * {
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
@@ -32,7 +40,7 @@ h1, h2, h3, h4, h5, h6,
     position: absolute;
     background: rgba(255, 255, 255, 0.43);
     position: absolute; }
-    @media screen and (max-width: 550px) {
+    @media screen and (max-width: 768px) {
       .logo .logo-line {
         height: 0;
         opacity: 0; } }
@@ -86,6 +94,9 @@ h1, h2, h3, h4, h5, h6,
     width: 49px;
     letter-spacing: .5px;
     color: #ffffff; }
+    @media screen and (max-width: 768px) {
+      .logo .logo-text {
+        opacity: 0; } }
     .logo .logo-text.top {
       top: 30px;
       right: 73px; }
@@ -208,6 +219,9 @@ h1, h2, h3, h4, h5, h6,
   color: #FBF4EC;
   padding: 40px;
   overflow: hidden; }
+  @media screen and (max-width: 768px) {
+    #app {
+      overflow-y: auto; } }
   @media screen and (max-width: 550px) {
     #app {
       padding: 25px 25px; } }
@@ -234,6 +248,32 @@ h1, h2, h3, h4, h5, h6,
       color: #FBF4EC;
       margin-bottom: 95px;
       letter-spacing: .5px; }
+  #app .code-sample {
+    -webkit-transition: all 0.6s ease;
+    -moz-transition: all 0.6s ease;
+    transition: all 0.6s ease;
+    opacity: .43;
+    position: absolute;
+    right: 40px;
+    bottom: 40px; }
+    #app .code-sample:hover {
+      -webkit-transition: all 0.6s ease;
+      -moz-transition: all 0.6s ease;
+      transition: all 0.6s ease;
+      opacity: 1; }
+    @media screen and (max-width: 768px) {
+      #app .code-sample {
+        display: none; } }
+    #app .code-sample pre code {
+      font-family: "Fira Code", "Hasklig", consolas, monospace;
+      font-size: 12px;
+      line-height: 1.6; }
+      #app .code-sample pre code .fn {
+        color: #6AB5FA; }
+      #app .code-sample pre code .num {
+        color: #F2CB86; }
+      #app .code-sample pre code .sym {
+        color: #FF5D70; }
 
 #app .menu {
   background: rgba(0, 0, 0, 0.6); }
@@ -375,201 +415,286 @@ h1, h2, h3, h4, h5, h6,
     #app .menu.hidden .download, #docs-app .menu.hidden .download {
       margin-left: -55%; }
 
-.docs:after {
-  content: '';
-  display: block;
-  clear: both;
-  width: 100%;
-  height: 1px; }
-
-.docs h1, .docs h2, .docs h3, .docs h4, .docs h5, .docs h6,
-.docs .h1, .docs .h2, .docs .h3, .docs .h4, .docs .h5, .docs .h6 {
-  margin: 0;
-  line-height: 1.2; }
-
-.docs h1, .docs .h1 {
-  font-size: 52px; }
-
-.docs h2, .docs .h2 {
-  font-size: 40px; }
-  .docs h2.subhead, .docs .h2.subhead {
-    font-family: "Open Sans", sans-serif;
-    font-weight: 300;
-    font-size: 18px;
-    letter-spacing: 1px; }
-
-.docs h3, .docs .h3 {
-  font-size: 28px; }
-
-.docs h4, .docs .h4 {
-  font-size: 18px; }
-
-.docs h5, .docs .h5 {
-  font-size: 14px; }
-
-.docs h6, .docs .h6 {
-  font-size: 12px;
-  text-transform: uppercase;
-  font-family: "Open Sans", sans-serif; }
-
-.docs .branding {
-  background: url(../images/coffee-cup.jpg) right center no-repeat transparent;
-  height: 100%;
-  color: #FBF4EC;
-  position: fixed;
-  width: 294px; }
-  @media screen and (max-width: 1190px) {
-    .docs .branding {
-      width: 100%;
-      position: static;
-      height: 100px; } }
-  @media screen and (max-width: 550px) {
-    .docs .branding {
-      height: 66px; } }
-
-.docs .content {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  margin: 0 0 0 294px;
-  position: relative;
-  padding: 40px calc((100% - 220px)/2) 50px 36px;
-  color: #171717;
-  line-height: 2.3;
-  font-size: 13px;
-  font-weight: 400; }
-  @media screen and (max-width: 1190px) {
-    .docs .content {
-      margin: 0;
-      padding: 50px 54% 50px 36px; } }
-  @media screen and (max-width: 768px) {
-    .docs .content {
-      padding: 36px; } }
-  .docs .content:before {
+.docs {
+  overflow-x: hidden; }
+  .docs:after {
     content: '';
     display: block;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 50%;
-    height: 100%;
-    background: #F8F6F8; }
+    clear: both;
+    width: 100%;
+    height: 1px; }
+  .docs h1, .docs h2, .docs h3, .docs h4, .docs h5, .docs h6,
+  .docs .h1, .docs .h2, .docs .h3, .docs .h4, .docs .h5, .docs .h6 {
+    margin: 0;
+    line-height: 1.2; }
     @media screen and (max-width: 768px) {
-      .docs .content:before {
-        display: none; } }
-  .docs .content a {
-    color: #D12F52;
-    text-decoration: none;
-    cursor: pointer;
+      .docs h1, .docs h2, .docs h3, .docs h4, .docs h5, .docs h6,
+      .docs .h1, .docs .h2, .docs .h3, .docs .h4, .docs .h5, .docs .h6 {
+        line-height: 1.4; } }
+  .docs h1, .docs .h1 {
+    font-size: 52px; }
+  .docs h2, .docs .h2 {
+    font-size: 32px; }
+    .docs h2.subhead, .docs .h2.subhead {
+      font-family: "Open Sans", sans-serif;
+      font-weight: 300;
+      font-size: 18px;
+      letter-spacing: 1px;
+      margin-top: 5px; }
+  .docs h3, .docs .h3 {
+    font-size: 24px; }
+  .docs h4, .docs .h4 {
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    transition: all 1s ease;
+    font-family: "Fira Code", "Hasklig", consolas, monospace;
+    font-weight: 400;
+    font-size: 16px;
     position: relative;
-    display: inline-block;
-    white-space: nowrap; }
-    .docs .content a:after {
-      -webkit-transition: width 0.3s ease;
-      -moz-transition: width 0.3s ease;
-      transition: width 0.3s ease;
+    padding: 5px 0 5px 15px;
+    margin-top: 2em;
+    margin-bottom: 1em;
+    opacity: 0;
+    margin-left: -36px;
+    background: #F8F6F8; }
+    .docs h4:before, .docs .h4:before {
       content: '';
+      width: 5px;
+      height: 100%;
+      background: #171717;
       display: block;
-      width: 0;
-      height: 1px;
-      background: #D12F52;
+      position: absolute;
+      left: 0;
+      bottom: 0; }
+    .docs h4:after, .docs .h4:after {
+      content: '';
+      width: 5px;
+      height: 100%;
+      background: #171717;
+      display: block;
       position: absolute;
       right: 0;
-      left: auto;
-      bottom: 2px; }
-    .docs .content a:hover:after {
-      -webkit-transition: width 0.3s ease;
-      -moz-transition: width 0.3s ease;
-      transition: width 0.3s ease;
-      width: 100%;
-      left: 0;
-      right: auto; }
-
-.docs .left-border {
-  margin-bottom: 25px;
-  position: relative; }
-  .docs .left-border:before {
-    content: '';
-    width: 5px;
+      bottom: 0; }
+    .docs h4.visible, .docs .h4.visible {
+      -webkit-transition: all 1s ease;
+      -moz-transition: all 1s ease;
+      transition: all 1s ease;
+      opacity: 1;
+      margin-left: 0; }
+    .docs h4 .bif, .docs .h4 .bif {
+      font-weight: 700;
+      color: #D12F52; }
+  .docs h5, .docs .h5 {
+    font-size: 14px; }
+  .docs h6, .docs .h6 {
+    font-size: 12px;
+    text-transform: uppercase;
+    font-family: "Open Sans", sans-serif; }
+  .docs .branding {
+    background: url(../images/coffee-cup.jpg) right center no-repeat transparent;
     height: 100%;
-    background: #D12F52;
-    margin-left: -36px;
-    display: block;
-    position: absolute; }
-
-.docs pre, .docs pre code {
-  font-size: 13px;
-  line-height: 1.4;
-  display: block; }
-
-.docs code {
-  font-family: 'Fira Code', 'Hasklig', consolas, monospace; }
-
-.docs pre {
-  margin: 0 0 0 calc(100% + 72px);
-  position: relative;
-  height: 0; }
-  @media screen and (max-width: 768px) {
-    .docs pre {
-      margin: 0 -36px;
-      height: auto;
-      padding: 10px 36px 20px;
-      background: #F8F6F8;
-      border: 1px solid #ede8ed; } }
-
-.docs pre code {
-  -webkit-transition: all 0.6s ease;
-  -moz-transition: all 0.6s ease;
-  transition: all 0.6s ease;
-  padding-top: 1em;
-  opacity: 0;
-  margin-left: 25px; }
-  .docs pre code.visible {
+    color: #FBF4EC;
+    position: fixed;
+    width: 294px; }
+    @media screen and (max-width: 1190px) {
+      .docs .branding {
+        width: 100%;
+        position: static;
+        height: 100px; } }
+    @media screen and (max-width: 550px) {
+      .docs .branding {
+        height: 66px; } }
+  .docs .content {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0 0 0 294px;
+    position: relative;
+    padding: 40px calc((100% - 220px)/2) 50px 36px;
+    color: #171717;
+    line-height: 2.1;
+    font-size: 13px;
+    font-weight: 400; }
+    @media screen and (max-width: 1190px) {
+      .docs .content {
+        margin: 0;
+        padding: 50px 54% 50px 36px; } }
+    @media screen and (max-width: 768px) {
+      .docs .content {
+        padding: 36px; } }
+    .docs .content:before {
+      content: '';
+      display: block;
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      background: #F8F6F8; }
+      @media screen and (max-width: 768px) {
+        .docs .content:before {
+          display: none; } }
+    .docs .content a {
+      color: #D12F52;
+      text-decoration: none;
+      cursor: pointer;
+      position: relative;
+      display: inline-block;
+      white-space: nowrap; }
+      .docs .content a:after {
+        -webkit-transition: width 0.3s ease;
+        -moz-transition: width 0.3s ease;
+        transition: width 0.3s ease;
+        content: '';
+        display: block;
+        width: 0;
+        height: 1px;
+        background: #D12F52;
+        position: absolute;
+        right: 0;
+        left: auto;
+        bottom: 2px; }
+      .docs .content a:hover:after {
+        -webkit-transition: width 0.3s ease;
+        -moz-transition: width 0.3s ease;
+        transition: width 0.3s ease;
+        width: 100%;
+        left: 0;
+        right: auto; }
+  .docs .left-border {
+    margin-bottom: 25px;
+    position: relative; }
+    .docs .left-border:before {
+      content: '';
+      width: 5px;
+      height: 100%;
+      background: #D12F52;
+      margin-left: -36px;
+      display: block;
+      position: absolute; }
+  .docs blockquote {
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    margin: 0 0 25px 0;
+    position: relative;
+    padding: 35px 25px 5px;
+    font-weight: 400;
+    background: #F8F6F8;
+    overflow: hidden;
+    font-style: italic; }
+    .docs blockquote:before {
+      content: '';
+      width: 5px;
+      height: 100%;
+      background: #D12F52;
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 0; }
+    .docs blockquote:after {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      content: 'IMPORTANT NOTE';
+      font-style: normal;
+      letter-spacing: .5px;
+      font-weight: 700;
+      font-family: "Bitter", serif;
+      display: block;
+      position: absolute;
+      padding-left: 25px;
+      padding-top: 3px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+      background: rgba(0, 0, 0, 0.03); }
+    .docs blockquote code {
+      background: #ffffff !important; }
+  .docs pre, .docs pre code {
+    font-size: 13px;
+    line-height: 1.4;
+    display: block; }
+    @media screen and (max-width: 1190px) {
+      .docs pre, .docs pre code {
+        font-size: 12px; } }
+  .docs p code, .docs li code {
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background: #F8F6F8;
+    border: 1px solid #f4f0f4;
+    padding: 0 3px;
+    font-size: 12px;
+    white-space: nowrap;
+    display: inline-block;
+    margin-right: 1px;
+    line-height: 1.9;
+    font-variant-ligatures: none; }
+  .docs code {
+    font-family: "Fira Code", "Hasklig", consolas, monospace; }
+  .docs pre {
+    margin: 0 0 0 calc(100% + 72px);
+    position: relative;
+    height: 0; }
+    @media screen and (max-width: 1190px) {
+      .docs pre {
+        margin: 0 0 0 115%; } }
+    @media screen and (max-width: 768px) {
+      .docs pre {
+        margin: 0 -36px;
+        height: auto;
+        padding: 10px 36px 15px;
+        background: #F8F6F8;
+        border: 1px solid #ede8ed; } }
+  .docs pre code {
     -webkit-transition: all 0.6s ease;
     -moz-transition: all 0.6s ease;
     transition: all 0.6s ease;
-    opacity: 1;
-    margin-left: 0; }
-
-.docs .hljs {
-  overflow-x: inherit;
-  padding-left: 0;
-  background: transparent; }
-
-.docs .hljs-comment {
-  opacity: .5; }
-
-@media screen and (max-width: 550px) {
-  .docs .nav {
-    top: 25px;
-    right: 25px; } }
-
-.docs .nav .line {
-  background: #171717; }
-  @media screen and (max-width: 1190px) {
-    .docs .nav .line {
-      background: #ffffff; } }
-
-.docs .nav.open .line {
-  background: #ffffff; }
-
-.docs .logo {
-  position: fixed;
-  left: 40px;
-  top: 40px; }
-  @media screen and (max-width: 1190px) {
-    .docs .logo {
-      position: absolute;
-      padding: 0;
-      top: 35px; } }
+    padding-top: 1em;
+    opacity: 0;
+    margin-left: 25px; }
+    .docs pre code.visible {
+      -webkit-transition: all 0.6s ease;
+      -moz-transition: all 0.6s ease;
+      transition: all 0.6s ease;
+      opacity: 1;
+      margin-left: 0; }
+  .docs .hljs {
+    overflow-x: inherit;
+    padding-left: 0;
+    background: transparent; }
+  .docs .hljs-comment {
+    opacity: .5; }
   @media screen and (max-width: 550px) {
-    .docs .logo {
-      top: 15px;
-      left: 25px; } }
-  @media screen and (max-width: 1190px) {
-    .docs .logo .logo-line {
-      height: 0;
-      opacity: 0; } }
-  @media screen and (max-width: 1190px) {
-    .docs .logo .logo-text {
-      opacity: 0; } }
+    .docs .nav {
+      top: 25px;
+      right: 25px; } }
+  .docs .nav .line {
+    background: #171717; }
+    @media screen and (max-width: 1190px) {
+      .docs .nav .line {
+        background: #ffffff; } }
+  .docs .nav.open .line {
+    background: #ffffff; }
+  .docs .logo {
+    position: fixed;
+    left: 40px;
+    top: 40px; }
+    @media screen and (max-width: 1190px) {
+      .docs .logo {
+        position: absolute;
+        padding: 0;
+        top: 35px; } }
+    @media screen and (max-width: 550px) {
+      .docs .logo {
+        top: 15px;
+        left: 25px; } }
+    @media screen and (max-width: 1190px) {
+      .docs .logo .logo-line {
+        height: 0;
+        opacity: 0; } }
+    @media screen and (max-width: 1190px) {
+      .docs .logo .logo-text {
+        opacity: 0; } }

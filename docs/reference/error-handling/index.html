@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cream & Sugar: Error Handling</title>
+    <link href="https://fonts.googleapis.com/css?family=Bitter:400,700|Open+Sans:300,400,800" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/app.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  </head>
+  <body class="docs">
+    <div class="branding"></div>
+    <div class="content">
+      <div class="left-border">
+        <h1>Error Handling</h1>
+        <h2 class="subhead">Watch Out For Those Keywords!</h2>
+      </div>
+      
+      <pre><code>try
+        JSON.parse &#39;{.}&#39;
+      default err
+        throw err
+      </code></pre><p>Cream &amp; Sugar handles errors in a friendly and familiar way, using an expression that is very similar to JavaScript&#39;s try/catch statement. There are two main differences between the C&amp;S version and the JavaScript version.</p>
+      <pre><code>value1 =
+        try
+          2 + 2
+        default err
+          3 + 3
+      
+      value1 #=&gt; 4
+      </code></pre><ol>
+      <li>Whereas JavaScript uses the keywords <code>try</code> and <code>catch</code>, C&amp;S uses the keywords <code>try</code> and <code>default</code>. This decision was made for the purpose of keeping syntax cleaner in the future as we natively incorporate more of JavaScript&#39;s cutting-edge features.</li>
+      <li>C&amp;S&#39; try/default returns a value – either from the <code>try</code> block if it was successful or from the <code>default</code> block if it was not.</li>
+      </ol>
+      <p>The try/default expression consists of the keyword <code>try</code>, followed by an indented block of code, the keyword <code>default</code> plus an error identifier, and another indented block of code.</p>
+      <pre><code>incase JSON.parse &#39;{.}&#39; throws err do log err
+      </code></pre><p>C&amp;S also provides a try/default shorthand that works much like a conditional qualifier, in case you don&#39;t need to execute large blocks of code.</p>
+      
+    </div>
+    <section id="docs-app"></section>
+    <script>
+      window.addEventListener('load', function () {
+        Array.prototype.slice.call(document.querySelectorAll('pre code')).forEach(function (code) {
+          var lines = code.innerHTML.trim().split('\n');
+          var out = [lines[0]];
+          var sliceAmount;
+          lines.slice(1).forEach(function (line, index) {
+            if (index === 0) {
+              var whitespace = line.match(/^\s+/);
+              whitespace = whitespace ? whitespace[0] : '';
+              if (/([=-](\&gt;)?|\{|match|\&gt;|div|try|chain|default\s+[^\n])$/.test(lines[0])) {
+                whitespace = whitespace.slice(2);
+              }
+              sliceAmount = whitespace;
+            }
+            out.push(line.replace(sliceAmount, ''));
+          });
+          code.innerHTML = out.join('\n');
+          code.className = 'visible lang-coffeescript';
+          hljs.highlightBlock(code);
+        });
+        Array.prototype.slice.call(document.querySelectorAll('h4')).forEach(function (h4) {
+          var html = h4.innerHTML.split(/\s+/g);
+          html[0] = '<span class="bif" id="' + html[0] + '">' + html[0] + '</span>';
+          h4.innerHTML = html.join(' ');
+          h4.className = 'visible';
+        });
+        (function () {
+          var hash = location.hash;
+          if (hash) {
+            var item = document.querySelector(hash);
+            setTimeout(function () {
+              item && window.scroll(0, item.offsetParent.offsetTop);
+            },0);
+          }
+        }());
+      });
+    </script>
+    <script src="../../assets/js/app.js"></script>
+  </body>
+</html>

@@ -2,8 +2,28 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import reactify from './util/reactify'
 
+propTypes = {
+  toggleMenu: React.PropTypes.func.isRequired,
+  handleClickLogo: React.PropTypes.func.isRequired
+}
+
+logoClick evt =>
+  { handleClickLogo, menuOpen } = @props
+
+  boundHandler = ::handleClickLogo
+  isHomePage   = location.pathname == '/'
+
+  when
+    menuOpen
+      boundHandler _
+      setTimeout (fn => if isHomePage do evt.preventDefault _ else null), 500
+    !menuOpen
+      if isHomePage do evt.preventDefault _ else null
+
 render _ =>
-  <a className="logo" href="/">
+  { handleClickLogo, menuOpen } = @props
+
+  <a className="logo" href="/" onClick={::logoClick}>
     <img className="logo-main" src="/assets/images/logo.svg" />
     <span className="logo-line top-left"></span>
     <span className="logo-line top-right"></span>
@@ -13,4 +33,4 @@ render _ =>
     <span className="logo-text bottom">'2016'</span>
   </a>
 
-export reactify render, {}
+export reactify render, propTypes

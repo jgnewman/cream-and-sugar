@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cream & Sugar: Method Chaining</title>
+    <link href="https://fonts.googleapis.com/css?family=Bitter:400,700|Open+Sans:300,400,800" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/app.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  </head>
+  <body class="docs">
+    <div class="branding"></div>
+    <div class="content">
+      <div class="left-border">
+        <h1>Method Chaining</h1>
+        <h2 class="subhead">Clutter Reduction For the Win!</h2>
+      </div>
+      
+      <pre><code># JavaScript chaining
+      foo(a, b).bar(c, d).baz(e, f)
+      
+      # Cream &amp; Sugar&#39;s gross equivalent
+      (((foo a b).bar c d).baz e f)
+      </code></pre><p>In Cream &amp; Sugar, function calls do not take parentheses. This departure from JavaScript syntax has pros and cons. One thing you may notice rather quickly is that method chaining is not quite so easy. While it can be accomplished using standard call syntax, it is much nicer to use C&amp;S&#39; chain syntax.</p>
+      <pre><code>chain
+        foo a, b
+        bar c, d
+        baz e, f
+      </code></pre><p>So instead of using all of those hard-to-parse parentheses, we can use the keyword <code>chain</code> followed by an indented block where each line constitutes a method chained off of the method before it.</p>
+      <pre><code>chain
+        $ &#39;#some-dom-node&#39;
+        addClass &#39;foo&#39;
+        insertBefore &#39;#some-other-node&#39;
+      
+      chain
+        asyncCall _
+        then  fn x =&gt; resolver x
+        then  fn y =&gt; resolver y
+        catch fn z =&gt; end z
+      </code></pre><p>This is especially nice for things like jQuery or <code>promise</code> syntax.</p>
+      <p>Because there are no dots in this syntax, there may be times when built-in function names or reserved words need to be used because they are method names on the object returned from the previous item in the chain. In cases like this, you might normally expect to get a compile or, even worse, a runtime error because the compiler translated out your method name for a bif by accident.</p>
+      <pre><code>chain
+        getObject _
+        ~default &#39;some argument&#39;
+      
+      # Compiled output
+      getObject().default(&#39;some argument&#39;)
+      </code></pre><p>In all cases in Cream &amp; Sugar you have the option of protecting a word from compiler translation by prefixing it with the <code>~</code>. The provided example uses <code>~default</code> in order to prevent the compiler from tripping up on the fact that <code>default</code> is normally a reserved word.</p>
+      
+    </div>
+    <section id="docs-app"></section>
+    <script>
+      window.addEventListener('load', function () {
+        Array.prototype.slice.call(document.querySelectorAll('pre code')).forEach(function (code) {
+          var lines = code.innerHTML.trim().split('\n');
+          var out = [lines[0]];
+          var sliceAmount;
+          lines.slice(1).forEach(function (line, index) {
+            if (index === 0) {
+              var whitespace = line.match(/^\s+/);
+              whitespace = whitespace ? whitespace[0] : '';
+              if (/([=-](\&gt;)?|\{|match|\&gt;|div|try|chain|default\s+[^\n])$/.test(lines[0])) {
+                whitespace = whitespace.slice(2);
+              }
+              sliceAmount = whitespace;
+            }
+            out.push(line.replace(sliceAmount, ''));
+          });
+          code.innerHTML = out.join('\n');
+          code.className = 'visible lang-coffeescript';
+          hljs.highlightBlock(code);
+        });
+        Array.prototype.slice.call(document.querySelectorAll('h4')).forEach(function (h4) {
+          var html = h4.innerHTML.split(/\s+/g);
+          html[0] = '<span class="bif" id="' + html[0] + '">' + html[0] + '</span>';
+          h4.innerHTML = html.join(' ');
+          h4.className = 'visible';
+        });
+        (function () {
+          var hash = location.hash;
+          if (hash) {
+            var item = document.querySelector(hash);
+            setTimeout(function () {
+              item && window.scroll(0, item.offsetParent.offsetTop);
+            },0);
+          }
+        }());
+      });
+    </script>
+    <script src="../../assets/js/app.js"></script>
+  </body>
+</html>

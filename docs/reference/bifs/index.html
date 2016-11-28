@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cream & Sugar: Built-In Functions</title>
+    <link href="https://fonts.googleapis.com/css?family=Bitter:400,700|Open+Sans:300,400,800" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/app.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  </head>
+  <body class="docs">
+    <div class="branding"></div>
+    <div class="content">
+      <div class="left-border">
+        <h1>Built-In Functions</h1>
+        <h2 class="subhead">The Creamiest, Surgariest Part</h2>
+      </div>
+      
+      <p>C&amp;S comes packaged with a few useful functions right off the bat. You don&#39;t need to import them or reference them on some kind of global C&amp;S object. They are just available for you to use whenever you want.</p>
+      <p>Following is a list of all built-in functions as well as descriptions of how to use them and what you can expect them to return.</p>
+      <h4 id="apply-fun-argsarray-">apply fun [, argsArray]</h4>
+      <pre><code>apply fn =&gt; 2 + 2 #=&gt; 4
+      
+      apply fn x =&gt; x + 2, [2] #=&gt; 4
+      </code></pre><ul>
+      <li><code>fun {Function}</code>: Any type of function.</li>
+      <li><code>argsArray {Array}</code>: Optional. An array of arguments to be passed to the function.</li>
+      </ul>
+      <p>Invokes <code>fun</code> and returns the result. If <code>argsArray</code> is provided, passes those arguments to the function when invoked.</p>
+      <h4 id="aritize-fun-arity">aritize fun, arity</h4>
+      <pre><code>iterate list =&gt; iterate list, []
+      iterate [], accum =&gt; accum
+      iterate [h|t], accum =&gt; iterate t, accum &lt;&lt; h
+      
+      # Only allow users to call `iterate`
+      # with 1 argument
+      export aritize iterate, 1
+      </code></pre><ul>
+      <li><code>fun {Function}</code>: Any type of function.</li>
+      <li><code>arity {Number}</code>: The allowed arity to lock the function into.</li>
+      </ul>
+      <p>Returns a new function that can only be called with the number of arguments provided as <code>arity</code>. If the function is called with any other number of arguments, an error will be thrown.</p>
+      <h4 id="arraytotuple-arr">arrayToTuple arr</h4>
+      <pre><code>arrayToTuple [ 1, 2, 3 ] #=&gt; {{ 1, 2, 3 }}
+      </code></pre><ul>
+      <li><code>arr {Array}</code>: Any array.</li>
+      </ul>
+      <p>Creates a new tuple from items in an array.</p>
+      <h4 id="create-klass-constructorargs-">create klass [, ...constructorArgs]</h4>
+      <pre><code>create Date
+      #=&gt; Fri Sep 09 2016 17:00:43 GMT-0400 (EDT)
+      
+      create Error, &quot;This is error text.&quot;
+      #=&gt; Error: This is error text(…)
+      </code></pre><ul>
+      <li><code>klass {Function}</code>: A class constructor.</li>
+      <li><code>constructorArgs {Any}</code>: Any arguments to be passed to the class constructor.</li>
+      </ul>
+      <p>Creates a new instance of <code>klass</code> by passing <code>constructorArgs</code> to the constructor. Returns the new class instance.</p>
+      <h4 id="dangerouslymutate-key-value-collection">dangerouslyMutate key, value, collection</h4>
+      <pre><code>location.href #=&gt; &#39;http://example.com&#39;
+      
+      dangerouslyMutate &#39;href&#39;, &#39;/foo&#39;, location
+      
+      location.href #=&gt; &#39;http://example.com/foo&#39;
+      </code></pre><ul>
+      <li><code>key {String|Number|Atom}</code>: An object key or array index.</li>
+      <li><code>value {Any}</code>: Any type of data.</li>
+      <li><code>collection {Any Object-like type}</code>: Any kind of JavaScript collection.</li>
+      </ul>
+      <p>Breaks the functionalism paradigm by mutating an existing object instead of creating a new one. This is necessary for certain JavaScript techniques such as updating <code>location.href</code>.</p>
+      <h4 id="datatype-data">dataType data</h4>
+      <pre><code>dataType &#39;hello&#39; #=&gt; &#39;string&#39;
+      
+      dataType 3.4 #=&gt; &#39;number&#39;
+      
+      dataType NaN #=&gt; &#39;nan&#39;
+      
+      dataType null #=&gt; &#39;null&#39;
+      
+      dataType [1, 2, 3] #=&gt; &#39;array&#39;
+      
+      dataType /^foo$/ #=&gt; &#39;regexp&#39;
+      
+      dataType &lt;div&gt;&lt;/div&gt; #=&gt; &#39;htmlelement&#39;
+      
+      dataType (create Date) #=&gt; &#39;date&#39;
+      
+      dataType undefined #=&gt; &#39;undefined&#39;
+      
+      dataType OK #=&gt; &#39;atom&#39;
+      
+      dataType (spawn fn =&gt; &#39;hello&#39;) #=&gt; &#39;process&#39;
+      
+      dataType fn =&gt; &#39;hello&#39; #=&gt; &#39;function&#39;
+      
+      dataType {foo: &#39;bar&#39;} #=&gt; &#39;object&#39;
+      
+      dataType {{ x, y }} #=&gt; &#39;tuple&#39;
+      </code></pre><ul>
+      <li><code>data {Any}</code>: Any data type.</li>
+      </ul>
+      <p>Intelligently and reasonably assesses data types and returns a string identifying the type of <code>data</code>. Possible return values include:</p>
+      <ul>
+      <li>string</li>
+      <li>number</li>
+      <li>nan</li>
+      <li>null</li>
+      <li>array</li>
+      <li>regexp</li>
+      <li>htmlelement</li>
+      <li>date</li>
+      <li>undefined</li>
+      <li>atom</li>
+      <li>process</li>
+      <li>function</li>
+      <li>object</li>
+      <li>tuple</li>
+      </ul>
+      <h4 id="debug-message">debug message</h4>
+      <pre><code>debug &#39;Something was weird&#39;
+      #=&gt; undefined
+      </code></pre><ul>
+      <li><code>message {String}</code>: A message to log to the console.</li>
+      </ul>
+      <p>A shortcut for JavaScript&#39;s <code>console.debug(message)</code>. Attempts to default to <code>console.log</code> if <code>console.debug</code> does not exist. If the <code>console</code> object does not exists, fails silently.</p>
+      <h4 id="die-message">die message</h4>
+      <pre><code>die &#39;This app is not working&#39;
+      #=&gt; undefined
+      </code></pre><ul>
+      <li><code>message {String}</code>: An error message.</li>
+      </ul>
+      <p>A shortcut for JavaScript&#39;s <code>throw new Error(message)</code>.</p>
+      <h4 id="dom-selector">dom selector</h4>
+      <pre><code>dom &#39;#my-div&#39; #=&gt; HTMLElement
+      
+      dom &#39;div&#39; #=&gt; HTMLElement
+      </code></pre><ul>
+      <li><code>selector {String}</code>: Identifies the criteria for selecting a DOM element.</li>
+      </ul>
+      <p>Locates and returns a single DOM element identified by <code>selector</code>. If no element was found, returns <code>null</code>.</p>
+      <h4 id="domarray-selector">domArray selector</h4>
+      <pre><code>domArray &#39;#my-div&#39;
+      #=&gt; [HTMLElement]
+      
+      domArray &#39;div&#39;
+      #=&gt; [HTMLElement, HTMLElement, HTMLElement]
+      </code></pre><ul>
+      <li><code>selector {String}</code>: Identifies the criteria for selecting DOM elements.</li>
+      </ul>
+      <p>Locates and returns a real array of DOM elements identified by <code>selector</code>. If no element was found, returns an empty array.</p>
+      <h4 id="eql-a-b">eql a, b</h4>
+      <pre><code>eql 4, 4 #=&gt; true
+      
+      eql 4, &quot;4&quot; #=&gt; false
+      
+      eql [1, 2, 3], [1, 2, 3] #=&gt; true
+      
+      eql [1, 2, 3], [2, 3, 1] #=&gt; false
+      
+      eql [1, 2, {a: &#39;b&#39;}], [1, 2, {a: &#39;b&#39;}] #=&gt; true
+      </code></pre><ul>
+      <li><code>a {Any}</code>: Any type of data.</li>
+      <li><code>b {Any}</code>: Any type of data.</li>
+      </ul>
+      <p>Determines whether <code>a</code> and <code>b</code> are deep equal by strict comparison and returns either <code>true</code> or <code>false</code>.</p>
+      <h4 id="get-key-collection">get key, collection</h4>
+      <pre><code>get 2, [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;] #=&gt; &#39;c&#39;
+      
+      get &#39;foo&#39;, {foo: &#39;bar&#39;, baz: &#39;quux&#39;} #=&gt; &#39;bar&#39;
+      
+      get FOO, {FOO: &#39;bar&#39;} #=&gt; &#39;bar&#39;
+      </code></pre><ul>
+      <li><code>key {String|Number|Atom}</code>: An object key or array index.</li>
+      <li><code>collection {Any Object-like type}</code>: Any kind of JavaScript collection.</li>
+      </ul>
+      <p>Retrieves an element identified by <code>key</code> from <code>collection</code> and returns the element.</p>
+      <h4 id="head-list">head list</h4>
+      <pre><code>head [1, 2, 3] #=&gt; 1
+      
+      head [1] #=&gt; 1
+      
+      head [] #=&gt; undefined
+      </code></pre><ul>
+      <li><code>list {Array|Tuple|String}</code>: An list type.</li>
+      </ul>
+      <p>Returns the first item in a list or <code>undefined</code> if there are no items.</p>
+      <h4 id="instanceof-data-constructor">instanceof data, constructor</h4>
+      <pre><code>instanceof {}, Object #=&gt; true
+      
+      instanceof 4, Object #=&gt; false
+      </code></pre><ul>
+      <li><code>data {Any}</code>: Any type of data.</li>
+      <li><code>constructor {Function}</code>: A class constructor function.</li>
+      </ul>
+      <p>Calls JavaScript&#39;s <code>instanceof</code> statement and returns the result, either <code>true</code> or <code>false</code>.</p>
+      <h4 id="kill-process">kill process</h4>
+      <pre><code>process = spawn fn =&gt; log &quot;I&#39;m alive!&quot;
+      
+      kill process
+      </code></pre><ul>
+      <li><code>process {Process}</code>: A process created using the <code>spawn</code> function.</li>
+      </ul>
+      <p>Terminates the process. Returns <code>undefined</code>.</p>
+      <h4 id="lang-key-value">lang key, value</h4>
+      <pre><code>lang &#39;use.react&#39;, false #=&gt; undefined
+      </code></pre><ul>
+      <li><code>key {String}</code>: Any string.</li>
+      <li><code>value {Any}</code>: Any value.</li>
+      </ul>
+      <p>Sets thread-level configuration options for the language. For example, <code>lang &#39;use.react&#39;, false</code> will prevent trying to use React when compiling JSX-like syntax.</p>
+      <p>Note that these are runtime configuration options. They are not hoisted and may be used anywhere within your code. Each thread in your application will also have access to its own set of configuration options so setting an option within a child process will not affect code running in the host thread.</p>
+      <p>Returns <code>undefined</code>.</p>
+      <h5 id="current-config-options">Current Config Options</h5>
+      <p><code>use.react</code> - {Boolean} Defaults to true. Determines whether C&amp;S will try to use React.js when compiling JSX-like syntax.</p>
+      <p>This list is expected to be expanded.</p>
+      <h4 id="last-list">last list</h4>
+      <pre><code>last [1, 2, 3] #=&gt; 3
+      
+      last [1] #=&gt; 1
+      
+      last [] #=&gt; undefined
+      </code></pre><ul>
+      <li><code>list {Array|Tuple|String}</code>: A list type.</li>
+      </ul>
+      <p>Returns the last item in a list or <code>undefined</code> if there are no items.</p>
+      <h4 id="lead-list">lead list</h4>
+      <pre><code>lead [1, 2, 3] #=&gt; [1, 2]
+      
+      lead [1] #=&gt; []
+      
+      lead [] #=&gt; []
+      </code></pre><ul>
+      <li><code>list {Array|Tuple|String}</code>: A list type.</li>
+      </ul>
+      <p>Returns a new array of all but the last item in <code>list</code>, or an empty array if there are no items or only 1 item.</p>
+      <h4 id="log-message">log message</h4>
+      <pre><code>log &#39;This app is great!&#39; #=&gt; undefined
+      </code></pre><ul>
+      <li><code>message {String}</code>: A message to log to the console.</li>
+      </ul>
+      <p>A shortcut for JavaScript&#39;s <code>console.log(message)</code>. If the <code>console</code> object does not exists, fails silently.</p>
+      <h4 id="random-array">random array</h4>
+      <pre><code>random [1, 2, 3] #=&gt; 2
+      
+      random [1, 2, 3] #=&gt; 1
+      </code></pre><ul>
+      <li><code>array {Array}</code>: An array.</li>
+      </ul>
+      <p>Selects a random item from <code>array</code> and returns the item.</p>
+      <h4 id="range-from-through">range from, through</h4>
+      <pre><code>range 1, 10
+      #=&gt; [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      </code></pre><ul>
+      <li><code>from {Number}</code>: Any whole number.</li>
+      <li><code>through {Number}</code>: Any whole number.</li>
+      </ul>
+      <p>Creates an array containing a range of numbers from <code>from</code> through <code>through</code>.</p>
+      <h4 id="receive-fun">receive fun</h4>
+      <pre><code>receive match
+        {{ OK, msg }}  =&gt; doSomethingWith msg
+        {{ ERR, msg }} =&gt; throw (create Error, msg)
+      </code></pre><ul>
+      <li><code>fun {Function}</code>: Any type of function including a <code>fn</code>, a <code>def</code> block, or a <code>match</code> block.</li>
+      </ul>
+      <p>Registers a handler for dealing with messages that come in from a separate process. Returns <code>undefined</code>.</p>
+      <h4 id="remove-key-collection">remove key, collection</h4>
+      <pre><code>remove &#39;foo&#39;, {foo: &#39;bar&#39;, baz: &#39;quux&#39;}
+      #=&gt; {baz: &#39;quux&#39;}
+      
+      remove 1, [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]
+      #=&gt; [&#39;a&#39;, &#39;c&#39;]
+      </code></pre><ul>
+      <li><code>key {String|Number|Atom}</code>: An object key or array index.</li>
+      <li><code>collection {Any Object-like type}</code>: Any kind of JavaScript collection.</li>
+      </ul>
+      <p>Creates a shallow clone of <code>collection</code> not including the item identified by <code>key</code>.</p>
+      <h4 id="reply-message">reply message</h4>
+      <pre><code>reply {{ OK, &#39;This is my message.&#39; }}
+      </code></pre><ul>
+      <li><code>message {Any Serializable Data|Atom}</code>: A message to send to an owner process.</li>
+      </ul>
+      <p>Sends <code>message</code> from a child process to an owner process. Returns <code>undefined</code>.</p>
+      <h4 id="send-process-message">send process, message</h4>
+      <pre><code>process = spawn fn =&gt;
+        receive fn msg =&gt;
+          console.log &#39;I got&#39;, msg
+      
+      send process, &#39;hello&#39;
+      
+      #=&gt; Logs: &quot;I got hello&quot;
+      </code></pre><ul>
+      <li><code>process {Process}</code>: A process created using the <code>spawn</code> function.</li>
+      <li><code>message {Any Serializable Data|Atom}</code>: A message to send to a owner process.</li>
+      </ul>
+      <p>Sends <code>message</code> to <code>process</code>. Returns <code>undefined</code>.</p>
+      <h4 id="spawn-fun">spawn fun</h4>
+      <pre><code>process = spawn fn =&gt; console.log &quot;I&#39;m alive!&quot;
+      </code></pre><ul>
+      <li><code>fun {Function}</code>: Any type of function, but normally an anonymous <code>fn</code>.</li>
+      </ul>
+      <p>Creates a new operating system process out of <code>fun</code>.</p>
+      <h4 id="tail-list">tail list</h4>
+      <pre><code>tail [1, 2, 3] #=&gt; [2, 3]
+      
+      tail [1] #=&gt; []
+      
+      tail [] #=&gt; []
+      </code></pre><p><code>list {Array|Tuple|String}</code>: An list type.</p>
+      <p>Returns a new array of all but the first item in <code>list</code>, or an empty array if there are no items or only 1 item.</p>
+      <h4 id="throw-err">throw err</h4>
+      <pre><code>throw (create Error, &#39;This is an error message&#39;)
+      </code></pre><ul>
+      <li><code>err {Error}</code>: Any instance of any kind of error object.</li>
+      </ul>
+      <p>Throws an error.</p>
+      <h4 id="tupletoarray-tuple">tupleToArray tuple</h4>
+      <pre><code>tupleToArray {{ 1, 2, 3 }} #=&gt; [1, 2, 3]
+      </code></pre><ul>
+      <li><code>tuple {Tuple}</code>: Any tuple.</li>
+      </ul>
+      <p>Creates a new array from items in a tuple.</p>
+      <h4 id="tupletoobject-tuple-fun">tupleToObject tuple, fun</h4>
+      <pre><code>tupleToObject {{ fun1, fun2 }}, fn item =&gt;
+        item.name
+      
+      #=&gt; {&#39;fun1&#39;: fun1, &#39;fun2&#39;: fun2}
+      </code></pre><ul>
+      <li><code>tuple {Tuple}</code>: Any tuple.</li>
+      <li><code>fun {Function}</code>: Optional. An iterator function taking <code>item</code> and <code>index</code>.</li>
+      </ul>
+      <p>Creates an object from a tuple where <code>fun</code> is used to determine how to construct
+      key names for each item in the tuple. If <code>fun</code> is not provided, indices will
+      be used as object keys.</p>
+      <h4 id="update-key-value-collection">update key, value, collection</h4>
+      <pre><code>obj = {foo: &#39;bar&#39;, baz: &#39;quux&#39;}
+      
+      update &#39;foo&#39;, &#39;Billy&#39;, obj
+      #=&gt; {foo: &#39;Billy&#39;, baz: &#39;quux&#39;}
+      </code></pre><ul>
+      <li><code>key {String|Number|Atom}</code>: An object key or array index.</li>
+      <li><code>value {Any}</code>: Any type of data.</li>
+      <li><code>collection {Any Object-like type}</code>: Any kind of JavaScript collection.</li>
+      </ul>
+      <p>Creates a shallow clone of <code>collection</code> wherein the value for <code>key</code> has been updated to <code>value</code>.</p>
+      <h4 id="warn-message">warn message</h4>
+      <pre><code>warn &#39;Something was weird&#39; #=&gt; undefined
+      </code></pre><ul>
+      <li><code>message {String}</code>: A message to log to the console.</li>
+      </ul>
+      <p>A shortcut for JavaScript&#39;s <code>console.warn(message)</code>. Attempts to default to <code>console.log</code> if <code>console.warn</code> does not exist. If the <code>console</code> object does not exists, fails silently.</p>
+      
+    </div>
+    <section id="docs-app"></section>
+    <script>
+      window.addEventListener('load', function () {
+        Array.prototype.slice.call(document.querySelectorAll('pre code')).forEach(function (code) {
+          var lines = code.innerHTML.trim().split('\n');
+          var out = [lines[0]];
+          var sliceAmount;
+          lines.slice(1).forEach(function (line, index) {
+            if (index === 0) {
+              var whitespace = line.match(/^\s+/);
+              whitespace = whitespace ? whitespace[0] : '';
+              if (/([=-](\&gt;)?|\{|match|\&gt;|div|try|chain|default\s+[^\n])$/.test(lines[0])) {
+                whitespace = whitespace.slice(2);
+              }
+              sliceAmount = whitespace;
+            }
+            out.push(line.replace(sliceAmount, ''));
+          });
+          code.innerHTML = out.join('\n');
+          code.className = 'visible lang-coffeescript';
+          hljs.highlightBlock(code);
+        });
+        Array.prototype.slice.call(document.querySelectorAll('h4')).forEach(function (h4) {
+          var html = h4.innerHTML.split(/\s+/g);
+          html[0] = '<span class="bif" id="' + html[0] + '">' + html[0] + '</span>';
+          h4.innerHTML = html.join(' ');
+          h4.className = 'visible';
+        });
+        (function () {
+          var hash = location.hash;
+          if (hash) {
+            var item = document.querySelector(hash);
+            setTimeout(function () {
+              item && window.scroll(0, item.offsetParent.offsetTop);
+            },0);
+          }
+        }());
+      });
+    </script>
+    <script src="../../assets/js/app.js"></script>
+  </body>
+</html>

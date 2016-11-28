@@ -9,8 +9,8 @@ var _utils = require('../utils');
   var _this = this;
 
   var compiled = this.conditions.map(function (condition, index) {
-    var test = condition.test;
-    var body = condition.body;
+    var test = condition.test,
+        body = condition.body;
 
     var keyword = index === 0 ? 'if' : 'else if';
     if (test === 'default') {

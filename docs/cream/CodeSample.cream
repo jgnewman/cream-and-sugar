@@ -1,0 +1,31 @@
+import React from 'react'
+import ReactDOM from 'react-dom'
+import reactify from './util/reactify'
+import Download from './Download'
+
+propTypes = {}
+
+render _ =>
+  <div className="code-sample">
+    <pre>
+      <code>
+        <span className="fn">'creamerize'</span>
+        ' '
+        <span className="num">'0'</span>
+        ', coffee '
+        <span className="sym">'=>'</span>
+        ' coffee\n'
+        <span className="fn">'creamerize'</span>
+        ' scoops, coffee '
+        <span className="sym">'=>\n'</span>
+        '  '
+        <span className="fn">'creamerize'</span>
+        ' scoops - '
+        <span className="num">'1'</span>
+        ', coffee + '
+        <span className="num">'1'</span>
+      </code>
+    </pre>
+  </div>
+
+export reactify render, propTypes

@@ -57,7 +57,8 @@ gulp.task('clean', function(cb) {
   return gulp.src('markdown/**/*.md')
   .pipe(panini({
     root: 'markdown/',
-    layouts: 'layouts/'
+    layouts: 'layouts/',
+    helpers: 'helpers/'
   }))
   .pipe(rename(function (path) {
     path.dirname += ('/' + path.basename);

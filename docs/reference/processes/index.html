@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cream & Sugar: Processes</title>
+    <link href="https://fonts.googleapis.com/css?family=Bitter:400,700|Open+Sans:300,400,800" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/app.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  </head>
+  <body class="docs">
+    <div class="branding"></div>
+    <div class="content">
+      <div class="left-border">
+        <h1>Processes</h1>
+        <h2 class="subhead">Platform Agnostic OS-Level Threads</h2>
+      </div>
+      
+      <p>C&amp;S presents a novel way to execute independent system processes inspired in large part by Erlang, a language built and known for its amazing concurrency models. Unfortunately, C&amp;S can&#39;t be exactly like Erlang because it is really just JavaScript. So if you are familiar with Erlang processes, you should know that C&amp;S processes are actual, OS-level processes, not tiny, dynamic, super-duper efficient Erlang processes.</p>
+      <p>But even if this isn&#39;t Erlang, it&#39;s still pretty cool. C&amp;S makes use of the <code>Worker</code> API if it detects a browser environment and the <code>child_process</code> API if it detects a Node.js environment. In either case, the techniques <em>you&#39;ll use</em> to interact with these processes are exactly the same. One API to rule them all, as it were.</p>
+      <h2 id="what-is-a-process-">What is a process?</h2>
+      <p>In JavaScript, your code is traditionally executed line by line. If you have a really intense calculation being executed (for example, calculating the factorial of 100), the rest of your application will have to wait until that calculation finishes before it can run. That&#39;s the &quot;synchronous&quot; way.</p>
+      <p>Enter asynchronous JavaScript. A great example of this would be a typical AJAX call making use of a callback function. The AJAX request gets fired off and your program continues working while the request is out. When the request comes back, your callback function gets added to the JavaScript queue. Once the current application flow is &quot;done&quot;, JavaScript checks the queue, finds that your callback is waiting to run with the result of the AJAX call, and executes it.</p>
+      <p>All of this happens inside a single operating system process.</p>
+      <p>So theoretically, if you could control <strong>two concurrent processes</strong>, you could tell one process to calculate the factorial of 100 and have it send the result back to the other process when it finishes. This way, the other process wouldn&#39;t be blocked by the calculation and you could use asynchronous code (like AJAX callbacks) to handle messages being passed between processes.</p>
+      <p>And this is what Cream &amp; Sugar processes are for.</p>
+      <h2 id="how-does-it-work-">How does it work?</h2>
+      <p>In order to handle concurrent processes, you need a few basic tools, namely...</p>
+      <ol>
+      <li>The ability to spawn a process.</li>
+      <li>The ability to send messages to a process.</li>
+      <li>The ability to receive messages from a process.</li>
+      <li>The ability to terminate a process.</li>
+      </ol>
+      <pre><code># Create a function that spawns a process
+      up _ =&gt;
+      
+        # Spawn a process from a function.
+        spawn fn =&gt;
+      
+          # Define a function for calculating factorials
+          factorial 0 =&gt; 1
+          factorial n =&gt; n * factorial n - 1
+      
+          # Determine what to do with incoming messages
+          receive match
+      
+            # Calculate factorials if we get a good msg
+            {{ FACTORIAL, num }} =&gt;
+              reply {{ OK, factorial num }}
+      
+            # Send back an error if we get a bad msg
+            _ =&gt;
+              reply {{ ERR, &#39;unknown command&#39; }}
+      </code></pre><p>In C&amp;S, all processes are spawned from functions. This example shows a basic process creator. The <code>up</code> function calls <code>spawn</code>, which returns a process generated from its argument function. Within the process, we have a function for calculating factorials and a <code>receive</code> statement that allows us to pattern match against incoming messages.</p>
+      <p>Whenever a message comes in, we&#39;ll analyze its pattern and see if we can use it. In this case, we expect our message to take the form of a tuple wherein the first item is the atom <code>FACTORIAL</code> and the second item is the number to calculate a factorial for. When we get a message like this, we&#39;ll <code>reply</code> back to the parent thread with another tuple wherein the first item is the atom <code>OK</code> and the second item is the calculated factorial. If we receive any other kind of message, we&#39;ll reply back indicating that we got an error.</p>
+      <p>Now that we have a process creator, let&#39;s take a look at how we might actually use it.</p>
+      <pre><code># Create the process and grab a reference to it.
+      myprocess = up _
+      
+      # When we receive a message, pattern match it to
+      # figure out what to do.
+      receive match
+      
+        # If the message is marked as ~ok, do whatever
+        # we need to with it.
+        {{ OK, msg }} =&gt;
+          log &#39;The message was&#39;, msg
+      
+        # If the message came with an error, kill the
+        # process and throw an error.
+        {{ ERR, errText, }} =&gt;
+          kill myprocess
+          throw (create Error, errText)
+      
+      
+      # Kick things off by telling the process to
+      # calculate a factorial.
+      send myprocess, {{ FACTORIAL, 10 }}
+      </code></pre><p>We&#39;ll begin by spinning up our process and and assigning it to a variable. Next, we&#39;ll create another <code>receive</code> block for determining what to do when our process sends us a message. If we get an <code>OK</code> tuple, we&#39;ll log the message we got to the console. If we get an <code>ERR</code> tuple, we&#39;ll use <code>kill</code> to kill the process and throw an error.</p>
+      <p>With everything prepped and ready to go, we&#39;ll kick things off by using <code>send</code> to pass a message to our process.</p>
+      <p>Within this example we can see all 4 tools in action. We can create a process with <code>spawn</code>. We can handle incoming messages with <code>receive</code>. We can send messages to a child process with <code>send</code> and reply back to a parent process with <code>reply</code>. Lastly, we can terminate a process with <code>kill</code>. And regardless of whether we&#39;re in Node.js or the browser, all of this functionality works the same way.</p>
+      
+    </div>
+    <section id="docs-app"></section>
+    <script>
+      window.addEventListener('load', function () {
+        Array.prototype.slice.call(document.querySelectorAll('pre code')).forEach(function (code) {
+          var lines = code.innerHTML.trim().split('\n');
+          var out = [lines[0]];
+          var sliceAmount;
+          lines.slice(1).forEach(function (line, index) {
+            if (index === 0) {
+              var whitespace = line.match(/^\s+/);
+              whitespace = whitespace ? whitespace[0] : '';
+              if (/([=-](\&gt;)?|\{|match|\&gt;|div|try|chain|default\s+[^\n])$/.test(lines[0])) {
+                whitespace = whitespace.slice(2);
+              }
+              sliceAmount = whitespace;
+            }
+            out.push(line.replace(sliceAmount, ''));
+          });
+          code.innerHTML = out.join('\n');
+          code.className = 'visible lang-coffeescript';
+          hljs.highlightBlock(code);
+        });
+        Array.prototype.slice.call(document.querySelectorAll('h4')).forEach(function (h4) {
+          var html = h4.innerHTML.split(/\s+/g);
+          html[0] = '<span class="bif" id="' + html[0] + '">' + html[0] + '</span>';
+          h4.innerHTML = html.join(' ');
+          h4.className = 'visible';
+        });
+        (function () {
+          var hash = location.hash;
+          if (hash) {
+            var item = document.querySelector(hash);
+            setTimeout(function () {
+              item && window.scroll(0, item.offsetParent.offsetTop);
+            },0);
+          }
+        }());
+      });
+    </script>
+    <script src="../../assets/js/app.js"></script>
+  </body>
+</html>

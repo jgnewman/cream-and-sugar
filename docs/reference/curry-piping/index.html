@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cream & Sugar: Curry Piping</title>
+    <link href="https://fonts.googleapis.com/css?family=Bitter:400,700|Open+Sans:300,400,800" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/app.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  </head>
+  <body class="docs">
+    <div class="branding"></div>
+    <div class="content">
+      <div class="left-border">
+        <h1>Curry Piping</h1>
+        <h2 class="subhead">These Are Not Monads</h2>
+      </div>
+      
+      <p>Cream &amp; Sugar provides an interesting and somewhat unique little tool that we call curry piping. If you are familiar with the concept of monads in languages like Haskell, there are some similarities, however <strong>curry pipes are not monads</strong>. But insead of trying to describe a curry pipe, let&#39;s start by looking at an example.</p>
+      <pre><code># JavaScript
+      function add2(x) { return x + 2 }
+      function mlt2(x) { return x * 2 }
+      
+      const result = mlt2(add2(4));
+      #=&gt; 12
+      </code></pre><p>Imagine you had a number that you wanted to perform a couple of operations on in JavaScript. You could write that as shown. The idea is to take a value and pass it to a function whose output is then passed to another function. You can do this indefinitely and in order to read the code, you sort of have to look at everything backward.</p>
+      <pre><code>add2 x =&gt; x + 2
+      mlt2 x =&gt; x * 2
+      
+      result = 4 &gt;&gt;= add2 &gt;&gt;= mlt2
+      #=&gt; 12
+      </code></pre><p>In C&amp;S, you can accomplish a similar task with curry piping syntax.</p>
+      <p>In this example, we begin with the value 4. We then use the <code>&gt;&gt;=</code> operator to pipe it to the <code>add2</code> function as an argument. The result of that is then piped to the <code>mlt2</code> function as an argument.</p>
+      <p>The reason we call this &quot;curry&quot; piping is because you can use it to implicitly curry functions. Take the following example:</p>
+      <pre><code>add x, y =&gt; x + y
+      mlt x, y =&gt; x * y
+      
+      result = 4 &gt;&gt;= (add 2) &gt;&gt;= (mlt 2)
+      #=&gt; 12
+      </code></pre><p>Here, it appears as though we are calling both <code>add 2</code> and <code>mlt 2</code> which, at face value, seem as though they should produce errors because each of these functions is intended to take 2 arguments. However, using them in connection with the <code>&gt;&gt;=</code> operator allows us to implicitly curry them. What actually happens upon execution here is that 4 gets passed in to <code>add</code> as the last argument. The result of that operation then gets passed into <code>mlt</code> as the last argument. The effect would be expressed like this in JavaScript: <code>mlt(2, add(2, 4))</code>.</p>
+      <p>If you find this confusing, just remember, all we&#39;re doing is taking the first thing and piping it to the next thing as an argument. We can chain as many of these as we need to.</p>
+      
+    </div>
+    <section id="docs-app"></section>
+    <script>
+      window.addEventListener('load', function () {
+        Array.prototype.slice.call(document.querySelectorAll('pre code')).forEach(function (code) {
+          var lines = code.innerHTML.trim().split('\n');
+          var out = [lines[0]];
+          var sliceAmount;
+          lines.slice(1).forEach(function (line, index) {
+            if (index === 0) {
+              var whitespace = line.match(/^\s+/);
+              whitespace = whitespace ? whitespace[0] : '';
+              if (/([=-](\&gt;)?|\{|match|\&gt;|div|try|chain|default\s+[^\n])$/.test(lines[0])) {
+                whitespace = whitespace.slice(2);
+              }
+              sliceAmount = whitespace;
+            }
+            out.push(line.replace(sliceAmount, ''));
+          });
+          code.innerHTML = out.join('\n');
+          code.className = 'visible lang-coffeescript';
+          hljs.highlightBlock(code);
+        });
+        Array.prototype.slice.call(document.querySelectorAll('h4')).forEach(function (h4) {
+          var html = h4.innerHTML.split(/\s+/g);
+          html[0] = '<span class="bif" id="' + html[0] + '">' + html[0] + '</span>';
+          h4.innerHTML = html.join(' ');
+          h4.className = 'visible';
+        });
+        (function () {
+          var hash = location.hash;
+          if (hash) {
+            var item = document.querySelector(hash);
+            setTimeout(function () {
+              item && window.scroll(0, item.offsetParent.offsetTop);
+            },0);
+          }
+        }());
+      });
+    </script>
+    <script src="../../assets/js/app.js"></script>
+  </body>
+</html>

@@ -8,11 +8,13 @@ import Logo from '../Logo'
 import Nav from '../Nav'
 import HomeContent from '../HomeContent'
 import Menu from '../Menu'
+import CodeSample from '../CodeSample'
 
 import {
   handleClickNav,
   handleSelectLink,
-  handleClickMenuLink
+  handleClickMenuLink,
+  handleClickLogo
 } from '../handlers/handlers'
 
 ###
@@ -55,7 +57,11 @@ render _ =>
 
   # Render out a div
   <div>
-    <Logo />
+    <Logo
+      menuOpen={menuOpen}
+      toggleMenu={toggleMenu}
+      handleClickLogo={handleClickLogo}
+    />
 
     <Nav
       menuOpen={menuOpen}
@@ -80,6 +86,8 @@ render _ =>
       selectLink={selectLink}
       toggleMenu={toggleMenu}
     />
+
+    <CodeSample />
   </div>
 
 # Create and export a connected component

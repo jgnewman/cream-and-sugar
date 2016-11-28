@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cream & Sugar: Modules</title>
+    <link href="https://fonts.googleapis.com/css?family=Bitter:400,700|Open+Sans:300,400,800" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/app.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  </head>
+  <body class="docs">
+    <div class="branding"></div>
+    <div class="content">
+      <div class="left-border">
+        <h1>Modules</h1>
+        <h2 class="subhead">Inspired by ES2015</h2>
+      </div>
+      
+      <p>Cream &amp; Sugar takes inspiration from module syntax introduced in ES2015 and also supports C&amp;S&#39; new <a href="/reference/data-types/">data types</a>.</p>
+      <p>At a high level, any C&amp;S file can import other modules and export functions of its own. The compiled code uses <code>require</code> syntax so that it can work with as many types of transpiled/compiled code in as many environments as possible. With that in mind, you are not limited to importing only C&amp;S modules. C&amp;S simply sits on top of JavaScript so you are free to import as many JavaScript modules as you like.</p>
+      <pre><code>import &#39;/path/to/filename&#39;
+      </code></pre><p>To import a module that does not actually export any particular values, simply <code>import</code> a filename. This will cause the module to be executed if it hasn&#39;t been already.</p>
+      <pre><code>import x from &#39;/path/to/filename&#39;
+      </code></pre><p>To assign a module&#39;s exported value to a variable, drop a variable name into the expression. This example will create a value called <code>x</code> that references whatever it is that your module exported.</p>
+      <pre><code>import {x, y} from &#39;/path/to/filename&#39;
+      </code></pre><p>To destructure values from a module that exports an object, place your variable names between curly braces. This will find values in the export associated with keys named <code>x</code> and <code>y</code>, and turn those into variables
+      in the module importing them.</p>
+      <pre><code>import {
+        keyname1: x,
+        keyname2: y
+      } from &#39;/path/to/filename&#39;
+      </code></pre><p>Use full object syntax in order to import keys under different variable names. This will assign the value at <code>keyname1</code> to the variable name <code>x</code> and the value at <code>keyname2</code>, to the variable name <code>y</code>.</p>
+      <p>When you export, you can export any type of value you want. As such, you can use destructuring of any object type in your imports. More options are shown here.</p>
+      <pre><code># Import the first 2 items of an exported tuple.
+      import {{ x, y }} from &#39;/path/to/filename&#39;
+      
+      # Import the first two items from an exported array.
+      import [ x, y ] from &#39;/path/to/filename&#39;
+      
+      # Assign the first item in an array to `hd`
+      # and all the rest of them to `tl`.
+      import [ hd | tl ] from &#39;/path/to/filename&#39;
+      </code></pre><p>When it comes to exports, ES2015 and C&amp;S begin to differ. Whereas JavaScript allows using the <code>export</code> keyword multiple times per module, exporting items in C&amp;S is akin to assigning a value to <code>module.exports</code> every time you invoke the <code>export</code> function. As such, you&#39;ll want to make sure you only call it once.</p>
+      <p>Since you can only call <code>export</code> once per module, it&#39;s likely that you will want to export an object.</p>
+      <p>Exports are also a good place to lock down the allowed arities that may be used with your functions. For example, if you have defined a function called <code>funA</code> and you export it as <code>aritize funA, 2</code>, then when a user imports your function, they will only be allowed to call it with 2 arguments. If they try to call it with any other number of arguments, they&#39;ll get an error. Following is a great example of where that would be useful.</p>
+      <pre><code>map list, fun =&gt; map list, fun, []
+      map [], fun, acc =&gt; acc
+      map [h|t], fun, acc =&gt;
+        map t, fun, acc &lt;&lt; (fun h, acc.length)
+      
+      export aritize map, 2
+      </code></pre><p>In this example, we created a function called <code>map</code> that essentially mimics JavaScript&#39;s <code>Array.map</code> method. It assumes the user will call it with two arguments (an array and a function) and, when that happens, it will recur with a third argument – an array that accumulates all of the values as iterations occur.</p>
+      <p>In this case, we don&#39;t want users of our module to be able to pass in 3 arguments to this function as they could pretty easily mess things up. So when we export it, we call the <code>aritize</code> function and lock it down to an arity of 2. This way, if a user tries to call it with a third argument, they&#39;ll get an error. However, this does not inhibit the function&#39;s own ability to recurse with 3 arguments.</p>
+      <pre><code>App = React.createClass {
+      
+        render: fn =&gt;
+          &lt;div&gt;&quot;Hello&quot;&lt;/div&gt;
+      
+      }
+      
+      export App
+      </code></pre><p>Of course, you don&#39;t always want to lock down everything you export in this way. Leaving arity open can be important when working with certain libraries, for example React.js. If you export a react class, you&#39;ll need to leave the arity open so that you don&#39;t end up with a console error:</p>
+      <p>Remember that you can export any type of data from a C&amp;S module including atoms and tuples.</p>
+      
+    </div>
+    <section id="docs-app"></section>
+    <script>
+      window.addEventListener('load', function () {
+        Array.prototype.slice.call(document.querySelectorAll('pre code')).forEach(function (code) {
+          var lines = code.innerHTML.trim().split('\n');
+          var out = [lines[0]];
+          var sliceAmount;
+          lines.slice(1).forEach(function (line, index) {
+            if (index === 0) {
+              var whitespace = line.match(/^\s+/);
+              whitespace = whitespace ? whitespace[0] : '';
+              if (/([=-](\&gt;)?|\{|match|\&gt;|div|try|chain|default\s+[^\n])$/.test(lines[0])) {
+                whitespace = whitespace.slice(2);
+              }
+              sliceAmount = whitespace;
+            }
+            out.push(line.replace(sliceAmount, ''));
+          });
+          code.innerHTML = out.join('\n');
+          code.className = 'visible lang-coffeescript';
+          hljs.highlightBlock(code);
+        });
+        Array.prototype.slice.call(document.querySelectorAll('h4')).forEach(function (h4) {
+          var html = h4.innerHTML.split(/\s+/g);
+          html[0] = '<span class="bif" id="' + html[0] + '">' + html[0] + '</span>';
+          h4.innerHTML = html.join(' ');
+          h4.className = 'visible';
+        });
+        (function () {
+          var hash = location.hash;
+          if (hash) {
+            var item = document.querySelector(hash);
+            setTimeout(function () {
+              item && window.scroll(0, item.offsetParent.offsetTop);
+            },0);
+          }
+        }());
+      });
+    </script>
+    <script src="../../assets/js/app.js"></script>
+  </body>
+</html>

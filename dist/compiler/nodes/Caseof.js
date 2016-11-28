@@ -10,8 +10,8 @@ var _utils = require('../utils');
 
   var needsDefault = false;
   var compiled = this.conditions.map(function (condition, index) {
-    var test = condition.test;
-    var body = condition.body;
+    var test = condition.test,
+        body = condition.body;
 
     var compiledTest = test === 'default' ? test : test.compile(true);
     var casePrefix = compiledTest === 'default' ? compiledTest : 'case ' + compiledTest;

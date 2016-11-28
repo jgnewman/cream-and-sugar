@@ -20,12 +20,34 @@ describe('When', () => {
     assert.equal(expected, nlToSpace(compileCode(toCompile)));
   });
 
-  it('should compile a basic when statement with multi-line bodies', () => {
+  it('should compile a multi-line statement', () => {
     const toCompile = 'when\n'
                     + '  true\n'
                     + '    doA _\n'
                     + '    doB _\n'
                     + '  false\n'
+                    + '    doC _\n'
+                    + '    doD _\n\n';
+    const expected = nlToSpace(`(function () {
+      if (true) {
+        doA();
+        return doB()
+      } else if (false) {
+        doC();
+        return doD()
+      } else {
+        throw new Error('No match found for "when" statement.');
+      }
+    }.bind(this)());`);
+    assert.equal(expected, nlToSpace(compileCode(toCompile)));
+  });
+
+  it('should compile a multiline statement with optional arrows', () => {
+    const toCompile = 'when\n'
+                    + '  true ->\n'
+                    + '    doA _\n'
+                    + '    doB _\n'
+                    + '  false ->\n'
                     + '    doC _\n'
                     + '    doD _\n\n';
     const expected = nlToSpace(`(function () {

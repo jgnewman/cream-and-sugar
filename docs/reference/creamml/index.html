@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cream & Sugar: CreamML</title>
+    <link href="https://fonts.googleapis.com/css?family=Bitter:400,700|Open+Sans:300,400,800" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/app.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  </head>
+  <body class="docs">
+    <div class="branding"></div>
+    <div class="content">
+      <div class="left-border">
+        <h1>CreamML</h1>
+        <h2 class="subhead">JSX, But As a Real Part of the Language</h2>
+      </div>
+      
+      <blockquote>
+      <p>If you do not already know what JSX is, you should visit the <a href="https://facebook.github.io/react/docs/jsx-in-depth.html">React JS in-depth explanation</a> first. If React is not your cup of tea, you can skip ahead to the section entitled &quot;CreamML Without React&quot;.</p>
+      </blockquote>
+      <pre><code># JSX designed for JavaScript
+      &lt;div id={id} className=&quot;foo&quot;&gt;
+        &lt;span&gt;Hello, world!&lt;/span&gt;
+      &lt;/div&gt;
+      
+      function createJSX(id) {
+        return (
+          &lt;div id={id} className=&quot;foo&quot;&gt;
+            &lt;span&gt;Hello, world!&lt;/span&gt;
+          &lt;/div&gt;
+        );
+      }
+      </code></pre><p>As you should already be aware, JSX is basically HTML that you can write into JavaScript. It was invented for use with React.js and looks like the provided example, including a function that creates some.</p>
+      <p>When compiled, each of the nodes in our JSX is converted into a call to <code>React.createElement</code>. With Cream &amp; Sugar, you can do the same thing with only a few minor differences. Because these differences exist, C&amp;S&#39; XML-like syntax is called &quot;CreamML&quot; rather than JSX. This next example illustrates how to write the same function with C&amp;S.</p>
+      <pre><code>createJSX id =&gt;
+        &lt;div id={id} className=&quot;foo&quot;&gt;
+          &lt;span&gt;&quot;Hello, world!&quot;&lt;/span&gt;
+        &lt;/div&gt;
+      </code></pre><p>What&#39;s pretty cool is, C&amp;S is smart and will detect if React exists within your available code. If so, it will convert each CreamML node into a call to <code>React.createElement</code>. If not, it will convert each CreamML node into a call to <code>CNS_.createElement</code> which will still produce a series of nested DOM nodes.</p>
+      <blockquote>
+      <p>Protip: <code>CNS_</code> is a reserved word in C&amp;S. If you try to use it, the
+      compiler will complain. It&#39;s reserved for built-in functions that are included
+      in the compiled code, only if they are needed.</p>
+      </blockquote>
+      <p>As previously stated, there are a few minor differences between pure JSX and CreamML. To learn more about that, read on.</p>
+      <h2 id="creamml-without-react">CreamML Without React</h2>
+      <pre><code>container = dom &#39;#my-container&#39;
+      
+      update &#39;innerHTML&#39;, &lt;div&gt;&#39;Hello&#39;&lt;/div&gt;, container
+      #=&gt; &lt;div id=&quot;my-container&quot;&gt;
+      #     &lt;div&gt;Hello&lt;/div&gt;
+      #   &lt;/div&gt;
+      </code></pre><p>C&amp;S&#39; ability to use handle JSX-like syntax is pretty handy because, if you aren&#39;t using React, you can still make use of this syntax to dynamically build DOM nodes</p>
+      <blockquote>
+      <p>Another protip: <code>dom</code> is a built-in function that makes selecting DOM nodes
+      easy. Cream and Sugar contains many such built-in functions.</p>
+      </blockquote>
+      <p>One thing to keep in mind, of course, is that C&amp;S is a functional language and,
+      as such, it (usually) doesn&#39;t modify currently existing values. Instead it creates new
+      ones. So in the previous example, the <code>#my-container</code> div was only &quot;updated&quot;
+      in the sense that a clone of that node was created and had its <code>innerHTML</code>
+      populated.</p>
+      <p>There are a couple of other <em>minor</em> differences between C&amp;S&#39; version of JSX
+      and the pure React version as well.</p>
+      <h3 id="quote-all-text">Quote all text</h3>
+      <pre><code># JSX
+      &lt;div&gt;This is some floating text.&lt;/div&gt;
+      
+      # CreamML
+      &lt;div&gt;&quot;This is some floating text.&quot;&lt;/div&gt;
+      </code></pre><p>In C&amp;S, you will need to surround any floating text with quotes. Because
+      CreamML syntax is integrated into the language and is not handled as a
+      separate processing step, the compiler will see any floating text as a bunch of
+      variable names, try to convert them into nested function calls, and get very
+      confused.</p>
+      <pre><code># Bad output from non-quoted text
+      React.createElement(&#39;div&#39;, {}, [
+        This(is(some(floating(text.))))
+      ])
+      
+      #=&gt; Error!
+      </code></pre><p>Another way to explain this is that the language grammar doesn&#39;t change
+      if you&#39;re inside a CreamML node. Therefore, you need to quote text to prevent the compiler from doing what is shown in the example. A string, after all, is still a string, even if you&#39;re using html-like syntax.</p>
+      <pre><code>&lt;div&gt;`Hello, my name is ${name}`&lt;/div&gt;
+      </code></pre><p>Of course, you can still easily drop dynamic values into text, thus making it a little safer to use curly braces in your text. You can also avoid using curly braces at all in a lot of places.</p>
+      <pre><code># JSX
+      &lt;div&gt;
+        Two plus two is
+        (function () {
+          return &lt;strong&gt;{2 + 2}&lt;/strong&gt;;
+        }())
+      &lt;/div&gt;
+      
+      # CreamML
+      &lt;div&gt;
+        &#39;Two plus two is&#39;
+        apply fn =&gt; &lt;strong&gt;2 + 2&lt;/strong&gt;
+      &lt;/div&gt;
+      </code></pre><p>It also becomes <em>extremely</em> easy to execute functions right in the middle
+      of the html body.</p>
+      <blockquote>
+      <p>Notice the use of the <code>apply</code> function in this example. It&#39;s a function that takes
+      another function as an argument and executes it. Optionally, you can pass in
+      a list of args in the form of an array as a second argument to <code>apply</code>.</p>
+      </blockquote>
+      <h3 id="using-parens-instead-of-curlies">Using parens instead of curlies</h3>
+      <p>In JSX, you use curly braces every time you want to reference a value or perform a calculation. While you can often do the same thing with CreamML, the curlies sometimes make it dangerous to work with certain data types.</p>
+      <pre><code>&lt;div
+        className=&quot;foo&quot;
+        attr={fn =&gt; {foo: bar}}&gt;
+      # Error! ––––––––––––––^^
+      # Unexpected &quot;}}&quot;
+      </code></pre><p>The provided example shows the potential for an error caused by placing an object near the termination of these curly braces, incorrectly causing the compiler to detect a tuple-closing double curly.</p>
+      <pre><code>&lt;div
+        className=&quot;foo&quot;
+        attr={ fn =&gt; {foo: bar} }&gt;
+      
+      &lt;div
+        className=&quot;foo&quot;
+        attr=(fn =&gt; {foo: bar})&gt;
+      </code></pre><p>The previous example can be prevented via smart use of spaces or by using parens instead of curly braces to surround dynamic values. Parens are actually more in line with &quot;the C&amp;S way&quot; but curlies are allowed in CreamML because many users are familiar with curlies in the context of JSX.</p>
+      
+    </div>
+    <section id="docs-app"></section>
+    <script>
+      window.addEventListener('load', function () {
+        Array.prototype.slice.call(document.querySelectorAll('pre code')).forEach(function (code) {
+          var lines = code.innerHTML.trim().split('\n');
+          var out = [lines[0]];
+          var sliceAmount;
+          lines.slice(1).forEach(function (line, index) {
+            if (index === 0) {
+              var whitespace = line.match(/^\s+/);
+              whitespace = whitespace ? whitespace[0] : '';
+              if (/([=-](\&gt;)?|\{|match|\&gt;|div|try|chain|default\s+[^\n])$/.test(lines[0])) {
+                whitespace = whitespace.slice(2);
+              }
+              sliceAmount = whitespace;
+            }
+            out.push(line.replace(sliceAmount, ''));
+          });
+          code.innerHTML = out.join('\n');
+          code.className = 'visible lang-coffeescript';
+          hljs.highlightBlock(code);
+        });
+        Array.prototype.slice.call(document.querySelectorAll('h4')).forEach(function (h4) {
+          var html = h4.innerHTML.split(/\s+/g);
+          html[0] = '<span class="bif" id="' + html[0] + '">' + html[0] + '</span>';
+          h4.innerHTML = html.join(' ');
+          h4.className = 'visible';
+        });
+        (function () {
+          var hash = location.hash;
+          if (hash) {
+            var item = document.querySelector(hash);
+            setTimeout(function () {
+              item && window.scroll(0, item.offsetParent.offsetTop);
+            },0);
+          }
+        }());
+      });
+    </script>
+    <script src="../../assets/js/app.js"></script>
+  </body>
+</html>

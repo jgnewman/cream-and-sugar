@@ -5,13 +5,16 @@ Shipped on xx.xx.xxxx
 
 ### Fix
 
-- Fix CreamML where it wasn't properly handling `htmlFor`.
+- Update to cns-lib 0.4.3 containing...
+  - Fix for CreamML where it wasn't properly handling `htmlFor`;
 
 ### Feature
 
+- New bif `dangerouslyMutate` allowing you to mutate existing objects where necessary such as in `dangerouslyMutate 'href', '/example', location`
 
 ### Change
 
+- `when` and `caseof` no longer deliberately error if arrows are used in multiline conditional bodies.
 
 ### Under the Hood
 

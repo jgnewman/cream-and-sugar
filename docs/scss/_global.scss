@@ -21,8 +21,17 @@ h1, h2, h3, h4, h5, h6,
   cursor: pointer;
   z-index: 10;
 
+  @include tablet {
+    position: absolute;
+    padding: 0;
+    top: 35px;
+    left: 40px;
+  }
+
   @include phone {
     padding: 0;
+    top: 25px;
+    left: 25px;
   }
 
   &, & * {
@@ -37,7 +46,7 @@ h1, h2, h3, h4, h5, h6,
     background: rgba(255, 255, 255, .43);
     position: absolute;
 
-    @include phone {
+    @include tablet {
       height: 0;
       opacity: 0;
     }
@@ -97,6 +106,10 @@ h1, h2, h3, h4, h5, h6,
     width: 49px;
     letter-spacing: .5px;
     color: $white;
+
+    @include tablet {
+      opacity: 0;
+    }
 
     &.top {
       top: 30px;

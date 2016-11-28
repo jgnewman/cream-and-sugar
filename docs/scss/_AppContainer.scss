@@ -12,6 +12,10 @@
   padding: 40px;
   overflow: hidden;
 
+  @include tablet {
+    overflow-y: auto;
+  }
+
   @include phone {
     padding: 25px 25px;
   }
@@ -44,6 +48,35 @@
       color: $offwhite;
       margin-bottom: 95px;
       letter-spacing: .5px;
+    }
+  }
+
+  .code-sample {
+    @include prefix('transition', all .6s ease);
+    opacity: .43;
+    position: absolute;
+    right: 40px;
+    bottom: 40px;
+    &:hover {
+      @include prefix('transition', all .6s ease);
+      opacity: 1;
+    }
+    @include tablet {
+      display: none;
+    }
+    pre code {
+      font-family: $codefont;
+      font-size: 12px;
+      line-height: 1.6;
+      .fn {
+        color: #6AB5FA;
+      }
+      .num {
+        color: #F2CB86;
+      }
+      .sym {
+        color: #FF5D70;
+      }
     }
   }
 
