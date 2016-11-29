@@ -54,6 +54,22 @@ arrayToTuple [ 1, 2, 3 ] #=> {{ 1, 2, 3 }}
 
 Creates a new tuple from items in an array.
 
+#### cache fun
+
+```
+foo = cache fn x => x
+
+foo 4 #=> 4
+
+foo 6 #=> 4
+```
+
+- `fun {Function}`: Any function.
+
+The `cache` function takes a function as its argument and returns a new function that will cache its result after being executed once. Having been cached, you can call this function as many times as you want and it will immediately return the cached value without having to execute the original function again.
+
+Cached functions may be "reset" by calling the `decache` bif.
+
 
 #### create klass [, ...constructorArgs]
 
@@ -149,6 +165,21 @@ debug 'Something was weird'
 - `message {String}`: A message to log to the console.
 
 A shortcut for JavaScript's `console.debug(message)`. Attempts to default to `console.log` if `console.debug` does not exist. If the `console` object does not exists, fails silently.
+
+#### decache fun
+
+```
+foo = cache fn x => x
+foo 4 #=> 4
+foo 6 #=> 4
+
+decache foo
+foo 6 #=>
+```
+
+- `fun {Function}`: Any function.
+
+The `cache` function caches a function such that it stores its result having been executed one time. Calling `decache` on that same function will reset it such that it will cache itself again on the next execution.
 
 
 #### die message

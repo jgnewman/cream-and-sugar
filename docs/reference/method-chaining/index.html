@@ -19,6 +19,20 @@
         <h2 class="subhead">Clutter Reduction For the Win!</h2>
       </div>
       
+      <p>Before diving into Cream &amp; Sugar&#39;s shiny new chaining techniques, we ought to mention that we stole something really useful from CoffeeScript.</p>
+      <pre><code>foo?.bar?.baz
+      </code></pre><p>In JavaScript you sometimes have to work with multi-level objects where certain nodes in the tree may or may not exist. In order to avoid having to write things like <code>if (foo &amp;&amp; foo.bar) { ... }</code>, C&amp;S takes a tip from CoffeeScript and allows you to use the <code>?.</code> form to avoid errors.</p>
+      <pre><code>foo = {}
+      
+      foo? #=&gt; true
+      </code></pre><p>If a value statement ends with a <code>?</code> symbol, C&amp;S will return a boolean telling you whether that value &quot;exists&quot; (in other words, that it is not null or undefined).</p>
+      <pre><code>foo = { bar: { baz: &#39;quux&#39; } }
+      
+      foo?.bar?.baz    #=&gt; &#39;quux&#39;
+      foo?.schmoo?.baz #=&gt; undefined
+      </code></pre><p>If the <code>?</code> symbol is used somewhere in the middle of a dot chain, the whole chain statement will terminate at the first undefined value without throwing an error.</p>
+      <pre><code>((foo _)?.bar _)?.baz
+      </code></pre><p>This syntax even works with ugly, chained function calls, which we&#39;ll be talking about next.</p>
       <pre><code># JavaScript chaining
       foo(a, b).bar(c, d).baz(e, f)
       

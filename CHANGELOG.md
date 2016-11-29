@@ -1,22 +1,19 @@
-0.7.0
+0.6.2
 =====
 
-Shipped on xx.xx.xxxx
-
-### Fix
-
+Shipped on 11.29.2016
 
 ### Feature
 
-- Upgrade to cns-lib 0.4.5 containing...
+- Upgrade to cns-lib 0.4.6 containing...
   - Support for function caching;
   - Safeguards against the reserved trailing underscore when working with objects.
-- New `?` syntax mimics CoffeeScript. For example: `foo?.bar?.baz`.
-
-### Change
-
+- Upgraded chaining syntax using `?` mimics CoffeeScript. For example: `foo?.bar?.baz`.
 
 ### Under the Hood
+
+- cns-lib 0.4.6 contains various optimizations for bifs.
+- Updated docs.
 
 
 0.6.1

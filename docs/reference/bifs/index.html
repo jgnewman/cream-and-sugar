@@ -49,6 +49,17 @@
       <li><code>arr {Array}</code>: Any array.</li>
       </ul>
       <p>Creates a new tuple from items in an array.</p>
+      <h4 id="cache-fun">cache fun</h4>
+      <pre><code>foo = cache fn x =&gt; x
+      
+      foo 4 #=&gt; 4
+      
+      foo 6 #=&gt; 4
+      </code></pre><ul>
+      <li><code>fun {Function}</code>: Any function.</li>
+      </ul>
+      <p>The <code>cache</code> function takes a function as its argument and returns a new function that will cache its result after being executed once. Having been cached, you can call this function as many times as you want and it will immediately return the cached value without having to execute the original function again.</p>
+      <p>Cached functions may be &quot;reset&quot; by calling the <code>decache</code> bif.</p>
       <h4 id="create-klass-constructorargs-">create klass [, ...constructorArgs]</h4>
       <pre><code>create Date
       #=&gt; Fri Sep 09 2016 17:00:43 GMT-0400 (EDT)
@@ -127,6 +138,17 @@
       <li><code>message {String}</code>: A message to log to the console.</li>
       </ul>
       <p>A shortcut for JavaScript&#39;s <code>console.debug(message)</code>. Attempts to default to <code>console.log</code> if <code>console.debug</code> does not exist. If the <code>console</code> object does not exists, fails silently.</p>
+      <h4 id="decache-fun">decache fun</h4>
+      <pre><code>foo = cache fn x =&gt; x
+      foo 4 #=&gt; 4
+      foo 6 #=&gt; 4
+      
+      decache foo
+      foo 6 #=&gt;
+      </code></pre><ul>
+      <li><code>fun {Function}</code>: Any function.</li>
+      </ul>
+      <p>The <code>cache</code> function caches a function such that it stores its result having been executed one time. Calling <code>decache</code> on that same function will reset it such that it will cache itself again on the next execution.</p>
       <h4 id="die-message">die message</h4>
       <pre><code>die &#39;This app is not working&#39;
       #=&gt; undefined
