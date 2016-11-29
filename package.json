@@ -34,7 +34,7 @@
   "author": "John Newman",
   "license": "MIT",
   "dependencies": {
-    "cns-lib": "^0.4.3"
+    "cns-lib": "^0.4.5"
   },
   "devDependencies": {
     "assert": "^1.4.1",

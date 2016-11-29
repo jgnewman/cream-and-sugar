@@ -8,6 +8,9 @@ Shipped on xx.xx.xxxx
 
 ### Feature
 
+- Upgrade to cns-lib 0.4.5 containing...
+  - Support for function caching;
+  - Safeguards against the reserved trailing underscore when working with objects.
 - New `?` syntax mimics CoffeeScript. For example: `foo?.bar?.baz`.
 
 ### Change
