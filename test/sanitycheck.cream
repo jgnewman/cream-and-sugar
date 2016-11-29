@@ -196,3 +196,8 @@ parentContext = {
     fn => getParent _
   )
 }
+
+foo?.bar?.baz
+foo?
+((foo _)?.bar _)?.baz
+foo.bar?

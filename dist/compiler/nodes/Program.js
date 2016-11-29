@@ -12,6 +12,9 @@ var _utils = require('../utils');
   this.shared.output = '';
   this.shared.insertSemis = true; // Turn this off when we're going to manually handle it
   this.shared.refs = -1;
+  this.shared.lookups = -1;
+  this.shared.prevLookup = '';
+  this.shared.disableLookupResets = false;
   newBody.forEach(function (node) {
     try {
       node.compile();

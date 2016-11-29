@@ -148,6 +148,7 @@
 ":"                                  return ":";
 "=>"                                 return "=>";
 "="                                  return "=";
+"?"                                  return "?";
 "."                                  return ".";
 "||"                                 return "||";
 
@@ -292,11 +293,23 @@ Num
 Lookup
   : Lookup "." SourceElement
     {
-      $$ = new LookupNode($1, $3, createSourceLocation(null, @1, @3));
+      $$ = new LookupNode($1, $3, false, createSourceLocation(null, @1, @3));
+    }
+  | Lookup "?" "." SourceElement
+    {
+      $$ = new LookupNode($1, $4, true, createSourceLocation(null, @1, @3));
     }
   | SourceElement "." SourceElement
     {
-      $$ = new LookupNode($1, $3, createSourceLocation(null, @1, @3));
+      $$ = new LookupNode($1, $3, false, createSourceLocation(null, @1, @3));
+    }
+  | SourceElement "?" "." SourceElement
+    {
+      $$ = new LookupNode($1, $4, true, createSourceLocation(null, @1, @3));
+    }
+  | Lookup "?"
+    {
+      $$ = new LookupNode($1, {type: null}, true, createSourceLocation(null, @1, @2));
     }
   | Identifier
     {
@@ -1039,10 +1052,11 @@ function NumberNode(num, loc) {
   this.shared = shared;
 }
 
-function LookupNode(left, right, loc) {
+function LookupNode(left, right, hasQ, loc) {
   this.type = 'Lookup';
   this.left = left;
   this.right = right;
+  this.hasQuestion = hasQ;
   this.loc = loc;
   this.shared = shared;
 }

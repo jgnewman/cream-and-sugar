@@ -1,3 +1,21 @@
+0.7.0
+=====
+
+Shipped on xx.xx.xxxx
+
+### Fix
+
+
+### Feature
+
+- New `?` syntax mimics CoffeeScript. For example: `foo?.bar?.baz`.
+
+### Change
+
+
+### Under the Hood
+
+
 0.6.1
 =====
 
