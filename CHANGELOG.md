@@ -1,15 +1,11 @@
 0.6.3
 =====
 
-Shipped on xx.xx.xxxx
-
-### Fix
+Shipped on 11.30.2016
 
 ### Feature
 
 - Upgraded collection syntax allows you to optionally omit commas when each item in the collection is placed on its own line.
-
-### Change
 
 ### Under the Hood
 
