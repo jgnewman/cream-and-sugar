@@ -1,6 +1,6 @@
 var gulp = require('gulp'),
     gutil = require('gulp-util'),
-    clean = require('gulp-clean'),
+    del = require('del'),
     sass = require('gulp-sass'),
     browserify = require('browserify'),
     uglify = require('gulp-uglify'),
@@ -17,8 +17,9 @@ var gulp = require('gulp'),
  * Cleaning dist/ folder
  */
 gulp.task('clean', function(cb) {
-  return gulp.src(['css/**', 'js/**', 'reference/**'], { read: false })
-             .pipe(clean());
+  del(['css/**', 'js/**', 'reference/**']).then(function () {
+    cb();
+  });
 })
 
 /**

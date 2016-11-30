@@ -1,3 +1,24 @@
+0.6.3
+=====
+
+Shipped on xx.xx.xxxx
+
+### Fix
+
+### Feature
+
+- Upgraded collection syntax allows you to optionally omit commas when each item in the collection is placed on its own line.
+
+### Change
+
+### Under the Hood
+
+- Updated docs.
+- Remove old syntax reference file.
+- Fix a bug with background images in docs.
+- Fix a couple bugs with the Gulp dev environment for docs.
+
+
 0.6.2
 =====
 

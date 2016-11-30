@@ -127,7 +127,11 @@
     </div>
     <section id="docs-app"></section>
     <script>
+      // Section for random JavaScript hacks just to get this out quickly.
       window.addEventListener('load', function () {
+
+        // Fix indentation in code blocks the best we can since panini's
+        // markdown compiler injects whitespace into pre tags.
         Array.prototype.slice.call(document.querySelectorAll('pre code')).forEach(function (code) {
           var lines = code.innerHTML.trim().split('\n');
           var out = [lines[0]];
@@ -147,12 +151,18 @@
           code.className = 'visible lang-coffeescript';
           hljs.highlightBlock(code);
         });
+
+        // Attach id's to h4 tags so that we can link to specific bifs.
         Array.prototype.slice.call(document.querySelectorAll('h4')).forEach(function (h4) {
           var html = h4.innerHTML.split(/\s+/g);
           html[0] = '<span class="bif" id="' + html[0] + '">' + html[0] + '</span>';
           h4.innerHTML = html.join(' ');
           h4.className = 'visible';
         });
+
+        // Some script conflict is preventing us from linking to a certain
+        // spot on the page so here we just wait until the next run loop
+        // and if we have a hash in the location object, scroll to it.
         (function () {
           var hash = location.hash;
           if (hash) {
@@ -161,6 +171,23 @@
               item && window.scroll(0, item.offsetParent.offsetTop);
             },0);
           }
+        }());
+
+        // Fixes a responsiveness issue where on large screens sometimes
+        // the offgray sidebar isn't tall enough. Make sure its always
+        // tall enough whenever the screen resizes.
+        (function () {
+          var branding = document.querySelector('.branding');
+          var content = document.querySelector('.content');
+          function resizerizer() {
+            var brandingHeight = branding.offsetHeight;
+            content.style.height = '';
+            if (content.offsetHeight < brandingHeight) {
+              content.style.height = brandingHeight + 'px';
+            }
+          }
+          window.addEventListener('resize', resizerizer);
+          resizerizer();
         }());
       });
     </script>

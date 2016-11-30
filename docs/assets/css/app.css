@@ -491,6 +491,7 @@ h1, h2, h3, h4, h5, h6,
     font-family: "Open Sans", sans-serif; }
   .docs .branding {
     background: url(../images/coffee-cup.jpg) right center no-repeat transparent;
+    background-size: cover;
     height: 100%;
     color: #FBF4EC;
     position: fixed;

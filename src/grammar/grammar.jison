@@ -362,6 +362,7 @@ Logic
 ListSeparator
   : "," NewLine
   | ","
+  | NewLine
   ;
 
 ListItems

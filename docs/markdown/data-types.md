@@ -135,7 +135,29 @@ mylib.post '/api/mydata', fn response =>
     ERR -> doSomethingElseWith (get 2, response)
 ```
 
-In this case, the first item in the tuple is an atom telling us that the request succeeded. The second item is a status code. The third item is the response message. We might use this data as shown.
+In this case, the first item in the tuple is an atom telling us that the request succeeded. The second item is a status code. The third item is the response message. We might use this data as shown. As previously stated, the positions of these items carry meaning. We expect the first item to always be a success indicator and the second item to always be a status code. If you were allowed to modify the length of tuples, it would destroy the ability to imbue this meaning and remove the tuple's usefulness altogether.
+
+## Collection Notation
+
+```
+{foo: 'bar', baz: 'quux'}
+```
+
+In most cases, you'll want to notate collections like arrays, objects, and tuples the same way you would in JavaScript. That is, you'll include the collection's opening token (such as `{`), separate your collection items with commas, and then finish with the closing token (such as `}`).
+
+```
+{
+  foo: (some 'function call'),
+  bar: 'quux'
+}
+
+{
+  foo: some 'function call'
+  bar: 'quux'
+}
+```
+
+When you separate your collection items onto independent lines, however, you have the option of removing the commas. As such, the two examples shown here produce identical output. As you can see, omitting the commas also allows you to remove other extraneous decorators. In the first example, we have to surround our function call with parentheses so that the compiler doesn't interpret the comma as being part of the argument list. In the second example, because there is no comma, there is no need to put parentheses around the function call.
 
 ## Assessing Types
 

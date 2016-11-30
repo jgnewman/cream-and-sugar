@@ -96,6 +96,11 @@ caseof foo
   <span></span>
 </div>
 
+<div
+  className={foo}
+  dataSomething="bar"
+></div>
+
 import x from y
 import { x, y } from z
 import [ x, y ] from z

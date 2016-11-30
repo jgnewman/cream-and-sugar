@@ -100,14 +100,31 @@
       
           OK  -&gt; doSomethingWith (get 2, response)
           ERR -&gt; doSomethingElseWith (get 2, response)
-      </code></pre><p>In this case, the first item in the tuple is an atom telling us that the request succeeded. The second item is a status code. The third item is the response message. We might use this data as shown.</p>
+      </code></pre><p>In this case, the first item in the tuple is an atom telling us that the request succeeded. The second item is a status code. The third item is the response message. We might use this data as shown. As previously stated, the positions of these items carry meaning. We expect the first item to always be a success indicator and the second item to always be a status code. If you were allowed to modify the length of tuples, it would destroy the ability to imbue this meaning and remove the tuple&#39;s usefulness altogether.</p>
+      <h2 id="collection-notation">Collection Notation</h2>
+      <pre><code>{foo: &#39;bar&#39;, baz: &#39;quux&#39;}
+      </code></pre><p>In most cases, you&#39;ll want to notate collections like arrays, objects, and tuples the same way you would in JavaScript. That is, you&#39;ll include the collection&#39;s opening token (such as <code>{</code>), separate your collection items with commas, and then finish with the closing token (such as <code>}</code>).</p>
+      <pre><code>{
+        foo: (some &#39;function call&#39;),
+        bar: &#39;quux&#39;
+      }
+      
+      {
+        foo: some &#39;function call&#39;
+        bar: &#39;quux&#39;
+      }
+      </code></pre><p>When you separate your collection items onto independent lines, however, you have the option of removing the commas. As such, the two examples shown here produce identical output. As you can see, omitting the commas also allows you to remove other extraneous decorators. In the first example, we have to surround our function call with parentheses so that the compiler doesn&#39;t interpret the comma as being part of the argument list. In the second example, because there is no comma, there is no need to put parentheses around the function call.</p>
       <h2 id="assessing-types">Assessing Types</h2>
       <p>C&amp;S abandons JavaScript&#39;s confusing <code>typeof</code> expression in favor of a built-in function called <code>dataType</code>. This function will provide more reasonable results such as &quot;regexp&quot; if handed a regular expression or &quot;date&quot; if handed a Date object. For more information on what to expect from the <code>datType</code> function, check out <a href="/reference/bifs/">Built-In Functions</a>.</p>
       
     </div>
     <section id="docs-app"></section>
     <script>
+      // Section for random JavaScript hacks just to get this out quickly.
       window.addEventListener('load', function () {
+
+        // Fix indentation in code blocks the best we can since panini's
+        // markdown compiler injects whitespace into pre tags.
         Array.prototype.slice.call(document.querySelectorAll('pre code')).forEach(function (code) {
           var lines = code.innerHTML.trim().split('\n');
           var out = [lines[0]];
@@ -127,12 +144,18 @@
           code.className = 'visible lang-coffeescript';
           hljs.highlightBlock(code);
         });
+
+        // Attach id's to h4 tags so that we can link to specific bifs.
         Array.prototype.slice.call(document.querySelectorAll('h4')).forEach(function (h4) {
           var html = h4.innerHTML.split(/\s+/g);
           html[0] = '<span class="bif" id="' + html[0] + '">' + html[0] + '</span>';
           h4.innerHTML = html.join(' ');
           h4.className = 'visible';
         });
+
+        // Some script conflict is preventing us from linking to a certain
+        // spot on the page so here we just wait until the next run loop
+        // and if we have a hash in the location object, scroll to it.
         (function () {
           var hash = location.hash;
           if (hash) {
@@ -141,6 +164,23 @@
               item && window.scroll(0, item.offsetParent.offsetTop);
             },0);
           }
+        }());
+
+        // Fixes a responsiveness issue where on large screens sometimes
+        // the offgray sidebar isn't tall enough. Make sure its always
+        // tall enough whenever the screen resizes.
+        (function () {
+          var branding = document.querySelector('.branding');
+          var content = document.querySelector('.content');
+          function resizerizer() {
+            var brandingHeight = branding.offsetHeight;
+            content.style.height = '';
+            if (content.offsetHeight < brandingHeight) {
+              content.style.height = brandingHeight + 'px';
+            }
+          }
+          window.addEventListener('resize', resizerizer);
+          resizerizer();
         }());
       });
     </script>
