@@ -41,4 +41,4 @@ render _ =>
     </a>
   </div>
 
-export reactify render, propTypes
+export reactify {render: render}, propTypes

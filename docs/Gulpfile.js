@@ -7,6 +7,7 @@ var gulp = require('gulp'),
     concat = require('gulp-concat'),
     browserSync = require('browser-sync').create(),
     source = require('vinyl-source-stream'),
+    buffer = require('vinyl-buffer'),
     sequence = require('run-sequence'),
     creamify = require('creamify'),
     panini = require('panini'),
@@ -54,6 +55,22 @@ gulp.task('clean', function(cb) {
   .pipe(gulp.dest('assets/js'));
 })
 
+/**
+ * minified js compilation
+ */
+.task('js:min', function() {
+  return browserify({entries: ['cream/app.cream'], extensions: ['.cns', '.cream']})
+  .transform(creamify)
+  .bundle()
+  .pipe(source('app.js'))
+  .pipe(buffer())
+  .pipe(uglify().on('error', function (e) { console.log(e) }))
+  .pipe(gulp.dest('assets/js'));
+})
+
+/**
+ * Compile documentation pages.
+ */
 .task('docs', function () {
   return gulp.src('markdown/**/*.md')
   .pipe(panini({

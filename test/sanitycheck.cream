@@ -206,3 +206,9 @@ foo?.bar?.baz
 foo?
 ((foo _)?.bar _)?.baz
 foo.bar?
+
+`part 1 ${4+4} part 2`
+`backtick${head}rock`
+`has double " ${sucka}`
+`has single ' ${sucka}`
+`has double and single " ' ${sucka}`

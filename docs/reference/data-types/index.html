@@ -153,6 +153,13 @@
           h4.className = 'visible';
         });
 
+        // Fix relative link issues with the github site living in a subdirectory
+        Array.prototype.slice.call(document.querySelectorAll('.content a')).forEach(function (a) {
+          if (/^\/cream-and-sugar\//.test(location.pathname)) {
+            a.setAttribute('href', '/cream-and-sugar' + a.getAttribute('href'))
+          }
+        });
+
         // Some script conflict is preventing us from linking to a certain
         // spot on the page so here we just wait until the next run loop
         // and if we have a hash in the location object, scroll to it.

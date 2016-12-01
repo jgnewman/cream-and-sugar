@@ -79,4 +79,4 @@ render _ =>
   </div>
 
 # Create and export a connected component
-export (connect select, action) (reactify render, {})
+export (connect select, action) (reactify {render: render}, {})

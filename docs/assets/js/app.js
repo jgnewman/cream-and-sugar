@@ -50,7 +50,7 @@ CNS_.createElement("span", {className: "num"}, [
 typeof module === 'undefined'
   ? typeof console !== 'undefined' &&
     console.warn('Warning: You are attempting to export module values in a non-modular environment.')
-  : module.exports = reactify(render, propTypes);
+  : module.exports = reactify({ render: render }, propTypes);
 
 },{"./Download":2,"./util/reactify":15,"cns-lib":18,"react":215,"react-dom":45}],2:[function(require,module,exports){
 var CNS_ = require("cns-lib");
@@ -88,7 +88,7 @@ CNS_.createElement("a", {className: "download-button", href: downloadSelection.h
 typeof module === 'undefined'
   ? typeof console !== 'undefined' &&
     console.warn('Warning: You are attempting to export module values in a non-modular environment.')
-  : module.exports = reactify(render, propTypes);
+  : module.exports = reactify({ render: render }, propTypes);
 
 },{"./util/reactify":15,"cns-lib":18,"react":215,"react-dom":45}],3:[function(require,module,exports){
 var CNS_ = require("cns-lib");
@@ -126,7 +126,7 @@ CNS_.createElement(Download, {downloadOptions: downloadOptions, downloadSelectio
 typeof module === 'undefined'
   ? typeof console !== 'undefined' &&
     console.warn('Warning: You are attempting to export module values in a non-modular environment.')
-  : module.exports = reactify(render, propTypes);
+  : module.exports = reactify({ render: render }, propTypes);
 
 },{"./Download":2,"./util/reactify":15,"cns-lib":18,"react":215,"react-dom":45}],4:[function(require,module,exports){
 var CNS_ = require("cns-lib");
@@ -185,7 +185,7 @@ CNS_.createElement("span", {className: "logo-text bottom"}, [
 typeof module === 'undefined'
   ? typeof console !== 'undefined' &&
     console.warn('Warning: You are attempting to export module values in a non-modular environment.')
-  : module.exports = reactify(render, propTypes);
+  : module.exports = reactify({ render: render }, propTypes);
 
 },{"./util/reactify":15,"cns-lib":18,"react":215,"react-dom":45}],5:[function(require,module,exports){
 var CNS_ = require("cns-lib");
@@ -216,7 +216,7 @@ const args = CNS_.args(arguments);
 const path = args[0];
   return (function () {
     if (/cream-and-sugar/.test(location.pathname)) {
-      return CNS_.qualify(isRelative(path), function () { return `/cream-and-sugar${path}`; }.bind(this), function () { return path; }.bind(this))
+      return CNS_.qualify(isRelative(path), function () { return ("/cream-and-sugar" + (path)); }.bind(this), function () { return path; }.bind(this))
     } else if (true) {
       return path
     } else {
@@ -290,7 +290,7 @@ CNS_.createElement("span", {className: "copyright"}, [
 typeof module === 'undefined'
   ? typeof console !== 'undefined' &&
     console.warn('Warning: You are attempting to export module values in a non-modular environment.')
-  : module.exports = reactify(render, propTypes);
+  : module.exports = reactify({ render: render }, propTypes);
 
 },{"./Download":2,"./util/reactify":15,"cns-lib":18,"react":215,"react-dom":45}],6:[function(require,module,exports){
 var CNS_ = require("cns-lib");
@@ -323,7 +323,7 @@ CNS_.createElement("span", {className: "line bottom"}, [])
 typeof module === 'undefined'
   ? typeof console !== 'undefined' &&
     console.warn('Warning: You are attempting to export module values in a non-modular environment.')
-  : module.exports = reactify(render, propTypes);
+  : module.exports = reactify({ render: render }, propTypes);
 
 },{"./util/reactify":15,"cns-lib":18,"react":215,"react-dom":45}],7:[function(require,module,exports){
 var CNS_ = require("cns-lib");
@@ -404,7 +404,7 @@ CNS_.createElement(CodeSample, {}, [])
 typeof module === 'undefined'
   ? typeof console !== 'undefined' &&
     console.warn('Warning: You are attempting to export module values in a non-modular environment.')
-  : module.exports = connect(select, action)(reactify(render, {}));
+  : module.exports = connect(select, action)(reactify({ render: render }, {}));
 
 },{"../CodeSample":1,"../HomeContent":3,"../Logo":4,"../Menu":5,"../Nav":6,"../handlers/handlers":10,"../state/actions":11,"../util/reactify":15,"cns-lib":18,"react":215,"react-dom":45,"react-redux":175,"redux":221}],9:[function(require,module,exports){
 var CNS_ = require("cns-lib");
@@ -455,7 +455,7 @@ CNS_.createElement(Menu, {menuOpen: menuOpen, downloadOptions: downloadOptions, 
 typeof module === 'undefined'
   ? typeof console !== 'undefined' &&
     console.warn('Warning: You are attempting to export module values in a non-modular environment.')
-  : module.exports = connect(select, action)(reactify(render, {}));
+  : module.exports = connect(select, action)(reactify({ render: render }, {}));
 
 },{"../Logo":4,"../Menu":5,"../Nav":6,"../handlers/handlers":10,"../state/actions":11,"../util/reactify":15,"cns-lib":18,"react":215,"react-dom":45,"react-redux":175,"redux":221}],10:[function(require,module,exports){
 var CNS_ = require("cns-lib");

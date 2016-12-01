@@ -1,3 +1,13 @@
+0.6.4
+=====
+
+Shipped on 11.30.2016
+
+### Under the Hood
+
+- Be more literal with compilation of backtick strings. Instead of passing these on as ES6 backtick strings, they are now compiled into pieces joined with the `+` operator in order to be more compatible with different environments and processors like uglify.
+
+
 0.6.3
 =====
 

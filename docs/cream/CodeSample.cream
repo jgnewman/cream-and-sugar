@@ -28,4 +28,4 @@ render _ =>
     </pre>
   </div>
 
-export reactify render, propTypes
+export reactify {render: render}, propTypes

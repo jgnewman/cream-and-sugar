@@ -44,6 +44,26 @@ function fixInterp(str) {
 }
 
 /**
+ * Surrounds a string with quotation marks.
+ *
+ * @param  {String} str  A string
+ * @return {String}
+ */
+function chooseQuote(str) {
+  const hasSingle = /'/.test(str);
+  const hasDouble = /"/.test(str);
+  if (hasSingle && hasDouble) {
+    return '"' + str.replace(/"/g, '\\"') + '"'; // Use doubles and escape the doubles.
+  } else if (hasSingle) {
+    return '"' + str + '"'; // Use doubles.
+  } else if (hasDouble) {
+    return "'" + str + "'"; // Use singles.
+  } else {
+    return '"' + str + '"'; // Use doubles.
+  }
+}
+
+/**
  * Handles compiling values withing interpolation brackets of
  * backtick strings.
  *
@@ -53,17 +73,47 @@ function fixInterp(str) {
  * @return {String}              The compiled string.
  */
 function compileInterpBlocks(blocks, origNode) {
-  const out = `${blocks.map(block => {
+
+  // Old string compilation technique.
+  // Keeping it around in case we want to bring it back.
+  // const out = `${blocks.map(block => {
+  //   if (block.type === 'str') {
+  //     return block.val;
+  //   } else {
+  //     const value = parser.parse(block.val).body[0];
+  //     value.loc = origNode.loc;
+  //     value.shared = origNode.shared;
+  //     return value.compile(true);
+  //   }
+  // }).join('')}`;
+  // return out;
+
+  const out = [];
+  blocks.forEach((block, index) => {
+    const prev = out[index - 1];
+    const next = blocks[index + 1];
+    const isFirst = index === 0;
+    const isLast = index === blocks.length - 1;
+
+    // For string type blocks, remove all of the "${" stuff and the backticks.
     if (block.type === 'str') {
-      return block.val;
+      if (isFirst) (block.val = block.val.replace(/^`/, ''));
+      if (isLast) (block.val = block.val.replace(/`$/, ''));
+      if (prev) (block.val = block.val.replace(/^\}/, ''));
+      if (next) (block.val = block.val.replace(/\$\{$/, ''));
+      block.val = block.val.replace(/\n/g, '');
+      // Choose a quote type.
+      block.val.length && out.push(chooseQuote(block.val));
+
+    // For block types, compile the block and surround it with parens.
     } else {
       const value = parser.parse(block.val).body[0];
       value.loc = origNode.loc;
       value.shared = origNode.shared;
-      return value.compile(true);
+      out.push('(' + value.compile(true) + ')');
     }
-  }).join('')}`;
-  return out;
+  });
+  return out.join(' + ');
 }
 
 /*
@@ -72,7 +122,7 @@ function compileInterpBlocks(blocks, origNode) {
  */
 compile(nodes.StringNode, function () {
   if (this.text[0] === '`') {
-    return compileInterpBlocks(fixInterp(this.text), this);
+    return '(' + compileInterpBlocks(fixInterp(this.text), this) + ')';
   } else {
     // Allow quoted strings to be captured on multiple lines but don't
     // compile them that way.

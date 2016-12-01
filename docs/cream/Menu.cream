@@ -115,4 +115,4 @@ render _ =>
     </span>
   </div>
 
-export reactify render, propTypes
+export reactify {render: render}, propTypes

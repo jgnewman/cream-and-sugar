@@ -24,4 +24,4 @@ render _ =>
     <span className="line bottom"></span>
   </a>
 
-export reactify render, propTypes
+export reactify {render: render}, propTypes
