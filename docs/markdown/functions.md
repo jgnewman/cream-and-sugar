@@ -295,13 +295,13 @@ Guards are signified by the keyword `where` and fall between a pattern and its r
 
 ## Allowed Arities
 
-"Arity" refers to the amount of arguments a function takes. In the previous example, you will no doubt realize that our `map` function can be called with an arity of either 2 or 3 (meaning 2 arguments or 3 arguments). However, you may not want to let your users call this function with 3 arguments. The 3 arguments version, you will probably say, should be reserved for recursion.
+"Arity" refers to the amount of arguments a function takes. In our previous `map` example, you will no doubt realize that our function can be called with an arity of either 2 or 3 (meaning 2 arguments or 3 arguments). However, you may not want to let your users call this function with 3 arguments. The 3 arguments version, you will probably say, should be reserved for recursion.
 
 A good place to solve this problem is when you export the function from your module.
 
 ```
 export {
-  map: (aritize map, 2)
+  map: aritize map, 2
 }
 ```
 
@@ -313,7 +313,7 @@ export {
 }
 ```
 
-Note that you do not have to force an arity when you export a function. You could just as easily write the following to allow users to call your function with any arity at all:
+Note that you do not have to force an arity when you export a function. You could just as easily export `map` as-is to allow users to call your function with any arity at all.
 
 {{{{/raw}}}}
 {{/markdown}}

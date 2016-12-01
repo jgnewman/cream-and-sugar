@@ -182,16 +182,16 @@
       doStuff n where n % 2 != 0 =&gt; n * 3
       </code></pre><p>Guards are signified by the keyword <code>where</code> and fall between a pattern and its rocket. The example provided illustrates how you might execute a different function body when the argument coming in is even vs when it is odd.</p>
       <h2 id="allowed-arities">Allowed Arities</h2>
-      <p>&quot;Arity&quot; refers to the amount of arguments a function takes. In the previous example, you will no doubt realize that our <code>map</code> function can be called with an arity of either 2 or 3 (meaning 2 arguments or 3 arguments). However, you may not want to let your users call this function with 3 arguments. The 3 arguments version, you will probably say, should be reserved for recursion.</p>
+      <p>&quot;Arity&quot; refers to the amount of arguments a function takes. In our previous <code>map</code> example, you will no doubt realize that our function can be called with an arity of either 2 or 3 (meaning 2 arguments or 3 arguments). However, you may not want to let your users call this function with 3 arguments. The 3 arguments version, you will probably say, should be reserved for recursion.</p>
       <p>A good place to solve this problem is when you export the function from your module.</p>
       <pre><code>export {
-        map: (aritize map, 2)
+        map: aritize map, 2
       }
       </code></pre><p>The built-in <code>aritize</code> function takes a function and an arity as its arguments and returns a new function that can only be called with the allowed arity. Now, when a user imports <code>map</code> from your module, they will get an error if they try to call it with any amount of arguments other than 2. However, recursion within the function will still work just fine with 3 arguments.</p>
       <pre><code>export {
         map: map
       }
-      </code></pre><p>Note that you do not have to force an arity when you export a function. You could just as easily write the following to allow users to call your function with any arity at all:</p>
+      </code></pre><p>Note that you do not have to force an arity when you export a function. You could just as easily export <code>map</code> as-is to allow users to call your function with any arity at all.</p>
       
     </div>
     <section id="docs-app"></section>

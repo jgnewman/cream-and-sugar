@@ -105,8 +105,15 @@ gulp.task('clean', function(cb) {
 })
 
 /**
+ * Compile resources but don't worry about serving.
+ */
+.task('build', function (done) {
+  return sequence('clean', ['sass', 'js', 'docs'], done);
+})
+
+/**
  * compile resources and run a server
  */
 .task('serve', function(done) {
   return sequence('clean', ['sass', 'js', 'docs'], 'server', 'watch', done);
-});;
+});
