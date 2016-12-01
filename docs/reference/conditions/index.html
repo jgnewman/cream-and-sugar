@@ -19,10 +19,10 @@
         <h2 class="subhead">Else Cases Required</h2>
       </div>
       
-      <p>Whereas in JavaScript, your standard <code>if</code> statement doesn&#39;t actually return a value, every type of conditional expression in CnS does.</p>
+      <p>Whereas in JavaScript, your standard <code>if</code> statement doesn&#39;t actually return a value, every type of conditional expression in C&amp;S does.</p>
       <p>There are a few ways to handle conditions, and we&#39;ll talk about each one here.</p>
       <blockquote>
-      <p>In the coming examples we&#39;ll be using the infix operators <code>==</code> and <code>!=</code>. In CnS, these operators translate to <code>===</code> and <code>!==</code> respectively. You also have the option of writing them as <code>is</code> and <code>isnt</code>.</p>
+      <p>In the coming examples we&#39;ll be using the infix operators <code>==</code> and <code>!=</code>. In C&amp;S, these operators translate to <code>===</code> and <code>!==</code> respectively. You also have the option of writing them as <code>is</code> and <code>isnt</code>.</p>
       </blockquote>
       <h2 id="multi-clause-conditions">Multi-Clause Conditions</h2>
       <pre><code>myVar = 4
@@ -60,7 +60,7 @@
         &#39;how are you?&#39; -&gt; doSomethingElse _
         default -&gt; doThirdThing _
       </code></pre><p>As you can see in this example, <code>caseof</code> is extremely similar to <code>when</code>. It is comprised of the keyword <code>caseof</code>, followed by some value to examine, followed by indentation, your various clauses, and finally a dedent. In each clause, we are testing the equality of our condition against our comparative value. If we find a match, that block is executed. If not, the <code>default</code> block is executed. If you don&#39;t include a <code>default</code> clause and no matches are found, you&#39;ll get an error.</p>
-      <p>Just like the <code>when</code> expression (and in fact almost everywhere in CnS), if one of your blocks needs to take up multiple lines, just try using indentation.</p>
+      <p>Just like the <code>when</code> expression (and in fact almost everywhere in C&amp;S), if one of your blocks needs to take up multiple lines, just try using indentation.</p>
       <h2 id="qualifiers">Qualifiers</h2>
       <pre><code>if food != gone do eat food
       
@@ -69,7 +69,7 @@
       <pre><code>fs.writeFileSync &#39;./file&#39;, &#39;text&#39;, fn err, res -&gt;
         if err do throw err
         doSomethingWith res
-      </code></pre><p>When using qualifiers, the <code>else</code> case is optional and, like all conditional expressions in CnS, qualifiers return values. If you include an <code>else</code> case, the qualifier expression will always return the result of whichever statement is executed. If you don&#39;t include an <code>else</code> case, the expression will return the result of the conditional action if it is executed or <code>undefined</code> if it is not. Unlike <code>when</code>, it will not throw an error.</p>
+      </code></pre><p>When using qualifiers, the <code>else</code> case is optional and, like all conditional expressions in C&amp;S, qualifiers return values. If you include an <code>else</code> case, the qualifier expression will always return the result of whichever statement is executed. If you don&#39;t include an <code>else</code> case, the expression will return the result of the conditional action if it is executed or <code>undefined</code> if it is not. Unlike <code>when</code>, it will not throw an error.</p>
       
     </div>
     <section id="docs-app"></section>

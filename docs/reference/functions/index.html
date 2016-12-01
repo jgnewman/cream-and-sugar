@@ -76,6 +76,7 @@
         }
       }
       </code></pre><p>Notice that if you use multiple patterns, Cream &amp; Sugar will demand that one of your patterns be matched whenever the function is called. If no match is found, it&#39;ll produce an error rather than potentially failing more ambiguously somewhere later on in the flow.</p>
+      <p>As you can see pretty easily, as long as your patterns all begin with the same function name, they&#39;ll be associated together by the compiler. The only stipulation is that if you&#39;re defining multiple patterns for a function, you can&#39;t write anything between those patterns other than comments. So if you created a two patterns for a function called <code>foo</code>, then wrote something else between them (for example a variable declaration), things would break. Your patterns have to be sequential in order to be associated together.</p>
       <p>Because functions created with this technique are not any different than other functions, they can be used without any problems when passed to a metafunction such as <code>Array.map</code>.</p>
       <p>Before moving on, it should be noted that often times you&#39;ll need a function block to span multiple lines. In a case like this, all we need to do is let the compiler know where the block ends. So if your function block spans multiple lines, just use indentation.</p>
       <pre><code># A pattern for when our argument is 0

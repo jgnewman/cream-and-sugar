@@ -7,11 +7,11 @@ subhead: Else Cases Required
 {{#markdown}}
 {{{{raw}}}}
 
-Whereas in JavaScript, your standard `if` statement doesn't actually return a value, every type of conditional expression in CnS does.
+Whereas in JavaScript, your standard `if` statement doesn't actually return a value, every type of conditional expression in C&S does.
 
 There are a few ways to handle conditions, and we'll talk about each one here.
 
-> In the coming examples we'll be using the infix operators `==` and `!=`. In CnS, these operators translate to `===` and `!==` respectively. You also have the option of writing them as `is` and `isnt`.
+> In the coming examples we'll be using the infix operators `==` and `!=`. In C&S, these operators translate to `===` and `!==` respectively. You also have the option of writing them as `is` and `isnt`.
 
 ## Multi-Clause Conditions
 
@@ -71,7 +71,7 @@ caseof greeting
 
 As you can see in this example, `caseof` is extremely similar to `when`. It is comprised of the keyword `caseof`, followed by some value to examine, followed by indentation, your various clauses, and finally a dedent. In each clause, we are testing the equality of our condition against our comparative value. If we find a match, that block is executed. If not, the `default` block is executed. If you don't include a `default` clause and no matches are found, you'll get an error.
 
-Just like the `when` expression (and in fact almost everywhere in CnS), if one of your blocks needs to take up multiple lines, just try using indentation.
+Just like the `when` expression (and in fact almost everywhere in C&S), if one of your blocks needs to take up multiple lines, just try using indentation.
 
 ## Qualifiers
 
@@ -89,7 +89,7 @@ fs.writeFileSync './file', 'text', fn err, res ->
   doSomethingWith res
 ```
 
-When using qualifiers, the `else` case is optional and, like all conditional expressions in CnS, qualifiers return values. If you include an `else` case, the qualifier expression will always return the result of whichever statement is executed. If you don't include an `else` case, the expression will return the result of the conditional action if it is executed or `undefined` if it is not. Unlike `when`, it will not throw an error.
+When using qualifiers, the `else` case is optional and, like all conditional expressions in C&S, qualifiers return values. If you include an `else` case, the qualifier expression will always return the result of whichever statement is executed. If you don't include an `else` case, the expression will return the result of the conditional action if it is executed or `undefined` if it is not. Unlike `when`, it will not throw an error.
 
 
 {{{{/raw}}}}

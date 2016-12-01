@@ -99,6 +99,8 @@ function add(x, y) {
 
 Notice that if you use multiple patterns, Cream & Sugar will demand that one of your patterns be matched whenever the function is called. If no match is found, it'll produce an error rather than potentially failing more ambiguously somewhere later on in the flow.
 
+As you can see pretty easily, as long as your patterns all begin with the same function name, they'll be associated together by the compiler. The only stipulation is that if you're defining multiple patterns for a function, you can't write anything between those patterns other than comments. So if you created a two patterns for a function called `foo`, then wrote something else between them (for example a variable declaration), things would break. Your patterns have to be sequential in order to be associated together.
+
 Because functions created with this technique are not any different than other functions, they can be used without any problems when passed to a metafunction such as `Array.map`.
 
 Before moving on, it should be noted that often times you'll need a function block to span multiple lines. In a case like this, all we need to do is let the compiler know where the block ends. So if your function block spans multiple lines, just use indentation.
