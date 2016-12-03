@@ -32,6 +32,7 @@
 ">>="                                return ">>=";
 "<<"                                 return "<<";
 ">>"                                 return ">>";
+"<-"                                 return "<-";
 
 \<\/[^\>]+\>                         return "CLOSER";
 \<\/\s*                              return "</";
@@ -210,6 +211,7 @@ SourceElement
   | Binder
   | Cons
   | BackCons
+  | ObjCons
   | Operation
   | Logic
   | Arr
@@ -342,6 +344,13 @@ BackCons
   : SourceElement "<<" SourceElement
     {
       $$ = new BackConsNode($3, $1, createSourceLocation(null, @1, @3));
+    }
+  ;
+
+ObjCons
+  : SourceElement "<-" SourceElement
+    {
+      $$ = new ObjConsNode($1, $3, createSourceLocation(null, @1, @3));
     }
   ;
 
@@ -1115,6 +1124,14 @@ function BackConsNode(toAdd, base, loc) {
   this.shared = shared;
 }
 
+function ObjConsNode(base, toAdd, loc) {
+  this.type = 'ObjCons';
+  this.base = base;
+  this.toAdd = toAdd;
+  this.loc = loc;
+  this.shared = shared;
+}
+
 function OppositeNode(value, loc) {
   this.type = 'Opposite';
   this.value = value;
@@ -1313,6 +1330,7 @@ n.LogicNode = LogicNode;
 n.AssignmentNode = AssignmentNode;
 n.ConsNode = ConsNode;
 n.BackConsNode = BackConsNode;
+n.ObjConsNode = ObjConsNode;
 n.OppositeNode = OppositeNode;
 n.BinderNode = BinderNode;
 n.ListNode = ListNode;

@@ -36,6 +36,7 @@ import './nodes/Wrap';
 import './nodes/BackCons';
 import './nodes/Pipe';
 import './nodes/Chain';
+import './nodes/ObjCons';
 
 /*
  * Export a function for initializing compilation.

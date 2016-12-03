@@ -1,3 +1,14 @@
+0.6.5
+=====
+
+Shipped on 12.03.2016
+
+### Feature
+
+- New "cons" syntax for objects. Example: `{foo: bar} <- {baz: quux}`
+- Upgrade to cns-lib 0.4.7 containing support for object consing.
+
+
 0.6.4
 =====
 

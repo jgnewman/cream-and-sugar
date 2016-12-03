@@ -212,3 +212,5 @@ foo.bar?
 `has double " ${sucka}`
 `has single ' ${sucka}`
 `has double and single " ' ${sucka}`
+
+{foo: bar} <- {baz: quux}
