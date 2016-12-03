@@ -1,3 +1,12 @@
+0.6.6
+=====
+
+Shipped on 12.03.2016
+
+### Fix
+
+- Fix a problem with new object syntax as released in 0.6.5.
+
 0.6.5
 =====
 
