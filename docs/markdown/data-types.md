@@ -71,7 +71,7 @@ The rules for naming atoms are as follows:
 
 Armed with this syntax, you can now much more easily stomach using atoms in all the ways JavaScript symbols allow. For example, you can use them as object keys.
 
-You can also use them in a sort of "Erlang-y" way to label data being passed back and forth between processes.
+You can also use them in a sort of "Erlang-y" way to label data being passed back and forth between processes. If you aren't familiar with Erlang, that's fine. Read on to the section on tuples to get a better understanding of what's going on in that last example.
 
 
 ## Arrays
@@ -110,6 +110,25 @@ C&S also gives you a few extra native functions for working with arrays, includi
 - `remove` which creates a new list where one of the items has been removed.
 
 Check out [Built-In Functions](/reference/bifs/) for more info on these.
+
+## Objects
+
+C&S objects are identical to JavaScript objects. However, working with them can be a little different. For example, because C&S is a functional language, you don't have a good way to modify and existing object. There are, of course, built-in functions such as `update` and `remove` that create new objects with modified property sets. You even have a built-in function called `dangerouslyMutate` that allows you to mutate an existing object _if you really have to_, such as when setting `location.href`.
+
+```
+{foo: bar} <- {baz: quux}
+#=> {foo: bar, baz: quux}
+```
+
+But once you've gotten into the mindset that you can work with new copies of objects rather than mutating old ones, you'll quickly discover how nice it is to have a short syntax for merging objects together. Enter C&S' concept of the "object cons". (We realize we're playing fast and loose with the term "cons" here). Object cons syntax is characterized by 2 object values with the `<-` operator between them. This syntax will create a new object containing all the keys of both values. Properties of the object to the right of the operator will override properties on the object to the left.
+
+```
+a <- b
+# is equivalent to...
+Object.assign({}, a, b);
+```
+
+Using object cons syntax is essentially the same as using `Object.assign`, but with fallback support for environments that don't contain Object.assign.
 
 ## Tuples
 

@@ -58,7 +58,7 @@
       #     &quot;Message text here&quot; ]
       #   )
       </code></pre><p>Armed with this syntax, you can now much more easily stomach using atoms in all the ways JavaScript symbols allow. For example, you can use them as object keys.</p>
-      <p>You can also use them in a sort of &quot;Erlang-y&quot; way to label data being passed back and forth between processes.</p>
+      <p>You can also use them in a sort of &quot;Erlang-y&quot; way to label data being passed back and forth between processes. If you aren&#39;t familiar with Erlang, that&#39;s fine. Read on to the section on tuples to get a better understanding of what&#39;s going on in that last example.</p>
       <h2 id="arrays">Arrays</h2>
       <p>Arrays translate one-to-one into JavaScript arrays. However, your options for working with arrays in C&amp;S have been augmented. While you are not prevented from using native JavaScript methods to work with arrays, you are encouraged to avoid mutative methods and stick with methods that produce new data instead.</p>
       <pre><code># Create an array
@@ -88,6 +88,15 @@
       <li><code>remove</code> which creates a new list where one of the items has been removed.</li>
       </ul>
       <p>Check out <a href="/reference/bifs/">Built-In Functions</a> for more info on these.</p>
+      <h2 id="objects">Objects</h2>
+      <p>C&amp;S objects are identical to JavaScript objects. However, working with them can be a little different. For example, because C&amp;S is a functional language, you don&#39;t have a good way to modify and existing object. There are, of course, built-in functions such as <code>update</code> and <code>remove</code> that create new objects with modified property sets. You even have a built-in function called <code>dangerouslyMutate</code> that allows you to mutate an existing object <em>if you really have to</em>, such as when setting <code>location.href</code>.</p>
+      <pre><code>{foo: bar} &lt;- {baz: quux}
+      #=&gt; {foo: bar, baz: quux}
+      </code></pre><p>But once you&#39;ve gotten into the mindset that you can work with new copies of objects rather than mutating old ones, you&#39;ll quickly discover how nice it is to have a short syntax for merging objects together. Enter C&amp;S&#39; concept of the &quot;object cons&quot;. (We realize we&#39;re playing fast and loose with the term &quot;cons&quot; here). Object cons syntax is characterized by 2 object values with the <code>&lt;-</code> operator between them. This syntax will create a new object containing all the keys of both values. Properties of the object to the right of the operator will override properties on the object to the left.</p>
+      <pre><code>a &lt;- b
+      # is equivalent to...
+      Object.assign({}, a, b);
+      </code></pre><p>Using object cons syntax is essentially the same as using <code>Object.assign</code>, but with fallback support for environments that don&#39;t contain Object.assign.</p>
       <h2 id="tuples">Tuples</h2>
       <pre><code>tuple = {{ foo, bar }}
       </code></pre><p>Perhaps most exciting is C&amp;S&#39; brand new list type, the tuple. A tuple is essentially a special kind of array with a special syntax.</p>
