@@ -7,6 +7,8 @@
 JavaScript.** It's meant to be simple, light, and pretty, as well as a
 quickly digestible introduction into functional programming.
 
+**[Read our docs!](jgnewman.github.io/cream-and-sugar)**
+
 #### Plus it natively supports JSX, which is cool.
 
 ToC:
@@ -210,9 +212,9 @@ The way this function is now read would be as follows: "If a user calls factoria
 
 Right now you may be feeling enthusiastic about Cream & Sugar for any number of reasons, but I'm willing to bet you want to hear more about the JSX support.
 
-Well it just so happens there's a folder full of docs for you to check out. I'd recommend working your way sequentially through the overview.
+Well it just so happens there's a whole website full of docs for you to check out. Enjoy:
 
-**[Cream & Sugar Docs](docs/overview.md)**
+**[Cream & Sugar Docs](jgnewman.github.io/cream-and-sugar)**
 
 ## How do I use it?
 
