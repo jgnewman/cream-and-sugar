@@ -7,7 +7,7 @@
 JavaScript.** It's meant to be simple, light, and pretty, as well as a
 quickly digestible introduction into functional programming.
 
-**[Read our docs!](jgnewman.github.io/cream-and-sugar)**
+**[Read our docs!](//jgnewman.github.io/cream-and-sugar)**
 
 #### Plus it natively supports JSX, which is cool.
 
@@ -214,7 +214,7 @@ Right now you may be feeling enthusiastic about Cream & Sugar for any number of 
 
 Well it just so happens there's a whole website full of docs for you to check out. Enjoy:
 
-**[Cream & Sugar Docs](jgnewman.github.io/cream-and-sugar)**
+**[Cream & Sugar Docs](//jgnewman.github.io/cream-and-sugar)**
 
 ## How do I use it?
 
