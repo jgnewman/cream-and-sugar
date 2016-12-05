@@ -1,3 +1,13 @@
+0.6.7
+====
+
+Shipped on 12.05.2016
+
+### Fix
+
+- Fix a problem with regex where we weren't properly capturing expressions that contained "/" characters.
+
+
 0.6.6
 =====
 

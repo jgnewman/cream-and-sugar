@@ -214,3 +214,5 @@ foo.bar?
 `has double and single " ' ${sucka}`
 
 {foo: bar} <- {baz: quux}
+
+/regex\/?/

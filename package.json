@@ -1,6 +1,6 @@
 {
   "name": "cream-and-sugar",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "description": "A deliciously functional syntax for JavaScript with native support for JSX",
   "dependencies": {
     "cns-lib": "^0.4.7"

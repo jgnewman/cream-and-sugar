@@ -14,4 +14,9 @@ describe('Regex', () => {
     assert.equal(compileCode(toCompile).trim(), toCompile + ';');
   });
 
+  it('should compile a regular expression with escaped "/" symbols', () => {
+    const toCompile = '/\/\//';
+    assert.equal(compileCode(toCompile).trim(), toCompile + ';');
+  });
+
 });
