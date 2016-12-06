@@ -1,7 +1,7 @@
 0.6.8
 =====
 
-Shipped on xx.xx.xxxx
+Shipped on 12.06.2016
 
 ### Change
 
