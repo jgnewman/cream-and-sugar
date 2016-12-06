@@ -24,7 +24,7 @@ describe('Lookups', () => {
     const expected = `
     (function () {
       var ref0_;
-      return (ref0_ = foo) == null ? ref0_ : true;
+      return (ref0_ = foo) == null ? false : true;
     }());
     `.trim();
     assert.equal(compileCode(toCompile).trim(), nlToSpace(expected));

@@ -33,7 +33,7 @@ compile(nodes.LookupNode, function () {
 
     const out = `(function () { `
               +    `var ${lookupName}; `
-              +    `return (${lookupName} = ${prevLookup ? prevLookup + '.' : ''}${compiledLeft}) == null ? ${lookupName} : `
+              +    `return (${lookupName} = ${prevLookup ? prevLookup + '.' : ''}${compiledLeft}) == null ? ${this.right.type === null ? 'false' : lookupName} : `
                    // Use == instead of === because we want to match both null and undefined -----^^
               +    (
                      this.right.type === 'Lookup'

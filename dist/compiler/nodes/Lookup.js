@@ -33,7 +33,7 @@ foo?.bar?.baz
 
     this.shared.prevLookup = lookupName;
 
-    var out = '(function () { ' + ('var ' + lookupName + '; ') + ('return (' + lookupName + ' = ' + (prevLookup ? prevLookup + '.' : '') + compiledLeft + ') == null ? ' + lookupName + ' : ')
+    var out = '(function () { ' + ('var ' + lookupName + '; ') + ('return (' + lookupName + ' = ' + (prevLookup ? prevLookup + '.' : '') + compiledLeft + ') == null ? ' + (this.right.type === null ? 'false' : lookupName) + ' : ')
     // Use == instead of === because we want to match both null and undefined -----^^
     + (this.right.type === 'Lookup' ? this.right.compile(true) + ' ' : this.right.type === null ? 'true; ' : lookupName + '.' + this.right.compile(true) + '; ') + '}())';
 

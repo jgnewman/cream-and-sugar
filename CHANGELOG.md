@@ -1,5 +1,15 @@
+0.6.8
+=====
+
+Shipped on xx.xx.xxxx
+
+### Change
+
+- Change the way we do conditional lookups that end with a question mark such as `foo.bar?`. In this case, the resulting compiled code will return either true or false, rather than true or undefined.
+
+
 0.6.7
-====
+=====
 
 Shipped on 12.05.2016
 
