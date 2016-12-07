@@ -25,14 +25,21 @@ compile(nodes.LookupNode, function () {
       this.shared.disableLookupResets = true;
     }
 
-    const lookupName   = `ref${this.shared.lookups += 1}_`; // ref1_
-    const prevLookup   = this.shared.prevLookup;            // ref0_
-    const compiledLeft = this.left.compile(true);           // foo
+    const refNum       = this.shared.lookups += 1;
+    const lookupName   = `ref${refNum}_`;          // ref1_
+    const prevLookup   = this.shared.prevLookup;   // ref0_
+    const compiledLeft = this.left.compile(true);  // foo
+
+    // In order to avoid errors in something like `foo?` when foo is undefined, we'll insert
+    // an extra undefined check. This variable determines the conditions under which we want to insert
+    // that check.
+    const shouldUseUndefCheck = refNum === 0 && this.left.type !== 'Wrap';
 
     this.shared.prevLookup = lookupName;
 
     const out = `(function () { `
               +    `var ${lookupName}; `
+              +    (!shouldUseUndefCheck ? '' : `if (typeof ${compiledLeft} === 'undefined') { return ${this.right.type === null ? 'false' : 'void 0'} } `)
               +    `return (${lookupName} = ${prevLookup ? prevLookup + '.' : ''}${compiledLeft}) == null ? ${this.right.type === null ? 'false' : lookupName} : `
                    // Use == instead of === because we want to match both null and undefined -----^^
               +    (

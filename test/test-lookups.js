@@ -24,6 +24,7 @@ describe('Lookups', () => {
     const expected = `
     (function () {
       var ref0_;
+      if (typeof foo === 'undefined') { return false }
       return (ref0_ = foo) == null ? false : true;
     }());
     `.trim();
@@ -35,6 +36,7 @@ describe('Lookups', () => {
     const expected = `
     (function () {
       var ref0_;
+      if (typeof foo === 'undefined') { return void 0 }
       return (ref0_ = foo) == null ? ref0_ : (function () {
         var ref1_;
         return (ref1_ = ref0_.bar) == null ? ref1_ : ref1_.baz;

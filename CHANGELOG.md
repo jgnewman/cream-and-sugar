@@ -1,3 +1,13 @@
+0.6.9
+=====
+
+Shipped on 12.06.2016
+
+### Fix
+
+- In relation to the change shipped in 0.6.8, we won't error anymore on a phrase like `foo?` if `foo` is undefined.
+
+
 0.6.8
 =====
 

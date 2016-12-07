@@ -27,13 +27,19 @@ foo?.bar?.baz
       this.shared.disableLookupResets = true;
     }
 
-    var lookupName = 'ref' + (this.shared.lookups += 1) + '_'; // ref1_
+    var refNum = this.shared.lookups += 1;
+    var lookupName = 'ref' + refNum + '_'; // ref1_
     var prevLookup = this.shared.prevLookup; // ref0_
     var compiledLeft = this.left.compile(true); // foo
 
+    // In order to avoid errors in something like `foo?` when foo is undefined, we'll insert
+    // an extra undefined check. This variable determines the conditions under which we want to insert
+    // that check.
+    var shouldUseUndefCheck = refNum === 0 && this.left.type !== 'Wrap';
+
     this.shared.prevLookup = lookupName;
 
-    var out = '(function () { ' + ('var ' + lookupName + '; ') + ('return (' + lookupName + ' = ' + (prevLookup ? prevLookup + '.' : '') + compiledLeft + ') == null ? ' + (this.right.type === null ? 'false' : lookupName) + ' : ')
+    var out = '(function () { ' + ('var ' + lookupName + '; ') + (!shouldUseUndefCheck ? '' : 'if (typeof ' + compiledLeft + ' === \'undefined\') { return ' + (this.right.type === null ? 'false' : 'void 0') + ' } ') + ('return (' + lookupName + ' = ' + (prevLookup ? prevLookup + '.' : '') + compiledLeft + ') == null ? ' + (this.right.type === null ? 'false' : lookupName) + ' : ')
     // Use == instead of === because we want to match both null and undefined -----^^
     + (this.right.type === 'Lookup' ? this.right.compile(true) + ' ' : this.right.type === null ? 'true; ' : lookupName + '.' + this.right.compile(true) + '; ') + '}())';
 
