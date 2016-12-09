@@ -1435,7 +1435,9 @@ case 19:
 
                                        if (this.forceDedent) {
                                          this.forceDedent -= 1;
-                                         this.unput(yy_.yytext);
+                                         if (!/^,/.test(this.upcomingInput()) || this.forceDedent) {
+                                           this.unput(yy_.yytext);
+                                         }
                                          return 66;
                                        }
 
@@ -1462,7 +1464,9 @@ case 19:
 
                                        if (dedents.length) {
                                          this.forceDedent = dedents.length - 1;
-                                         this.unput(yy_.yytext);
+                                         if (!/^,/.test(this.upcomingInput()) || this.forceDedent) {
+                                           this.unput(yy_.yytext);
+                                         }
                                          return 66;
                                        }
 

@@ -42,4 +42,13 @@ describe('Function Calls', () => {
     assert.equal(compileCode(toCompile).trim(), 'foo(bar)(baz);');
   });
 
+  it('should allow an expression using indentation as an argument without parens', () => {
+    const toCompile = 'setInterval fn =>\n'
+                    + '  doSomething _\n'
+                    + ', 1000';
+    assert.equal(nlToSpace(compileCode(toCompile)), nlToSpace(`setInterval(function () {
+      return doSomething();
+    }, 1000);`));
+  });
+
 });

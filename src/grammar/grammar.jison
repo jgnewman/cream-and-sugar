@@ -51,7 +51,9 @@
 
                                        if (this.forceDedent) {
                                          this.forceDedent -= 1;
-                                         this.unput(yytext);
+                                         if (!/^,/.test(this.upcomingInput()) || this.forceDedent) {
+                                           this.unput(yytext);
+                                         }
                                          return 'DEDENT';
                                        }
 
@@ -78,7 +80,9 @@
 
                                        if (dedents.length) {
                                          this.forceDedent = dedents.length - 1;
-                                         this.unput(yytext);
+                                         if (!/^,/.test(this.upcomingInput()) || this.forceDedent) {
+                                           this.unput(yytext);
+                                         }
                                          return 'DEDENT';
                                        }
 

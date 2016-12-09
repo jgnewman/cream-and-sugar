@@ -1,11 +1,12 @@
 0.7.0
 =====
 
-Shipped on xx.xx.xxxx
+Shipped on 12.08.2016
 
 ### Feature
 
 - Added keywords `not` and `no` as synonyms for `!`
+- Syntax has been made more flexible allowing you to include expressions that require indentation as arguments to a function call without having to use parentheses.
 
 
 0.6.9
