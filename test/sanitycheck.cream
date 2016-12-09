@@ -216,3 +216,13 @@ foo.bar?
 {foo: bar} <- {baz: quux}
 
 /regex\/?/
+
+no 4
+not 4
+
+fnHolder = {
+  fn1: fn =>
+    doSomething _
+  fn2: fn =>
+    doSomething _
+}

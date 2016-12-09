@@ -127,6 +127,9 @@
 "undefined"                          return "SPECIALVAL";
 "NaN"                                return "SPECIALVAL";
 
+"no"                                 return "OPPOSITE";
+"not"                                return "OPPOSITE";
+
 (\@|)?[a-zA-Z\_\$][a-zA-Z0-9\_\$]*((\s*\.\s*)?[a-zA-Z0-9\_\$]+)*   %{
                                                                      if (/^[A-Z][A-Z_]+$/.test(yytext)) {
                                                                        return 'ATOM';
@@ -142,6 +145,8 @@
 \`([^\`]|\\[\`])*\`                  return "STRING";       /* ` fix syntax highlighting */
 
 "@"                                  return "IDENTIFIER";
+"!"                                  return "OPPOSITE";
+
 ","                                  return ",";
 "->"                                 return "->";
 "::=>"                               return "::=>";
@@ -158,7 +163,6 @@
 "("                                  return "(";
 ")"                                  return ")";
 "|"                                  return "|";
-"!"                                  return "!";
 
 
 <<EOF>>                              return "EOF";
@@ -320,7 +324,7 @@ Lookup
   ;
 
 Opposite
-  : "!" SourceElement
+  : OPPOSITE SourceElement
     {
       $$ = new OppositeNode($2, createSourceLocation(null, @1, @2));
     }
@@ -734,20 +738,20 @@ Args
   ;
 
 LineArg
- : SourceElement
- | "{" ListItems "}"
-   {
-     $$ = new DestructureNode($2, 'Keys', createSourceLocation(null, @1, @1));
-   }
- | "[" Identifier "|" Identifier "]"
-   {
-     $$ = new DestructureNode([$2, $4], 'HeadTail', createSourceLocation(null, @1, @5));
-   }
- | "[" Identifier "||" Identifier "]"
-   {
-     $$ = new DestructureNode([$2, $4], 'LeadLast', createSourceLocation(null, @1, @5));
-   }
- ;
+  : SourceElement
+  | "{" ListItems "}"
+    {
+      $$ = new DestructureNode($2, 'Keys', createSourceLocation(null, @1, @1));
+    }
+  | "[" Identifier "|" Identifier "]"
+    {
+      $$ = new DestructureNode([$2, $4], 'HeadTail', createSourceLocation(null, @1, @5));
+    }
+  | "[" Identifier "||" Identifier "]"
+    {
+      $$ = new DestructureNode([$2, $4], 'LeadLast', createSourceLocation(null, @1, @5));
+    }
+  ;
 
 LineArgs
   : LineArgs "," LineArg
@@ -901,6 +905,17 @@ Params
     }
   ;
 
+AnonyFun
+  : FN Params Rocket FnBody
+    {
+      $$ = new FunNode($2, $4, $3, null, createSourceLocation(null, @1, @4));
+    }
+  | FN Rocket FnBody
+    {
+      $$ = new FunNode([], $3, $2, null, createSourceLocation(null, @1, @3));
+    }
+  ;
+
 Fun
   : FunctionCall Rocket FnBody
     {
@@ -910,14 +925,7 @@ Fun
     {
       $$ = new FunNode($1, $5, $4, $3, createSourceLocation(null, @1, @5));
     }
-  | FN Params Rocket FnBody
-    {
-      $$ = new FunNode($2, $4, $3, null, createSourceLocation(null, @1, @4));
-    }
-  | FN Rocket FnBody
-    {
-      $$ = new FunNode([], $3, $2, null, createSourceLocation(null, @1, @3));
-    }
+  | AnonyFun
   ;
 
 MatchFn

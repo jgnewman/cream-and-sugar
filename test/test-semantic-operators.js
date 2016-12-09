@@ -53,6 +53,24 @@ describe('Semantic Operators', () => {
     assert.equal(nlToSpace(compileCode(toCompile)), expected);
   });
 
+  it('should translate "no" to "!"', () => {
+    const toCompile = `no 4`;
+    const expected = nlToSpace(`!4;`);
+    assert.equal(nlToSpace(compileCode(toCompile)), expected);
+  });
+
+  it('should translate "not" to "!"', () => {
+    const toCompile = `not 4`;
+    const expected = nlToSpace(`!4;`);
+    assert.equal(nlToSpace(compileCode(toCompile)), expected);
+  });
+
+  it('should apply opposites correctly', () => {
+    const toCompile = `! a and b`;
+    const expected = nlToSpace(`!a && b;`);
+    assert.equal(nlToSpace(compileCode(toCompile)), expected);
+  });
+
   it('should compile a complex statement', () => {
     const toCompile = `! a and b or (c is (d lt e)) gte (f / g) % h`;
     const expected = nlToSpace(`!a && b || (c === (d < e)) >= (f / g) % h;`);

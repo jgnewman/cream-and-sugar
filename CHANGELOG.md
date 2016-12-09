@@ -1,3 +1,13 @@
+0.7.0
+=====
+
+Shipped on xx.xx.xxxx
+
+### Feature
+
+- Added keywords `not` and `no` as synonyms for `!`
+
+
 0.6.9
 =====
 
