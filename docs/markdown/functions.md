@@ -26,13 +26,17 @@ function factorial(n) {
 
 The mindset here is that we've created a function called `factorial` that takes a single argument (n). Within the function body, we examine `n` and perform different actions depending on the value of `n`.
 
-Now consider the same function written in C&S.
+<br/>
+<br/>
+<br/>
 
 ```
 # Factorial calculator in C&S
 factorial 0 => 1
 factorial n => n * factorial n - 1
 ```
+
+Now consider the same function written in C&S.
 
 In this case, `factorial 0` is a pattern that matches up with the value 1. When the language detects this pattern, it spits out 1. We also have another pattern (`factorial n`) that will be matched in the case that the user attempts to call the function with a single argument that is not 0. This pattern matches up with a function body that ends up calling `factorial` over and over again, subtracting 1 from its argument each time until the first pattern is matched and the recursion ends.
 
@@ -54,6 +58,8 @@ foo (bar x), y
 ```
 
 Function calls in C&S look like function calls in JavaScript, **minus** the parentheses. Arguments should still be separated by commas, however you will not surround them with parentheses. Instead, you will use parentheses to denote a function call taking another function call as an argument.
+
+<br/>
 
 ```
 # JavaScript
@@ -119,6 +125,9 @@ add2 x =>
 _The last expression evaluated in your function will always be returned automatically._
 
 When it comes to pattern matching, there is a lot that you can do. But before we dive into all the ways pattern matching can make your life easier, let's talk about the other techniques available for creating functions.
+
+<br/>
+<br/>
 
 ## Anonymous Functions
 
@@ -201,9 +210,12 @@ parentContext = {
 
 This is especially useful because it allows you to wrap up a context for later retrieval.
 
-## Anonymous Pattern Matches with `match`
+<br/>
+<br/>
+<br/>
+<br/>
 
-One nice feature of Cream & Sugar is that you can actually define pattern matches without naming a function. Doing so follows a similar form as named patterns except that you'll use `match` and indentation to group your function bodies together rather than writing the name of the function for each pattern. Consider the provided example:
+## Anonymous Pattern Matches with `match`
 
 ```
 eatFood =
@@ -214,6 +226,8 @@ eatFood =
 eatFood 'hamburger'
 #=> 'ate some other kind of food'
 ```
+
+One nice feature of Cream & Sugar is that you can actually define pattern matches without naming a function. Doing so follows a similar form as named patterns except that you'll use `match` and indentation to group your function bodies together rather than writing the name of the function for each pattern. Consider the provided example.
 
 This technique is especially useful when accepting messages from [external processes](/reference/processes/). For example, C&S actually allows you to quickly and easily spin up extra operating system processes and pass messages between them. In order to handle incoming messages, you call the `receive` function and pass a function to it. This is a great place to use `match`.
 

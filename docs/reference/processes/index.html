@@ -58,6 +58,10 @@
       </code></pre><p>In C&amp;S, all processes are spawned from functions. This example shows a basic process creator. The <code>up</code> function calls <code>spawn</code>, which returns a process generated from its argument function. Within the process, we have a function for calculating factorials and a <code>receive</code> statement that allows us to pattern match against incoming messages.</p>
       <p>Whenever a message comes in, we&#39;ll analyze its pattern and see if we can use it. In this case, we expect our message to take the form of a tuple wherein the first item is the atom <code>FACTORIAL</code> and the second item is the number to calculate a factorial for. When we get a message like this, we&#39;ll <code>reply</code> back to the parent thread with another tuple wherein the first item is the atom <code>OK</code> and the second item is the calculated factorial. If we receive any other kind of message, we&#39;ll reply back indicating that we got an error.</p>
       <p>Now that we have a process creator, let&#39;s take a look at how we might actually use it.</p>
+      <p><br/>
+      <br/>
+      <br/>
+      <br/></p>
       <pre><code># Create the process and grab a reference to it.
       myprocess = up _
       
@@ -83,6 +87,12 @@
       </code></pre><p>We&#39;ll begin by spinning up our process and and assigning it to a variable. Next, we&#39;ll create another <code>receive</code> block for determining what to do when our process sends us a message. If we get an <code>OK</code> tuple, we&#39;ll log the message we got to the console. If we get an <code>ERR</code> tuple, we&#39;ll use <code>kill</code> to kill the process and throw an error.</p>
       <p>With everything prepped and ready to go, we&#39;ll kick things off by using <code>send</code> to pass a message to our process.</p>
       <p>Within this example we can see all 4 tools in action. We can create a process with <code>spawn</code>. We can handle incoming messages with <code>receive</code>. We can send messages to a child process with <code>send</code> and reply back to a parent process with <code>reply</code>. Lastly, we can terminate a process with <code>kill</code>. And regardless of whether we&#39;re in Node.js or the browser, all of this functionality works the same way.</p>
+      <p><br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/></p>
       
     </div>
     <section id="docs-app"></section>

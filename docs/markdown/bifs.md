@@ -241,6 +241,9 @@ eql [1, 2, {a: 'b'}], [1, 2, {a: 'b'}] #=> true
 
 Determines whether `a` and `b` are deep equal by strict comparison and returns either `true` or `false`.
 
+<br/>
+<br/>
+
 
 #### get key, collection
 

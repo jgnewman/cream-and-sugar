@@ -61,6 +61,11 @@ Whenever a message comes in, we'll analyze its pattern and see if we can use it.
 
 Now that we have a process creator, let's take a look at how we might actually use it.
 
+<br/>
+<br/>
+<br/>
+<br/>
+
 ```
 # Create the process and grab a reference to it.
 myprocess = up _
@@ -91,6 +96,13 @@ We'll begin by spinning up our process and and assigning it to a variable. Next,
 With everything prepped and ready to go, we'll kick things off by using `send` to pass a message to our process.
 
 Within this example we can see all 4 tools in action. We can create a process with `spawn`. We can handle incoming messages with `receive`. We can send messages to a child process with `send` and reply back to a parent process with `reply`. Lastly, we can terminate a process with `kill`. And regardless of whether we're in Node.js or the browser, all of this functionality works the same way.
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 
 {{{{/raw}}}}
 {{/markdown}}

@@ -74,6 +74,8 @@ In this example, we created a function called `map` that essentially mimics Java
 In this case, we don't want users of our module to be able to pass in 3 arguments to this function as they could pretty easily mess things up. So when we export it, we call the `aritize` function and lock it down to an arity of 2. This way, if a user tries to call it with a third argument, they'll get an error. However, this does not inhibit the function's own ability to recurse with 3 arguments.
 
 ```
+import { Component } from 'react'
+
 App = React.createClass {
 
   render: fn =>

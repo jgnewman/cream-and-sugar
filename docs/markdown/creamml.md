@@ -28,6 +28,9 @@ As you should already be aware, JSX is basically HTML that you can write into Ja
 
 When compiled, each of the nodes in our JSX is converted into a call to `React.createElement`. With Cream & Sugar, you can do the same thing with only a few minor differences. Because these differences exist, C&S' XML-like syntax is called "CreamML" rather than JSX. This next example illustrates how to write the same function with C&S.
 
+<br/>
+<br/>
+
 ```
 createJSX id =>
   <div id={id} className="foo">
@@ -138,6 +141,9 @@ In JSX, you use curly braces every time you want to reference a value or perform
 ```
 
 The provided example shows the potential for an error caused by placing an object near the termination of these curly braces, incorrectly causing the compiler to detect a tuple-closing double curly.
+
+<br/>
+<br/>
 
 ```
 <div

@@ -180,7 +180,7 @@ When you separate your collection items onto independent lines, however, you hav
 
 ## Assessing Types
 
-C&S abandons JavaScript's confusing `typeof` expression in favor of a built-in function called `dataType`. This function will provide more reasonable results such as "regexp" if handed a regular expression or "date" if handed a Date object. For more information on what to expect from the `datType` function, check out [Built-In Functions](/reference/bifs/).
+C&S abandons JavaScript's confusing `typeof` expression in favor of a built-in function called `dataType`. This function will provide more reasonable results such as "regexp" if handed a regular expression or "date" if handed a Date object. For more information on what to expect from the `dataType` function, check out [Built-In Functions](/reference/bifs/).
 
 
 {{{{/raw}}}}

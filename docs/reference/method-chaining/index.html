@@ -31,6 +31,7 @@
       foo?.bar?.baz    #=&gt; &#39;quux&#39;
       foo?.schmoo?.baz #=&gt; undefined
       </code></pre><p>If the <code>?</code> symbol is used somewhere in the middle of a dot chain, the whole chain statement will terminate at the first undefined value without throwing an error.</p>
+      <p><br/></p>
       <pre><code>((foo _)?.bar _)?.baz
       </code></pre><p>This syntax even works with ugly, chained function calls, which we&#39;ll be talking about next.</p>
       <pre><code># JavaScript chaining
@@ -39,11 +40,13 @@
       # Cream &amp; Sugar&#39;s gross equivalent
       (((foo a b).bar c d).baz e f)
       </code></pre><p>In Cream &amp; Sugar, function calls do not take parentheses. This departure from JavaScript syntax has pros and cons. One thing you may notice rather quickly is that method chaining is not quite so easy. While it can be accomplished using standard call syntax, it is much nicer to use C&amp;S&#39; chain syntax.</p>
+      <p><br/></p>
       <pre><code>chain
         foo a, b
         bar c, d
         baz e, f
       </code></pre><p>So instead of using all of those hard-to-parse parentheses, we can use the keyword <code>chain</code> followed by an indented block where each line constitutes a method chained off of the method before it.</p>
+      <p><br/></p>
       <pre><code>chain
         $ &#39;#some-dom-node&#39;
         addClass &#39;foo&#39;
@@ -55,6 +58,11 @@
         then  fn y =&gt; resolver y
         catch fn z =&gt; end z
       </code></pre><p>This is especially nice for things like jQuery or <code>promise</code> syntax.</p>
+      <p><br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/></p>
       <p>Because there are no dots in this syntax, there may be times when built-in function names or reserved words need to be used because they are method names on the object returned from the previous item in the chain. In cases like this, you might normally expect to get a compile or, even worse, a runtime error because the compiler translated out your method name for a bif by accident.</p>
       <pre><code>chain
         getObject _
@@ -62,7 +70,7 @@
       
       # Compiled output
       getObject().default(&#39;some argument&#39;)
-      </code></pre><p>In all cases in Cream &amp; Sugar you have the option of protecting a word from compiler translation by prefixing it with the <code>~</code>. The provided example uses <code>~default</code> in order to prevent the compiler from tripping up on the fact that <code>default</code> is normally a reserved word.</p>
+      </code></pre><p>In all cases in Cream &amp; Sugar you have the option of protecting a word from compiler translation by prefixing it with the <code>~</code> symbol. The provided example uses <code>~default</code> in order to prevent the compiler from tripping up on the fact that <code>default</code> is normally a reserved word.</p>
       
     </div>
     <section id="docs-app"></section>

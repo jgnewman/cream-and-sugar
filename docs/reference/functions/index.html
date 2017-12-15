@@ -31,11 +31,14 @@
         }
       }
       </code></pre><p>The mindset here is that we&#39;ve created a function called <code>factorial</code> that takes a single argument (n). Within the function body, we examine <code>n</code> and perform different actions depending on the value of <code>n</code>.</p>
-      <p>Now consider the same function written in C&amp;S.</p>
+      <p><br/>
+      <br/>
+      <br/></p>
       <pre><code># Factorial calculator in C&amp;S
       factorial 0 =&gt; 1
       factorial n =&gt; n * factorial n - 1
-      </code></pre><p>In this case, <code>factorial 0</code> is a pattern that matches up with the value 1. When the language detects this pattern, it spits out 1. We also have another pattern (<code>factorial n</code>) that will be matched in the case that the user attempts to call the function with a single argument that is not 0. This pattern matches up with a function body that ends up calling <code>factorial</code> over and over again, subtracting 1 from its argument each time until the first pattern is matched and the recursion ends.</p>
+      </code></pre><p>Now consider the same function written in C&amp;S.</p>
+      <p>In this case, <code>factorial 0</code> is a pattern that matches up with the value 1. When the language detects this pattern, it spits out 1. We also have another pattern (<code>factorial n</code>) that will be matched in the case that the user attempts to call the function with a single argument that is not 0. This pattern matches up with a function body that ends up calling <code>factorial</code> over and over again, subtracting 1 from its argument each time until the first pattern is matched and the recursion ends.</p>
       <p>If you take a look at the C&amp;S compiled output, you&#39;ll notice that, under the hood, we&#39;re still just building functions that do a conditional analysis of their arguments. However, getting yourself into the pattern match mindset will be very useful in terms of getting used to pattern matching as a tool for shortening your syntax and making your functions logically simpler.</p>
       <p>And at this point, you should have a decent grasp on the first technique for defining functions in Cream &amp; Sugar – using named patterns. But before we get into more details, let&#39;s talk about function calls.</p>
       <h2 id="function-calls">Function Calls</h2>
@@ -47,6 +50,7 @@
       foo x, y
       foo (bar x), y
       </code></pre><p>Function calls in C&amp;S look like function calls in JavaScript, <strong>minus</strong> the parentheses. Arguments should still be separated by commas, however you will not surround them with parentheses. Instead, you will use parentheses to denote a function call taking another function call as an argument.</p>
+      <p><br/></p>
       <pre><code># JavaScript
       foo()
       
@@ -89,6 +93,8 @@
       [1, 2, 3].map add2 #=&gt; [3, 4, 5]
       </code></pre><p><em>The last expression evaluated in your function will always be returned automatically.</em></p>
       <p>When it comes to pattern matching, there is a lot that you can do. But before we dive into all the ways pattern matching can make your life easier, let&#39;s talk about the other techniques available for creating functions.</p>
+      <p><br/>
+      <br/></p>
       <h2 id="anonymous-functions">Anonymous Functions</h2>
       <pre><code>[1, 2, 3].map fn item =&gt; item + 2
       </code></pre><p>Sometimes you want to create a function on the fly. It won&#39;t be re-used anywhere so you don&#39;t need to give it a name. In C&amp;S you can do this with the <code>fn</code> keyword.</p>
@@ -128,8 +134,11 @@
       (parentContext.factory _) _
       #=&gt; parentContext
       </code></pre><p>This is especially useful because it allows you to wrap up a context for later retrieval.</p>
+      <p><br/>
+      <br/>
+      <br/>
+      <br/></p>
       <h2 id="anonymous-pattern-matches-with-match-">Anonymous Pattern Matches with <code>match</code></h2>
-      <p>One nice feature of Cream &amp; Sugar is that you can actually define pattern matches without naming a function. Doing so follows a similar form as named patterns except that you&#39;ll use <code>match</code> and indentation to group your function bodies together rather than writing the name of the function for each pattern. Consider the provided example:</p>
       <pre><code>eatFood =
         match
           &#39;pizza&#39; =&gt; &#39;ate pizza&#39;
@@ -137,7 +146,8 @@
       
       eatFood &#39;hamburger&#39;
       #=&gt; &#39;ate some other kind of food&#39;
-      </code></pre><p>This technique is especially useful when accepting messages from <a href="/reference/processes/">external processes</a>. For example, C&amp;S actually allows you to quickly and easily spin up extra operating system processes and pass messages between them. In order to handle incoming messages, you call the <code>receive</code> function and pass a function to it. This is a great place to use <code>match</code>.</p>
+      </code></pre><p>One nice feature of Cream &amp; Sugar is that you can actually define pattern matches without naming a function. Doing so follows a similar form as named patterns except that you&#39;ll use <code>match</code> and indentation to group your function bodies together rather than writing the name of the function for each pattern. Consider the provided example.</p>
+      <p>This technique is especially useful when accepting messages from <a href="/reference/processes/">external processes</a>. For example, C&amp;S actually allows you to quickly and easily spin up extra operating system processes and pass messages between them. In order to handle incoming messages, you call the <code>receive</code> function and pass a function to it. This is a great place to use <code>match</code>.</p>
       <pre><code>receive match
         {{ OK, msg }}  =&gt; doSomethingWith msg
         {{ ERR, msg }} =&gt; throw (create Error, msg)

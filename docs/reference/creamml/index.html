@@ -36,6 +36,8 @@
       }
       </code></pre><p>As you should already be aware, JSX is basically HTML that you can write into JavaScript. It was invented for use with React.js and looks like the provided example, including a function that creates some.</p>
       <p>When compiled, each of the nodes in our JSX is converted into a call to <code>React.createElement</code>. With Cream &amp; Sugar, you can do the same thing with only a few minor differences. Because these differences exist, C&amp;S&#39; XML-like syntax is called &quot;CreamML&quot; rather than JSX. This next example illustrates how to write the same function with C&amp;S.</p>
+      <p><br/>
+      <br/></p>
       <pre><code>createJSX id =&gt;
         &lt;div id={id} className=&quot;foo&quot;&gt;
           &lt;span&gt;&quot;Hello, world!&quot;&lt;/span&gt;
@@ -115,6 +117,8 @@
       # Error! ––––––––––––––^^
       # Unexpected &quot;}}&quot;
       </code></pre><p>The provided example shows the potential for an error caused by placing an object near the termination of these curly braces, incorrectly causing the compiler to detect a tuple-closing double curly.</p>
+      <p><br/>
+      <br/></p>
       <pre><code>&lt;div
         className=&quot;foo&quot;
         attr={ fn =&gt; {foo: bar} }&gt;

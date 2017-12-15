@@ -54,7 +54,9 @@
       export aritize map, 2
       </code></pre><p>In this example, we created a function called <code>map</code> that essentially mimics JavaScript&#39;s <code>Array.map</code> method. It assumes the user will call it with two arguments (an array and a function) and, when that happens, it will recur with a third argument – an array that accumulates all of the values as iterations occur.</p>
       <p>In this case, we don&#39;t want users of our module to be able to pass in 3 arguments to this function as they could pretty easily mess things up. So when we export it, we call the <code>aritize</code> function and lock it down to an arity of 2. This way, if a user tries to call it with a third argument, they&#39;ll get an error. However, this does not inhibit the function&#39;s own ability to recurse with 3 arguments.</p>
-      <pre><code>App = React.createClass {
+      <pre><code>import { Component } from &#39;react&#39;
+      
+      App = React.createClass {
       
         render: fn =&gt;
           &lt;div&gt;&quot;Hello&quot;&lt;/div&gt;

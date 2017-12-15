@@ -40,6 +40,9 @@ when
 
 In this next `when` example, the first condition evaluates truthily and its block is executed. This time, the block contains multiple statements so we use indentation instead of an arrow. The block returns the result of the last statement executed and, consequently, the `when` expression returns the result of whichever block was executed.
 
+<br/>
+<br/>
+
 ```
 myVar =
   when
