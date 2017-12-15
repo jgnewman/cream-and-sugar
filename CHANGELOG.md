@@ -1,3 +1,10 @@
+0.7.1
+=====
+
+- aritize causes us to lose the function's name
+- native classes are a big thing in react now. need a way to extend them
+
+
 0.7.0
 =====
 
