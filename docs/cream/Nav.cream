@@ -1,11 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types'
 import reactify from './util/reactify'
 
 propTypes = {
-  menuOpen: React.PropTypes.bool.isRequired,
-  toggleMenu: React.PropTypes.func.isRequired,
-  handleClickNav: React.PropTypes.func.isRequired
+  menuOpen: PropTypes.bool.isRequired,
+  toggleMenu: PropTypes.func.isRequired,
+  handleClickNav: PropTypes.func.isRequired
 }
 
 render _ =>

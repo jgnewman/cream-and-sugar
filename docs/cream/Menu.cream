@@ -1,16 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types'
 import reactify from './util/reactify'
 import Download from './Download'
 
 propTypes = {
-  menuOpen: React.PropTypes.bool.isRequired,
-  downloadOptions: React.PropTypes.object.isRequired,
-  downloadSelection: React.PropTypes.object.isRequired,
-  handleSelectLink: React.PropTypes.func.isRequired,
-  handleClickMenuLink: React.PropTypes.func.isRequired,
-  selectLink: React.PropTypes.func.isRequired,
-  toggleMenu: React.PropTypes.func.isRequired
+  menuOpen: PropTypes.bool.isRequired,
+  downloadOptions: PropTypes.object.isRequired,
+  downloadSelection: PropTypes.object.isRequired,
+  handleSelectLink: PropTypes.func.isRequired,
+  handleClickMenuLink: PropTypes.func.isRequired,
+  selectLink: PropTypes.func.isRequired,
+  toggleMenu: PropTypes.func.isRequired
 }
 
 getLeftContent _ =>

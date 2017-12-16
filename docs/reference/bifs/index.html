@@ -60,6 +60,22 @@
       </ul>
       <p>The <code>cache</code> function takes a function as its argument and returns a new function that will cache its result after being executed once. Having been cached, you can call this function as many times as you want and it will immediately return the cached value without having to execute the original function again.</p>
       <p>Cached functions may be &quot;reset&quot; by calling the <code>decache</code> bif.</p>
+      <h4 id="classof-klass-methods-staticmethods-">classof [klass,] methods [, staticMethods]</h4>
+      <pre><code># Create a class
+      Foo = classof { x: x }
+      
+      # Extend a class
+      Foo = classof Bar, { x: x}
+      
+      # Add some static methods
+      Foo = classof Bar, { x: x }, { y: y }
+      </code></pre><ul>
+      <li><code>klass {Function}</code>: Any class function to extend.</li>
+      <li><code>methods {Object}</code>: Contains the new class&#39; methods.</li>
+      <li><code>staticMethods {Object}</code>: Any static methods to be included.</li>
+      </ul>
+      <p>The <code>classof</code> function is used to create and extend JavaScript classes. You will likely not use this function very often if you are programming in a functional way. However, it exists if you need it.</p>
+      <p>Note that this <strong>should not</strong> be used to extend React components because React classes are weird. If you would like to use React with CnS, you will need to download the <code>create-react-class</code> module.</p>
       <h4 id="create-klass-constructorargs-">create klass [, ...constructorArgs]</h4>
       <pre><code>create Date
       #=&gt; Fri Sep 09 2016 17:00:43 GMT-0400 (EDT)
@@ -267,6 +283,9 @@
       <li><code>message {String}</code>: A message to log to the console.</li>
       </ul>
       <p>A shortcut for JavaScript&#39;s <code>console.log(message)</code>. If the <code>console</code> object does not exists, fails silently.</p>
+      <h4 id="noop">noop</h4>
+      <pre><code>doNothing = noop
+      </code></pre><p>You often need a reference to a function that does nothing. That&#39;s what this is. A useful function that does nothing.</p>
       <h4 id="random-array">random array</h4>
       <pre><code>random [1, 2, 3] #=&gt; 2
       

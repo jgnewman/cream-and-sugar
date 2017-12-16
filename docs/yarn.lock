@@ -772,9 +772,9 @@ cloneable-readable@^1.0.0:
     process-nextick-args "^1.0.6"
     through2 "^2.0.1"
 
-cns-lib@^0.4.7:
-  version "0.4.7"
-  resolved "https://registry.yarnpkg.com/cns-lib/-/cns-lib-0.4.7.tgz#1028372afebac6b90b7f622f5f3c04da21eac5a9"
+cns-lib@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/cns-lib/-/cns-lib-0.5.0.tgz#db2890068d201251f60eb98c6856cf0e5d5deea2"
 
 co@^4.6.0:
   version "4.6.0"
@@ -930,17 +930,17 @@ core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
 
-cream-and-sugar@0.6.9:
-  version "0.6.9"
-  resolved "https://registry.yarnpkg.com/cream-and-sugar/-/cream-and-sugar-0.6.9.tgz#7bbd1c67df77d3d724e26a5e1135d521ed4ae702"
+cream-and-sugar@0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/cream-and-sugar/-/cream-and-sugar-0.7.1.tgz#f920ab6ee2581e623ef5db1c3bb0aa8c607157a7"
   dependencies:
-    cns-lib "^0.4.7"
+    cns-lib "^0.5.0"
 
-creamify@^0.6.0:
-  version "0.6.9"
-  resolved "https://registry.yarnpkg.com/creamify/-/creamify-0.6.9.tgz#03936574865c95a76ae67c79e9fc96b3c4b1e935"
+creamify@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/creamify/-/creamify-0.7.1.tgz#823e602180d4d5ad420b1eebbc7afced70ea4f45"
   dependencies:
-    cream-and-sugar "0.6.9"
+    cream-and-sugar "0.7.1"
 
 create-ecdh@^4.0.0:
   version "4.0.0"
@@ -969,7 +969,7 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-react-class@^15.5.1, create-react-class@^15.6.0:
+create-react-class@^15.5.1, create-react-class@^15.6.0, create-react-class@^15.6.2:
   version "15.6.2"
   resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.6.2.tgz#cf1ed15f12aad7f14ef5f2dfe05e6c42f91ef02a"
   dependencies:
@@ -3786,7 +3786,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10, prop-types@^15.5.4:
+prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.6.0:
   version "15.6.0"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.0.tgz#ceaf083022fc46b4a35f69e13ef75aed0d639856"
   dependencies:

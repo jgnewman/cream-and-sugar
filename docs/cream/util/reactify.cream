@@ -4,6 +4,7 @@ React class.
 ###
 
 import React from 'react'
+import createReactClass from 'create-react-class'
 
 
 ###
@@ -34,7 +35,7 @@ handleFun fun => update fun.name, fun, {}
 Builds a React class and adds propTypes
 ###
 buildClass obj, propTypes =>
-  update 'propTypes', propTypes, (React.createClass obj)
+  update 'propTypes', propTypes, (createReactClass obj)
 
 ###
 Assess the type of the function list and hand it off

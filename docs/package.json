@@ -11,7 +11,8 @@
   "dependencies": {
     "browser-sync": "^2.18.2",
     "browserify": "^13.1.1",
-    "creamify": "^0.6.0",
+    "creamify": "^0.7.1",
+    "create-react-class": "^15.6.2",
     "del": "^2.2.2",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
@@ -24,6 +25,7 @@
     "gulp-watch": "^4.3.11",
     "normalize.css": "^5.0.0",
     "panini": "^1.3.1",
+    "prop-types": "^15.6.0",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-redux": "^4.4.6",

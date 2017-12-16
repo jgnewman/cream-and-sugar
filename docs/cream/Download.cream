@@ -1,12 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types'
 import reactify from './util/reactify'
 
 propTypes = {
-  downloadOptions: React.PropTypes.object.isRequired,
-  downloadSelection: React.PropTypes.object.isRequired,
-  handleSelectLink: React.PropTypes.func.isRequired,
-  selectLink: React.PropTypes.func.isRequired
+  downloadOptions: PropTypes.object.isRequired,
+  downloadSelection: PropTypes.object.isRequired,
+  handleSelectLink: PropTypes.func.isRequired,
+  selectLink: PropTypes.func.isRequired
 }
 
 render _ =>

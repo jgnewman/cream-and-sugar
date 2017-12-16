@@ -70,6 +70,27 @@ The `cache` function takes a function as its argument and returns a new function
 
 Cached functions may be "reset" by calling the `decache` bif.
 
+#### classof [klass,] methods [, staticMethods]
+
+```
+# Create a class
+Foo = classof { x: x }
+
+# Extend a class
+Foo = classof Bar, { x: x}
+
+# Add some static methods
+Foo = classof Bar, { x: x }, { y: y }
+```
+
+- `klass {Function}`: Any class function to extend.
+- `methods {Object}`: Contains the new class' methods.
+- `staticMethods {Object}`: Any static methods to be included.
+
+The `classof` function is used to create and extend JavaScript classes. You will likely not use this function very often if you are programming in a functional way. However, it exists if you need it.
+
+Note that this **should not** be used to extend React components because React classes are weird. If you would like to use React with CnS, you will need to download the `create-react-class` module.
+
 
 #### create klass [, ...constructorArgs]
 
@@ -368,6 +389,13 @@ log 'This app is great!' #=> undefined
 A shortcut for JavaScript's `console.log(message)`. If the `console` object does not exists, fails silently.
 
 
+#### noop
+
+```
+doNothing = noop
+```
+
+You often need a reference to a function that does nothing. That's what this is. A useful function that does nothing.
 
 #### random array
 

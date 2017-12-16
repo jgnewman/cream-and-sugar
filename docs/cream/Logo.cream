@@ -1,10 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types'
 import reactify from './util/reactify'
 
 propTypes = {
-  toggleMenu: React.PropTypes.func.isRequired,
-  handleClickLogo: React.PropTypes.func.isRequired
+  toggleMenu: PropTypes.func.isRequired,
+  handleClickLogo: PropTypes.func.isRequired
 }
 
 logoClick evt =>
