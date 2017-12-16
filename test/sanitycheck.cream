@@ -235,3 +235,10 @@ somefunction when
   a -> b
   c -> d
 , 1000
+
+classof Foo, {
+  bar: noop
+  baz: noop
+}, {
+  qux: noop
+}

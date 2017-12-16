@@ -1,8 +1,29 @@
 0.7.1
 =====
 
-- aritize causes us to lose the function's name
-- native classes are a big thing in react now. need a way to extend them
+Shipped on 12.16.2017
+
+### Fix
+
+- Fixed a problem where the `instanceof` BIF was colliding with the fact that it was also a reserved word.
+
+### Feature
+
+- Upgrade to cns-lib 0.5.0 containing support for new BIFs.
+- New BIF `noop` is a useful noop function.
+- New BIF `classof` provides support for creating and extending classes.
+  - `Foo = classof { ...methods... }` - Create a basic class.
+  - `Foo = classof Bar, { ...methods... }` - Extend a class.
+  - `Foo = classof Bar, { ... }, { ...static methods... }` - Add static methods to a class.
+
+### Change
+
+- Because `React.createClass` is deprecated, you are now encouraged to use the `create-react-class` module.
+
+### Under the Hood
+
+- Remove a reference to `Object.assign` in the BIFs library.
+- Moved to Yarn for package management.
 
 
 0.7.0

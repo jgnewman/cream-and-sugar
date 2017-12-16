@@ -1,9 +1,9 @@
 {
   "name": "cream-and-sugar",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "A deliciously functional syntax for JavaScript with native support for JSX",
   "dependencies": {
-    "cns-lib": "^0.4.7"
+    "cns-lib": "^0.5.0"
   },
   "keywords": [
     "javascript",
@@ -48,6 +48,7 @@
     "babel-register": "^6.14.0",
     "browserify": "^13.1.0",
     "colors": "^1.1.2",
+    "create-react-app": "^1.4.3",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-clean": "^0.3.2",

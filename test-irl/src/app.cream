@@ -1,10 +1,13 @@
 import React from 'react'
+import { Component } from 'react'
 import ReactDOM from 'react-dom'
+import createReactClass from 'create-react-class'
 
+dangerouslyMutate 'Component', Component, window
 
 # Iterate over a list of functions to generate a React class.
 reactify fnList             => reactify fnList, {}
-reactify [], accum          => React.createClass accum
+reactify [], accum          => createReactClass accum
 reactify [ hd | tl ], accum => reactify tl, (update hd.name, hd, accum)
 
 
@@ -26,7 +29,7 @@ Title = reactify [factorial, render]
 
 
 # Render the react class in the dom
-ReactDOM.render <Title calc={5} />, (dom '#app')
+ReactDOM.render <Title calc=(5) />, (dom '#app')
 
 # Test worker threads
 process = spawn fn =>
@@ -34,6 +37,6 @@ process = spawn fn =>
     msg => reply `I got ${msg}`
 
 receive match
-  msg => console.log msg
+  msg => log msg
 
 send process, 'THIS IS AN OFFICIAL MESSAGE'

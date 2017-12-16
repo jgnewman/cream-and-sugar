@@ -3,9 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 exports.default = finalize;
 
 var _cnsLib = require('cns-lib');
@@ -16,18 +13,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function prepend(str, withStr) {
   return withStr + '\n' + str;
-}
-
-function stringify(val) {
-  if (Array.isArray(val)) {
-    return JSON.stringify(val);
-  } else if ((typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object') {
-    return '{' + Object.keys(val).map(function (key) {
-      return key + ': ' + stringify(val[key]);
-    }).join(',\n') + '}';
-  } else {
-    return val.toString();
-  }
 }
 
 function finalize(tree) {

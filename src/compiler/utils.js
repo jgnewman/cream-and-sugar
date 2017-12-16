@@ -154,7 +154,8 @@ function getExposedFns() {
     'remove', 'eql', 'dom', 'domArray', 'spawn',
     'receive', 'kill', 'reply', 'send', 'aritize', 'tupleToObject',
     'tupleToArray', 'arrayToTuple', 'log', 'warn', 'debug', 'die',
-    'range', 'lang', 'dangerouslyMutate', 'cache', 'decache'
+    'range', 'lang', 'dangerouslyMutate', 'cache', 'decache',
+    'classof', 'noop'
   ];
 }
 
@@ -169,7 +170,7 @@ function getReservedWords() {
   return [
     'fn', 'caseof', 'match', 'if', 'default', 'catch',
     'for', 'in', 'when', 'var', 'const', 'let', 'while',
-    'switch', 'function', 'with', 'else', 'instanceof', 'super',
+    'switch', 'function', 'with', 'else', 'super',
     'enum', 'break', 'extends', 'new', 'class',
     'try', 'continue', 'typeof', 'delete', 'return',
     'static', 'CNS_'

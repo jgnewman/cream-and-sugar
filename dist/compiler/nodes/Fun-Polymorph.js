@@ -233,34 +233,32 @@ function sanitizeFnMeta(fnList) {
 
       // Otherwise...
     } else {
-      (function () {
-        var needsElse = true;
+      var needsElse = true;
 
-        // Create our subconditions by looping over each match object and
-        // spitting out the associated body under a conditional statement that
-        // checks the associated guard.
-        subBodies = matchObjs.map(function (obj, subIndex) {
+      // Create our subconditions by looping over each match object and
+      // spitting out the associated body under a conditional statement that
+      // checks the associated guard.
+      subBodies = matchObjs.map(function (obj, subIndex) {
 
-          // Determine whether to use "if" or "else if"
-          var subKey = subIndex === 0 ? 'if ' : 'else if ';
-          var condition = void 0;
+        // Determine whether to use "if" or "else if"
+        var subKey = subIndex === 0 ? 'if ' : 'else if ';
+        var condition = void 0;
 
-          // If we're on the last body in this group and it doesn't
-          // have a guard, we can use it as the else case.
-          if (!obj.guard && subIndex === matchObjs.length - 1) {
-            needsElse = false;
-            subKey = 'else';
-            condition = '';
+        // If we're on the last body in this group and it doesn't
+        // have a guard, we can use it as the else case.
+        if (!obj.guard && subIndex === matchObjs.length - 1) {
+          needsElse = false;
+          subKey = 'else';
+          condition = '';
 
-            // Otherwise, define the conditional express to be used
-          } else {
-            condition = '(' + (!obj.guard ? 'true' : obj.guard) + ')';
-          }
+          // Otherwise, define the conditional express to be used
+        } else {
+          condition = '(' + (!obj.guard ? 'true' : obj.guard) + ')';
+        }
 
-          // Spit out the subcondition and drop in an else case if needed
-          return '' + subKey + condition + ' {\n          ' + obj.body + ';\n        }' + (subIndex === matchObjs.length - 1 && needsElse ? elseCase : '');
-        }).join(' ');
-      })();
+        // Spit out the subcondition and drop in an else case if needed
+        return '' + subKey + condition + ' {\n          ' + obj.body + ';\n        }' + (subIndex === matchObjs.length - 1 && needsElse ? elseCase : '');
+      }).join(' ');
     }
 
     // Spit out the top-level condition based on precompiled information
